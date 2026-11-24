@@ -1,61 +1,48 @@
-# AGENTS.md
+# AxcUIKit-TypeScript contributor rules
 
-Rules for anyone (human or AI) changing this repository. Every rule in the first table is enforced by a
-command; if you cannot make the command pass, stop and report instead of working around it.
+This repository distributes focused React and TypeScript components through the explicit subpaths of `@axc/uikit`. Each component owns its source, tests, examples, and public contract.
 
 ## Before you finish
 
 ```sh
-npm run verify   # format, types, boundaries, lint, knip, tests on React 19 (+coverage gate) and 18, build, API report, size
+npm run verify
 ```
 
-All of it must pass. CI runs the same command plus the release gate.
+All checks must pass. CI runs the same command, the release gate, and an import check for the package entry points. Do not lower a threshold or budget to make a change pass.
 
-## Enforced rules
+## Shared engineering rules
 
-| Rule                                                                                                                                             | Enforced by                                                                           |
-| ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| `src/core` imports nothing outside `src/core`: no React, DOM or packages                                                                         | `scripts/check-boundaries.mjs` (`npm run check`)                                      |
-| No production `dependencies`; `react` is the only peer                                                                                           | `check-boundaries.mjs`                                                                |
-| `<input> <select> <textarea> <button> <option> <form>` only in `src/ui`; elsewhere use `src/ui/controls`                                         | `check-boundaries.mjs`                                                                |
-| Code outside `src/ui` imports only `ui/controls`, `ui/types`, `ui/provider`                                                                      | `check-boundaries.mjs`                                                                |
-| Every `<button>` has a literal `type="button"`                                                                                                   | `check-boundaries.mjs`                                                                |
-| No hard-coded UI text: no JSX text with letters, no literal `label`/`placeholder`/`title`/`aria-label`/`alt`, no CJK outside `src/core/locales/` | `check-boundaries.mjs`                                                                |
-| No `any`, no `@ts-ignore`, no double casts in `src/`, no `console` in `src/`, no floating promises, hooks rules                                  | ESLint (`eslint.config.js`); inline `eslint-disable` has no effect (`noInlineConfig`) |
-| No unused files, exports or dependencies                                                                                                         | knip (`npm run check`)                                                                |
-| Strict TypeScript, no unused locals/parameters                                                                                                   | `tsc --noEmit`                                                                        |
-| Formatting                                                                                                                                       | Prettier (`npm run format:check`)                                                     |
-| Line ≥ 98 %, branch ≥ 95 %, function ≥ 93 % coverage of `src/`                                                                                   | `npm run test:react19`                                                                |
-| Works on React 18 and 19                                                                                                                         | `npm test` runs every test on both                                                    |
-| Public API changes are explicit                                                                                                                  | `api/*.api.md` reports; `npm run api:check` fails on drift. Update with `npm run api` |
-| Protocol behaviour is frozen: issue codes, their order, and the issues returned for each fixture                                                 | `protocol/*.json` + `tests/protocol.test.ts`                                          |
-| Every issue code is covered by a fixture and has text in every locale                                                                            | `tests/protocol.test.ts`, `tests/i18n.test.tsx`                                       |
-| Published bundle stays small                                                                                                                     | `scripts/check-size.mjs` (`npm run size`)                                             |
-| `src/` or `protocol/` changes need a CHANGELOG entry; API or issue-code changes need a version bump                                              | `scripts/check-release.mjs` (CI)                                                      |
+- Keep parsing and validation in a React-free core. Reject invalid data with structured issues. Preserve valid values as provided and keep editor-only state out of emitted data.
+- Keep controls replaceable with typed, value-oriented props. Use native controls and locale text by default. Every native button has `type="button"`. Scope styles to the component.
+- Keep component source within its own module. React and React DOM are the shared peers. CodeMirror runtime dependencies are used by the explicit JSON Editor adapter subpath.
+- Add abstractions, dependencies, and public options for concrete use cases. Write English JSDoc for public functions covering their behavior and failure conditions.
+- Run strict TypeScript, ESLint, knip, and Prettier. Production code has no `any`, `@ts-ignore`, double casts, `console`, or floating promises. Inline ESLint suppression is disabled.
+- Test real behavior on React 18 and 19. Verification prints its results. Maintained API references document interfaces.
+- Update the changelog for implementation or protocol changes. Bump the package version when public API references or protocol issue codes change.
 
-Changing a rule means changing its enforcement (script, config, fixture or threshold) in the same change, with
-a reason in the commit message. Do not lower a threshold or budget to make a change pass.
+## Condition gates
 
-## Design rules (checked in review)
+| Rule                                                                                                                             | Enforced by                                                   |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Core code imports only Condition core. Other Condition code imports only its own source and React.                               | `scripts/check-boundaries.mjs`                                |
+| Native form controls reside in `src/ui`. Outside that directory, control imports use `ui/controls`, `ui/types` or `ui/provider`. | `scripts/check-boundaries.mjs`                                |
+| UI copy uses locales. CJK text resides in `src/core/locales`.                                                                    | `scripts/check-boundaries.mjs`                                |
+| Line coverage ≥ 98%, branch coverage ≥ 95%, function coverage ≥ 93%.                                                             | `npm run test:condition`                                      |
+| Protocol issue codes, ordering and fixture results are stable. All issue codes have fixtures and localized messages.             | `packages/condition/protocol`, protocol and i18n tests        |
+| Intended API changes update the interface reference.                                                                             | `npm run api` after a build and `npm run api:check` for drift |
+| Gzip budgets are 22,000 bytes for JavaScript and 1,500 bytes for CSS.                                                            | `npm run size`                                                |
 
-These cannot be fully automated; keep them short and follow them literally.
+Condition validation returns each issue as `{ code, path, params }`. New failure kinds require a code, a fixture, and messages in every locale. Wrong data is reported as an issue and incorrect configuration throws `TypeError`. Persisted condition and decision protocols contain no node IDs.
 
-- Do not repair caller mistakes. Wrong input is reported as an issue (data) or thrown as `TypeError` (configuration).
-  No coercion ("1" → 1), no splitting strings into arrays, no silent defaults for invalid values.
-- Validation returns every issue as `{ code, path, params }`. New failure kinds need a new code, a fixture, and
-  messages in every locale; never branch on message text.
-- No new abstraction, option or dependency without a real use case in this repository.
-- The protocol carries no editor state (no node IDs). Editor-only state stays in `src/internal`.
-- Public functions have English JSDoc stating semantics and failure conditions.
+## JSON Editor gates
 
-## Where things live
+The JSON core has no external imports and the standard editor loads independently of the CodeMirror adapter. The suite covers parsing, editing behavior, and the public React controls. TypeScript entry points have maintained API references. The JavaScript and CSS budgets are 18,000 and 1,500 bytes gzip. See the [JSON Editor contract](./docs/architecture.md#json-editor-contract).
+
+## Layout
 
 ```text
-src/core/        protocol: types, operators, validation, schemas, prompts, locales (no dependencies)
-src/ui/          control contracts, provider, native controls
-src/internal/    editor helpers shared by components
-src/components/  the four public components
-protocol/        frozen protocol fixtures and issue codes
-api/             public API reports (generated by `npm run api`)
-tests/           node:test + Testing Library + happy-dom; tests/react18 holds the React 18 runtime
+packages/condition/    condition builders, protocol, docs, API reference, demo, tests
+packages/json-editor/  JSON tree, parameter and source editors, docs, tests
+tests/                shared DOM setup and React 18 test runtime
+scripts/              build, demo, boundary, API, size and release checks
 ```

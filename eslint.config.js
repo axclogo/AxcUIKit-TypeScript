@@ -4,7 +4,7 @@ import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
 
 export default tseslint.config(
-	{ ignores: ['dist/', 'demo/dist/', 'node_modules/', 'tests/react18/', 'temp/', 'docs/'] },
+	{ ignores: ['**/dist/', '**/node_modules/', 'tests/react18/', '**/docs/'] },
 	{ linterOptions: { noInlineConfig: true, reportUnusedDisableDirectives: 'error' } },
 	...tseslint.configs.strict,
 	{
@@ -26,13 +26,16 @@ export default tseslint.config(
 		},
 	},
 	{
-		files: ['src/**'],
+		files: ['packages/*/src/**'],
 		rules: {
 			'no-console': 'error',
 			// Double casts silence the type checker; library code must not need them.
 			'no-restricted-syntax': [
 				'error',
-				{ selector: 'TSAsExpression > TSAsExpression', message: 'No double casts (`as unknown as T`) in src/.' },
+				{
+					selector: 'TSAsExpression > TSAsExpression',
+					message: 'No double casts (`as unknown as T`) in component source.',
+				},
 			],
 		},
 	},

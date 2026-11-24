@@ -22,12 +22,44 @@ jobs:
       # `prepare` builds the package during install, which also proves a git install works.
       - run: npm ci
       - run: npm ci --prefix tests/react18
-      # format, types, boundaries, lint, knip, tests on React 19 (with coverage gate) and 18, build, API report, size.
+      # format, types, boundaries, lint, knip, tests on React 19 (with Condition coverage gate) and 18, build, API report, size.
       - run: npm run verify
       - name: Release gate (CHANGELOG and version)
         if: github.event_name == 'pull_request' || github.event.before != '0000000000000000000000000000000000000000'
         run: node scripts/check-release.mjs ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}
-      - name: Verify published entry points
+      - name: Verify package entry points
         run: |
           npm pack --dry-run
-          node --input-type=module -e "const core = await import('@axc/condition/core'); const ui = await import('@axc/condition'); if (core.parseCondition !== ui.parseCondition) throw new Error('core is bundled twice');"
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { access } from 'node:fs/promises';
+          import { createRequire, registerHooks } from 'node:module';
+
+          const require = createRequire(import.meta.url);
+          const guard = registerHooks({ resolve(specifier, context, next) {
+            assert.doesNotMatch(specifier, /codemirror|@lezer/);
+            return next(specifier, context);
+          } });
+          for (const entry of ['condition', 'condition/core', 'json-editor', 'json-editor/core']) {
+            const subpath = '@axc/uikit/' + entry;
+            const required = require(subpath);
+            assert.equal(required, await import(subpath));
+          }
+          const condition = await import('@axc/uikit/condition');
+          const conditionCore = await import('@axc/uikit/condition/core');
+          const json = await import('@axc/uikit/json-editor');
+          const jsonCore = await import('@axc/uikit/json-editor/core');
+          assert.equal(condition.parseCondition, conditionCore.parseCondition);
+          assert.equal(json.parseJsonObject, jsonCore.parseJsonObject);
+          assert.equal(typeof json.JsonObjectEditor, 'function');
+          assert.deepEqual(jsonCore.parseJsonObject({ active: false }), { active: false });
+          guard.deregister();
+
+          const codeMirror = require('@axc/uikit/json-editor/codemirror');
+          assert.equal(codeMirror, await import('@axc/uikit/json-editor/codemirror'));
+          assert.equal(typeof codeMirror.CodeMirrorSourceEditor, 'function');
+          assert.throws(() => import.meta.resolve('@axc/uikit'), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
+          for (const component of ['condition', 'json-editor']) {
+            await access(new URL(import.meta.resolve(`@axc/uikit/${component}/styles.css`)));
+          }
+          JS

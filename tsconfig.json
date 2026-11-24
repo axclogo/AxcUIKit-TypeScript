@@ -13,5 +13,5 @@
 		"noUnusedParameters": true,
 		"types": ["node", "react", "react-dom"]
 	},
-	"include": ["src", "tests", "demo"]
+	"include": ["packages/*/src", "packages/*/tests", "packages/condition/demo", "tests/setup"]
 }

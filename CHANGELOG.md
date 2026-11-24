@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0
+
+- Distribute Condition and JSON Editor together as `@axc/uikit` from the AxcUIKit-TypeScript repository.
+- Existing Condition exports are available at `@axc/uikit/condition`, `@axc/uikit/condition/core` and `@axc/uikit/condition/styles.css`. Condition names, data contracts and protocol fixtures stay the same.
+- Add a structured JSON object editor with tree and parameter form editing, raw JSON drafts, pluggable controls, and a CodeMirror source adapter.
+
 ## 0.3.0
 
 - Add an optional `ModelSelect` UI adapter receiving original model/provider metadata. Hosts can use cascading model pickers without parsing labels; model ids and AI protocols stay unchanged.

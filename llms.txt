@@ -1,37 +1,27 @@
-# @axc/condition
+# AxcUIKit-TypeScript
 
-> Lightweight React query builder / condition builder / filter builder. Rules are plain JSON
-> (`{ combinator, not, rules }`), validated with stable error codes (`{ code, path, params }`).
-> Optional LLM generation through JSON Schema structured output. Zero dependencies besides React 18/19.
-> Any UI library can supply the controls. English and Chinese built in.
+> Focused React and TypeScript editors for query filters, condition and decision rules, and structured JSON objects and parameters.
 
-Install: `npm install github:axclogo/AxcCondition#v0.2.0` (not on the npm registry; npm builds it on install). Import styles: `import '@axc/condition/styles.css'`.
-Framework-free protocol (validation, schemas, prompts): `import … from '@axc/condition/core'`.
+Install from Git with `npm install github:axclogo/AxcUIKit-TypeScript`. The package name is `@axc/uikit`, with explicit component subpaths.
 
-Problems it solves:
-- Saved filters that break at runtime (wrong types, empty groups, unknown fields, invalid dates): one strict parser checks rules against the field catalog before saving.
-- Unreliable "generate a filter from a sentence" with LLMs: JSON Schema for structured output, strict parsing, preview, explicit apply.
-- Errors you cannot act on: every issue is `{ code, path, params }`, shown on its row.
-- Builders that force their own UI: eight replaceable controls; tested Ant Design adapter included.
-- Combining rules with AI decisions: precondition → AI decision → postcondition editor.
+## Condition
 
-Key facts for code generation:
-- Components: `AxcCondition` (rule editor), `AxcConditionAssist` (+ AI drafting), `AxcDecision`
-  (precondition → AI decision → postcondition), `AxcDecisionAssist` (+ AI drafting of the whole plan).
-- Fields: `{ name, label, dataType?: 'string'|'number'|'boolean'|'date'|'datetime'|'enum'|'array'|'object', values?, operators?, valueSources? }`.
-  `values` only on string/enum/array fields.
-- Always call `parseCondition(value, { fields })` before saving; it throws `AxcValidationError` with `issues`.
-  `validateCondition` returns the issues without throwing. Branch on `issue.code`, never on message text.
-- AI: pass `assist={{ models: [{ id, label }], generate: (request, signal) => yourModelCall(request) }}`;
-  `request` is `{ model, prompt, response_schema }`; resolve with the parsed JSON object.
-- UI library: `<AxcUIProvider components={{ Select, Input, … }} locale={zhCN}>`. Adapters receive values, not events.
-- Optional `ModelSelect` UI adapter receives original models/provider metadata; use it for host cascading pickers, keeping ids opaque.
-- Axc does not evaluate rules, call models or save data; the host app does.
+- `@axc/uikit/condition` exports `AxcCondition`, `AxcConditionAssist`, `AxcDecision` and `AxcDecisionAssist`.
+- Use `@axc/uikit/condition/core` for the React-free parser, schema, prompt and locale helpers. Call `parseCondition(value, { fields })` before saving, or use `validateCondition` for structured issues.
+- Import `@axc/uikit/condition/styles.css`. Use `AxcUIProvider` to supply native-equivalent controls and a locale.
+- The host evaluates rules, calls models, and persists data.
 
-## Docs
+## JSON Editor
 
-- [README](https://github.com/axclogo/AxcCondition/blob/main/README.md): install, examples for all four components, API, error codes, protocol, runtime semantics, FAQ
-- [UI adapters](https://github.com/axclogo/AxcCondition/blob/main/docs/ui-adapters.md): contract for each control, checklist, prompt for AI assistants
-- [Ant Design adapter](https://github.com/axclogo/AxcCondition/blob/main/docs/antd-adapter.tsx): complete, tested template
-- [Public API report](https://github.com/axclogo/AxcCondition/blob/main/api/index.api.md): every exported type and function
-- [中文文档](https://github.com/axclogo/AxcCondition/blob/main/README.zh-CN.md)
+- `@axc/uikit/json-editor` exports `ParamObjectEditor`, `JsonObjectEditor` and `JsonEditorProvider`.
+- `JsonObjectEditor` uses explicit object and text variants. Invalid JSON stays as text. `ParamObjectEditor` edits JSON objects with optional field metadata.
+- Use `@axc/uikit/json-editor/core` for JSON object parsing. Import `@axc/uikit/json-editor/styles.css` for styles.
+- Use `@axc/uikit/json-editor/codemirror` for the optional CodeMirror source-editor slot.
+
+## Documentation
+
+- [Component catalog](https://github.com/axclogo/AxcUIKit-TypeScript)
+- [Condition API and protocol guide](https://github.com/axclogo/AxcUIKit-TypeScript/blob/main/packages/condition/README.md)
+- [Condition UI adapters](https://github.com/axclogo/AxcUIKit-TypeScript/blob/main/packages/condition/docs/ui-adapters.md)
+- [JSON editor API and adapter guide](https://github.com/axclogo/AxcUIKit-TypeScript/blob/main/packages/json-editor/README.md)
+- [中文文档](https://github.com/axclogo/AxcUIKit-TypeScript/blob/main/README.zh-CN.md)

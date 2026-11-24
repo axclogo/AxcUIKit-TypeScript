@@ -1,12 +1,13 @@
 {
 	"$schema": "https://unpkg.com/knip@6/schema.json",
 	"entry": [
-		"src/index.ts",
-		"src/core/index.ts",
-		"demo/main.tsx",
+		"packages/*/src/index.ts",
+		"packages/*/src/core/index.ts",
+		"packages/json-editor/src/codemirror.tsx",
+		"packages/condition/demo/main.tsx",
 		"scripts/*.mjs",
-		"tests/**/*.test.{ts,tsx}",
+		"packages/*/tests/**/*.test.{ts,tsx}",
 		"tests/setup/*"
 	],
-	"project": ["src/**", "demo/**", "scripts/**", "tests/**"]
+	"project": ["packages/*/src/**", "packages/condition/demo/**", "scripts/**", "packages/*/tests/**", "tests/setup/**"]
 }

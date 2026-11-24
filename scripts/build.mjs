@@ -1,18 +1,27 @@
 import { build } from 'esbuild';
 import { rm } from 'node:fs/promises';
-// Only this package's own output directory is removed.
+
 await rm(new URL('../dist', import.meta.url), { recursive: true, force: true });
-await build({
-	entryPoints: { index: 'src/index.ts', core: 'src/core/index.ts', styles: 'src/styles.css' },
-	outdir: 'dist',
-	entryNames: '[name]',
-	chunkNames: 'chunks/[name]-[hash]',
-	bundle: true,
-	// Shared code (all of core) lives in one chunk instead of being copied into index.js and core.js.
-	splitting: true,
-	format: 'esm',
-	platform: 'neutral',
-	target: 'es2022',
-	external: ['react', 'react/jsx-runtime'],
-	logLevel: 'info',
-});
+
+for (const component of ['condition', 'json-editor']) {
+	const source = `packages/${component}/src`;
+	const entryPoints = {
+		index: `${source}/index.ts`,
+		core: `${source}/core/index.ts`,
+		styles: `${source}/styles.css`,
+	};
+	if (component === 'json-editor') entryPoints.codemirror = `${source}/codemirror.tsx`;
+
+	await build({
+		entryPoints,
+		outdir: `dist/${component}`,
+		chunkNames: 'chunks/[name]-[hash]',
+		bundle: true,
+		splitting: true,
+		format: 'esm',
+		platform: 'neutral',
+		target: 'es2022',
+		packages: 'external',
+		logLevel: 'info',
+	});
+}

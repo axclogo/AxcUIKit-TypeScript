@@ -1,32 +1,33 @@
 {
-	"name": "@axc/condition",
-	"version": "0.3.0",
+	"name": "@axc/uikit",
+	"version": "0.4.0",
 	"type": "module",
-	"description": "Lightweight React query builder / condition builder / filter builder: JSON rules, stable error codes, JSON Schema for LLM generation, pluggable UI controls, i18n. Zero dependencies besides React.",
+	"description": "Focused React and TypeScript editors: query, condition and filter builders, decision rules, and structured JSON object and parameter editing.",
 	"keywords": [
 		"react",
+		"typescript",
 		"query-builder",
 		"condition-builder",
 		"filter-builder",
 		"rule-builder",
-		"react-query-builder",
-		"json-rules",
-		"json-schema",
-		"llm",
-		"ai",
+		"decision-editor",
+		"json-editor",
+		"json-object-editor",
+		"json-tree-editor",
+		"parameter-editor",
 		"structured-output",
-		"headless",
+		"json-schema",
+		"codemirror",
 		"ui-adapter",
-		"ant-design",
-		"i18n",
-		"typescript",
-		"zero-dependency"
+		"i18n"
 	],
 	"license": "MIT",
 	"files": [
 		"dist",
 		"docs/*.md",
-		"docs/*.tsx",
+		"packages/*/README*.md",
+		"packages/*/api/*.api.md",
+		"packages/condition/docs/*.*",
 		"llms.txt",
 		"README.md",
 		"README.zh-CN.md",
@@ -37,39 +38,54 @@
 		"**/*.css"
 	],
 	"exports": {
-		".": {
-			"types": "./dist/types/index.d.ts",
-			"import": "./dist/index.js"
+		"./condition": {
+			"types": "./dist/types/condition/src/index.d.ts",
+			"default": "./dist/condition/index.js"
 		},
-		"./core": {
-			"types": "./dist/types/core/index.d.ts",
-			"import": "./dist/core.js"
+		"./condition/core": {
+			"types": "./dist/types/condition/src/core/index.d.ts",
+			"default": "./dist/condition/core.js"
 		},
-		"./styles.css": "./dist/styles.css",
-		"./package.json": "./package.json"
+		"./condition/styles.css": "./dist/condition/styles.css",
+		"./json-editor": {
+			"types": "./dist/types/json-editor/src/index.d.ts",
+			"default": "./dist/json-editor/index.js"
+		},
+		"./json-editor/core": {
+			"types": "./dist/types/json-editor/src/core/index.d.ts",
+			"default": "./dist/json-editor/core.js"
+		},
+		"./json-editor/styles.css": "./dist/json-editor/styles.css",
+		"./json-editor/codemirror": {
+			"types": "./dist/types/json-editor/src/codemirror.d.ts",
+			"default": "./dist/json-editor/codemirror.js"
+		}
 	},
 	"scripts": {
 		"build": "node scripts/build.mjs && tsc -p tsconfig.build.json",
 		"check": "tsc --noEmit && node scripts/check-boundaries.mjs && eslint . --max-warnings 0 && knip",
 		"test": "npm run test:react19 && npm run test:react18",
-		"test:react19": "node --import tsx --import ./tests/setup/dom.ts --test --experimental-test-coverage --test-coverage-include='src/**' --test-coverage-lines=98 --test-coverage-branches=95 --test-coverage-functions=93 'tests/**/*.test.ts' 'tests/**/*.test.tsx'",
+		"test:react19": "npm run test:condition && npm run test:json-editor",
 		"pretest:react18": "npm --prefix tests/react18 install --no-audit --no-fund --silent",
-		"test:react18": "node --import ./tests/setup/react18.mjs --import tsx --import ./tests/setup/dom.ts --test 'tests/**/*.test.ts' 'tests/**/*.test.tsx'",
+		"test:react18": "node --import ./tests/setup/react18.mjs --import tsx --import ./tests/setup/dom.ts --test 'packages/*/tests/**/*.test.{ts,tsx}'",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"dev": "node scripts/dev.mjs",
 		"prepare": "npm run build",
-		"api": "api-extractor run --local && api-extractor run --local -c api-extractor.core.json",
-		"api:check": "api-extractor run && api-extractor run -c api-extractor.core.json",
+		"api": "node scripts/check-api.mjs --update",
+		"api:check": "node scripts/check-api.mjs",
 		"size": "node scripts/check-size.mjs",
 		"verify": "npm run format:check && npm run check && npm test && npm run build && npm run api:check && npm run size",
-		"demo:build": "node scripts/dev.mjs --build"
+		"demo:build": "node scripts/dev.mjs --build",
+		"test:condition": "node --import tsx --import ./tests/setup/dom.ts --test --experimental-test-coverage --test-coverage-include='packages/condition/src/**' --test-coverage-lines=98 --test-coverage-branches=95 --test-coverage-functions=93 'packages/condition/tests/**/*.test.{ts,tsx}'",
+		"test:json-editor": "node --import tsx --import ./tests/setup/dom.ts --test 'packages/json-editor/tests/**/*.test.{ts,tsx}'"
 	},
 	"engines": {
 		"node": ">=22.18"
 	},
 	"peerDependencies": {
-		"react": "^18.3.0 || ^19.0.0"
+		"react": "^18.3.0 || ^19.0.0",
+		"react-dom": "^18.3.0 || ^19.0.0"
 	},
 	"devDependencies": {
 		"@happy-dom/global-registrator": "21.0.4",
@@ -93,10 +109,19 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@github.com/axclogo/AxcCondition.git"
+		"url": "git+ssh://git@github.com/axclogo/AxcUIKit-TypeScript.git"
 	},
-	"homepage": "https://github.com/axclogo/AxcCondition",
+	"homepage": "https://github.com/axclogo/AxcUIKit-TypeScript",
 	"bugs": {
-		"url": "https://github.com/axclogo/AxcCondition/issues"
+		"url": "https://github.com/axclogo/AxcUIKit-TypeScript/issues"
+	},
+	"dependencies": {
+		"@codemirror/lang-json": "6.0.2",
+		"@uiw/react-codemirror": "4.25.10"
+	},
+	"peerDependenciesMeta": {
+		"react-dom": {
+			"optional": true
+		}
 	}
 }

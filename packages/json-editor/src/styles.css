@@ -1,0 +1,104 @@
+.axc-json {
+	min-width: 0;
+	color: var(--axc-json-text, #20232b);
+}
+
+.axc-json :where(.axc-json-fields, .axc-json-children, .axc-json-value, .axc-json-key, .axc-json-extra) {
+	display: grid;
+	gap: 0.45rem;
+	min-width: 0;
+}
+
+.axc-json .axc-json-row {
+	min-width: 0;
+}
+
+.axc-json .axc-json-row > .axc-json-children {
+	margin-block-start: 0.45rem;
+	margin-inline-start: 0.65rem;
+	padding-inline-start: 0.75rem;
+	border-inline-start: 1px solid var(--axc-json-border, #c5cad2);
+}
+
+.axc-json .axc-json-row-controls {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 0.45rem;
+}
+
+.axc-json .axc-json-row-controls > :where(.axc-json-key, .axc-json-value) {
+	flex: 1 1 8rem;
+}
+
+.axc-json .axc-json-field .axc-json-field-name {
+	flex: 0 1 9rem;
+}
+
+.axc-json :where(.axc-json-field-name, .axc-json-index) {
+	padding-block: 0.35rem;
+	overflow-wrap: anywhere;
+}
+
+.axc-json :where(.axc-json-extra-label, .axc-json-description, .axc-json-index) {
+	color: var(--axc-json-muted, #535c6a);
+}
+
+.axc-json .axc-json-description {
+	font-size: 0.875rem;
+}
+
+.axc-json .axc-json-fields:not(:empty) + .axc-json-extra {
+	margin-block-start: 0.75rem;
+}
+
+.axc-json :where(.axc-json-error, .axc-json-required) {
+	color: var(--axc-json-error, #a32323);
+}
+
+.axc-json .axc-json-modes {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.45rem;
+	margin-block-end: 0.75rem;
+}
+
+.axc-json :where(.axc-json-native-input, .axc-json-native-select, .axc-json-native-button) {
+	box-sizing: border-box;
+	max-width: 100%;
+	min-height: 2rem;
+	padding: 0.3rem 0.5rem;
+	border: 1px solid var(--axc-json-border, #c5cad2);
+	border-radius: 0.3rem;
+	background: var(--axc-json-surface, #fff);
+	color: inherit;
+	font: inherit;
+}
+
+.axc-json .axc-json-native-input {
+	width: 100%;
+}
+
+.axc-json .axc-json-native-input[aria-invalid='true'] {
+	border-color: var(--axc-json-error, #a32323);
+}
+
+.axc-json .axc-json-native-source {
+	display: block;
+	resize: vertical;
+	font-family: monospace;
+}
+
+.axc-json .axc-json-native-button {
+	cursor: pointer;
+	justify-self: start;
+}
+
+.axc-json .axc-json-native-button[aria-pressed='true'] {
+	background: var(--axc-json-highlight, #e8edf7);
+}
+
+.axc-json .axc-json-native-button:disabled {
+	cursor: default;
+	opacity: 0.65;
+}
