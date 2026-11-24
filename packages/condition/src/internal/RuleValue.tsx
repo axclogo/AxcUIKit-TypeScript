@@ -98,13 +98,13 @@ export function RuleValue({ rule, field, operator, disabled, link, onChange }: R
 		case 'none':
 			return null;
 		case 'range': {
-			const values = Array.isArray(rule.value) ? rule.value : ['', ''];
+			const values = rule.value as unknown[];
 			return (
 				<div className="axc-range">
-					{[0, 1].map((index) => (
+					{values.map((item, index) => (
 						<span key={index}>
 							{scalar(
-								values[index],
+								item,
 								(value) => onChange(values.map((item, i) => (i === index ? value : item))),
 								`${label} ${index ? locale.ui.rangeTo : locale.ui.rangeFrom}`,
 							)}
@@ -114,7 +114,7 @@ export function RuleValue({ rule, field, operator, disabled, link, onChange }: R
 			);
 		}
 		case 'list': {
-			const values = Array.isArray(rule.value) ? rule.value.map(String) : [];
+			const values = (rule.value as (string | number)[]).map(String);
 			return field.values !== undefined ? (
 				<MultiSelect
 					label={label}

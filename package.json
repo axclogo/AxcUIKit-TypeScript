@@ -2,7 +2,7 @@
 	"name": "@axc/uikit",
 	"version": "0.4.0",
 	"type": "module",
-	"description": "Focused React and TypeScript editors: query, condition and filter builders, decision rules, and structured JSON object and parameter editing.",
+	"description": "Focused React & TypeScript components: condition/query builders and JSON editors, with replaceable controls, scoped styles and i18n. A component collection, not a complete UI framework.",
 	"keywords": [
 		"react",
 		"typescript",

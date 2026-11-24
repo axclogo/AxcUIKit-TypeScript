@@ -14,6 +14,7 @@ AxcUIKit-TypeScript is one repository of focused React components, not a complet
 ## Shared API principles
 
 - Controlled props contain the authoritative application value. Callbacks emit updated values. Presentation state has its own API where a parent needs to control it. JSON Editor mode selects a view and is distinct from its object-or-text content.
+- Typed host props and slot callbacks are trusted. Slots must honor disabled/read-only props and emit their declared values; the editor does not defend against manually invoked callbacks or repair invalid adapter results. Explicit parsers validate unknown data at the consuming boundary.
 - Parsing checks the public data contract without coercion. An empty or invalid draft can remain visible for editing. Field defaults guide presentation and explicit creation. They do not silently change saved data.
 - Core issues have stable codes and paths. UI layers translate them with the active locale. Hosts can branch on issue codes and supply localized messages.
 - Control slots are stable React components whose callbacks receive strings, booleans, selections, or action signals. Slots forward the public accessibility and interaction props to their controls. Where exposed, `readOnly` preserves inspection and copying while preventing edits. `disabled` makes controls and actions inert.

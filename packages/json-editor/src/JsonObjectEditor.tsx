@@ -17,6 +17,7 @@ export interface JsonObjectEditorProps extends Omit<ParamObjectEditorProps, 'val
 }
 
 function tryParse(content: JsonContent) {
+	if (content.kind === 'object') return { value: content.value };
 	try {
 		return { value: parseJsonContent(content) };
 	} catch (error) {
@@ -49,12 +50,11 @@ export function JsonObjectEditor({
 	const showing = parsed.error ? 'json' : (mode ?? localMode);
 	if (mode === undefined && localMode === 'params' && parsed.error) setLocalMode('json');
 
-	const source = content.kind === 'text' ? content.text : parsed.value ? JSON.stringify(parsed.value, null, 2) : '';
+	const source = content.kind === 'text' ? content.text : JSON.stringify(content.value, null, 2);
 	const editable = !paramProps.disabled && !paramProps.readOnly;
 	const changeMode = (next: JsonObjectEditorMode) => {
-		if (next === showing || paramProps.disabled || !parsed.value) return;
+		if (next === showing) return;
 		if (next === 'json' && editable) {
-			if (!paramsValid) return;
 			const text = JSON.stringify(parsed.value, null, 2);
 			if (content.kind !== 'text' || text !== content.text) onChange({ kind: 'text', text });
 		}
@@ -101,7 +101,6 @@ export function JsonObjectEditor({
 						readOnly={paramProps.readOnly}
 						invalid={Boolean(parsed.error)}
 						onChange={(text) => {
-							if (!editable) return;
 							const next: JsonContent = { kind: 'text', text };
 							onChange(next);
 							if (onValidObjectChange) {

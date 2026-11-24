@@ -169,12 +169,17 @@ export function validObject(nodes: Node[]) {
 
 function markOrigin(node: Node, key: string, value: JsonValue): Node {
 	const origin = { key, value };
-	if (node.draft.type === 'array' && Array.isArray(value)) {
-		const children = node.draft.children.map((child, index) => markOrigin(child, String(index), value[index]));
+	if (node.draft.type === 'array') {
+		const values = value as JsonValue[];
+		const children = node.draft.children.map((child, index) => markOrigin(child, String(index), values[index]));
 		return { ...node, origin, draft: { ...node.draft, children } };
 	}
-	if (node.draft.type === 'object' && value !== null && typeof value === 'object' && !Array.isArray(value)) {
-		return { ...node, origin, draft: { ...node.draft, children: markObject(node.draft.children, value) } };
+	if (node.draft.type === 'object') {
+		return {
+			...node,
+			origin,
+			draft: { ...node.draft, children: markObject(node.draft.children, value as JsonObject) },
+		};
 	}
 	return { ...node, origin };
 }

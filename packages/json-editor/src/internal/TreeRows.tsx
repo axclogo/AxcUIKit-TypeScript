@@ -26,7 +26,6 @@ export function TreeRow({ node, access, onReplace, duplicate, index, field, fiel
 	} = useJsonEditorContext();
 	const issueId = useId();
 	const descriptionId = useId();
-	const editable = !access.readOnly && !access.disabled;
 	const label = field?.label ?? field?.name ?? (index === undefined ? node.key || locale.value : String(index + 1));
 	const missingKey = node.key === undefined && node.origin !== undefined && index === undefined;
 	const keyIssue = duplicate ? locale.duplicateKey : missingKey ? locale.missingKey : undefined;
@@ -36,7 +35,7 @@ export function TreeRow({ node, access, onReplace, duplicate, index, field, fiel
 	const canToggle = present && container && !hasOptions(field, draft, present);
 	const canChooseType = !field || (present && draft.type !== declaredType(field));
 	const replace = (patch: Partial<Node>) => {
-		if (editable) onReplace({ ...node, ...patch });
+		onReplace({ ...node, ...patch });
 	};
 
 	return (
@@ -77,9 +76,8 @@ export function TreeRow({ node, access, onReplace, duplicate, index, field, fiel
 						value={draft.type}
 						options={types.map((type) => ({ value: type, label: locale.types[type] }))}
 						onChange={(type) => {
-							const nextType = types.find((item) => item === type);
-							if (nextType && nextType !== draft.type)
-								replace({ draft: toDraft(initialValue(nextType)), expanded: true });
+							const nextType = type as JsonValueType;
+							if (nextType !== draft.type) replace({ draft: toDraft(initialValue(nextType)), expanded: true });
 						}}
 					/>
 				)}
@@ -92,7 +90,7 @@ export function TreeRow({ node, access, onReplace, duplicate, index, field, fiel
 					access={access}
 					onDraft={(next) => replace({ draft: next })}
 					onRemove={() => {
-						if (editable && field) onReplace(undefined);
+						onReplace(undefined);
 					}}
 				/>
 				{canToggle && (
@@ -101,7 +99,7 @@ export function TreeRow({ node, access, onReplace, duplicate, index, field, fiel
 						expanded={node.expanded}
 						disabled={access.disabled}
 						onClick={() => {
-							if (!access.disabled) onReplace({ ...node, expanded: !node.expanded }, true);
+							onReplace({ ...node, expanded: !node.expanded }, true);
 						}}
 					/>
 				)}
@@ -111,7 +109,7 @@ export function TreeRow({ node, access, onReplace, duplicate, index, field, fiel
 							label={locale.remove + ' · ' + label}
 							disabled={access.disabled}
 							onClick={() => {
-								if (editable) onReplace(undefined);
+								onReplace(undefined);
 							}}
 						/>
 					) : (
@@ -185,7 +183,7 @@ export function TreeRows({
 					label={locale.add + ' · ' + scope}
 					disabled={access.disabled}
 					onClick={() => {
-						if (!access.disabled) onChange([...nodes, newNode(array ? String(nodes.length) : undefined)]);
+						onChange([...nodes, newNode(array ? String(nodes.length) : undefined)]);
 					}}
 				/>
 			)}

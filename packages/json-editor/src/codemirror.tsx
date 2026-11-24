@@ -43,9 +43,7 @@ export function CodeMirrorSourceEditor({
 	return (
 		<CodeMirror
 			value={value}
-			onChange={(text) => {
-				if (!readOnly && !disabled) onChange(text);
-			}}
+			onChange={onChange}
 			height={typeof height === 'number' ? height + 'px' : height}
 			placeholder={placeholder}
 			extensions={extensions}

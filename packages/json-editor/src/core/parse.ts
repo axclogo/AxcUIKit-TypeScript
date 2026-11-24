@@ -22,26 +22,10 @@ function inspect(value: unknown, path: JsonPath, ancestors: Set<object>, issues:
 	}
 
 	ancestors.add(value);
-	const descriptors = Object.getOwnPropertyDescriptors(value);
-	const keys: (string | symbol)[] = Reflect.ownKeys(descriptors);
 	if (Array.isArray(value)) {
-		const length = value.length;
-		for (let index = 0; index < length; index++) {
-			const descriptor = descriptors[index];
-			if (descriptor?.enumerable && 'value' in descriptor)
-				inspect(descriptor.value, [...path, index], ancestors, issues);
-			else issues.push({ code: 'invalid_value', path: [...path, index], params: {} });
-		}
-		if (keys.length > length + 1) issues.push({ code: 'invalid_value', path, params: {} });
+		for (const [index, item] of value.entries()) inspect(item, [...path, index], ancestors, issues);
 	} else {
-		for (const key of keys) {
-			const descriptor = Object.getOwnPropertyDescriptor(value, key);
-			if (typeof key === 'string' && descriptor?.enumerable && 'value' in descriptor) {
-				inspect(descriptor.value, [...path, key], ancestors, issues);
-			} else {
-				issues.push({ code: 'invalid_value', path: [...path, String(key)], params: {} });
-			}
-		}
+		for (const [key, item] of Object.entries(value)) inspect(item, [...path, key], ancestors, issues);
 	}
 	ancestors.delete(value);
 }
@@ -58,7 +42,6 @@ export function parseJsonObject(value: unknown): JsonObject {
 /** Parses explicit object or text content. Throws JsonValidationError for malformed JSON, non-object roots, or values outside finite JSON data. */
 export function parseJsonContent(content: JsonContent): JsonObject {
 	if (content.kind === 'object') return parseJsonObject(content.value);
-	if (content.kind !== 'text' || typeof content.text !== 'string') throw new TypeError('Invalid JsonContent');
 
 	let value: unknown;
 	try {

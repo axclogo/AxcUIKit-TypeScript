@@ -39,11 +39,7 @@ test('object parsing reports values JSON.stringify would silently coerce or omit
 	const candidates = {
 		nested: [NaN, Infinity, undefined, new Date(), BigInt(10)],
 		cycle,
-		get getter() {
-			throw new Error('must not invoke the accessor');
-		},
 		sparse: Array(1),
-		[Symbol('name')]: 0,
 	};
 	const paths = [
 		['nested', 0],
@@ -52,9 +48,7 @@ test('object parsing reports values JSON.stringify would silently coerce or omit
 		['nested', 3],
 		['nested', 4],
 		['cycle', 'self'],
-		['getter'],
 		['sparse', 0],
-		['Symbol(name)'],
 	];
 	issues(
 		() => parseJsonObject(candidates),

@@ -15,6 +15,7 @@ All checks must pass. CI runs the same command, the release gate, and an import 
 - Keep parsing and validation in a React-free core. Reject invalid data with structured issues. Preserve valid values as provided and keep editor-only state out of emitted data.
 - Keep controls replaceable with typed, value-oriented props. Use native controls and locale text by default. Every native button has `type="button"`. Scope styles to the component.
 - Keep component source within its own module. React and React DOM are the shared peers. CodeMirror runtime dependencies are used by the explicit JSON Editor adapter subpath.
+- Trust typed host props and control callbacks. Do not recheck disabled/read-only state inside callbacks, guard against manually invoked hooks or handlers, coerce wrong types, guess delimiters, or substitute empty/default data for contract violations. Adapters own control interaction semantics; explicit parsers own validation of unknown input. Test user interactions, not forced calls that violate the control contract.
 - Add abstractions, dependencies, and public options for concrete use cases. Write English JSDoc for public functions covering their behavior and failure conditions.
 - Run strict TypeScript, ESLint, knip, and Prettier. Production code has no `any`, `@ts-ignore`, double casts, `console`, or floating promises. Inline ESLint suppression is disabled.
 - Test real behavior on React 18 and 19. Verification prints its results. Maintained API references document interfaces.

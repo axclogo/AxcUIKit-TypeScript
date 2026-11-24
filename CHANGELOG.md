@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Remove duplicate event guards, invalid selection recovery and exotic property-descriptor checks from JSON Editor. Trust typed object content without validating it again during rendering. Remove Condition list/range substitutions for non-array host values. Document the host and slot responsibility boundary.
+
 ## 0.4.0
 
 - Distribute Condition and JSON Editor together as `@axc/uikit` from the AxcUIKit-TypeScript repository.

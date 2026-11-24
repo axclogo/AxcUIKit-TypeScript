@@ -72,14 +72,7 @@ function OptionsEditor({
 				options={choices}
 				multiple
 				value={values}
-				onChange={(next) =>
-					onChange(
-						next.flatMap((id) => {
-							const option = options[Number(id)];
-							return option ? [option.value] : [];
-						}),
-					)
-				}
+				onChange={(next) => onChange(next.map((id) => options[Number(id)].value))}
 			/>
 		);
 	}
@@ -91,7 +84,7 @@ function OptionsEditor({
 			placeholder={fieldPlaceholder(field) ?? locale.choose}
 			options={choices}
 			value={values[0]}
-			onChange={(id) => onChange(id === undefined ? undefined : options[Number(id)]?.value)}
+			onChange={(id) => onChange(id === undefined ? undefined : options[Number(id)].value)}
 		/>
 	);
 }
