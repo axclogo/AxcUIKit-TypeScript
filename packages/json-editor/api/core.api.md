@@ -4,21 +4,41 @@
 
 ```ts
 
+// @public
+export class JsonConfigurationError extends TypeError {
+    constructor(issues: readonly JsonIssue[]);
+    // (undocumented)
+    readonly issues: readonly JsonIssue[];
+}
+
 // @public (undocumented)
 export type JsonContent = {
-    kind: 'object';
-    value: JsonObject;
+    kind: 'value';
+    value: JsonValue;
 } | {
     kind: 'text';
     text: string;
 };
 
 // @public (undocumented)
-export interface JsonField {
+export interface JsonField extends JsonFieldDefinition {
+    // (undocumented)
+    name: string;
+}
+
+// @public
+export interface JsonFieldDefinition {
+    additionalProperties?: boolean | JsonFieldDefinition;
     // (undocumented)
     default?: JsonValue;
     // (undocumented)
     description?: string;
+    // (undocumented)
+    fields?: readonly JsonField[];
+    // (undocumented)
+    format?: 'date' | 'date-time';
+    // (undocumented)
+    items?: JsonFieldDefinition;
     // (undocumented)
     label?: string;
     // (undocumented)
@@ -26,12 +46,10 @@ export interface JsonField {
     // (undocumented)
     multiple?: boolean;
     // (undocumented)
-    name: string;
-    // (undocumented)
     options?: readonly JsonFieldOption[];
     required?: boolean;
     // (undocumented)
-    type?: JsonValueType;
+    type?: JsonFieldType;
 }
 
 // @public (undocumented)
@@ -39,8 +57,11 @@ export interface JsonFieldOption {
     // (undocumented)
     label?: string;
     // (undocumented)
-    value: string | number | boolean;
+    value: JsonValue;
 }
+
+// @public (undocumented)
+export type JsonFieldType = JsonValueType | 'file';
 
 // @public (undocumented)
 export interface JsonIssue {
@@ -53,7 +74,7 @@ export interface JsonIssue {
 }
 
 // @public (undocumented)
-export type JsonIssueCode = 'expected_object' | 'invalid_json' | 'invalid_value';
+export type JsonIssueCode = 'invalid_json' | 'invalid_value' | 'invalid_schema' | 'unsupported_schema_keyword' | 'unsupported_schema_value' | 'duplicate_field' | 'missing_file_slot';
 
 // @public (undocumented)
 export type JsonObject = {
@@ -62,6 +83,9 @@ export type JsonObject = {
 
 // @public (undocumented)
 export type JsonPath = readonly (string | number)[];
+
+// @public
+export function jsonSchemaToField(schema: unknown): JsonFieldDefinition;
 
 // @public
 export class JsonValidationError extends Error {
@@ -77,10 +101,10 @@ export type JsonValue = null | boolean | number | string | JsonObject | JsonValu
 export type JsonValueType = 'string' | 'number' | 'boolean' | 'null' | 'object' | 'array';
 
 // @public
-export function parseJsonContent(content: JsonContent): JsonObject;
+export function parseJsonContent(content: JsonContent): JsonValue;
 
 // @public
-export function parseJsonObject(value: unknown): JsonObject;
+export function parseJsonValue(value: unknown): JsonValue;
 
 // (No @packageDocumentation comment for this package)
 

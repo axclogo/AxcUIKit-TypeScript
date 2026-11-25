@@ -1,6 +1,8 @@
 import { useId, useMemo, useState } from 'react';
-import { JsonValidationError, parseJsonContent, type JsonContent, type JsonObject } from './core/index.js';
-import { ParamObjectEditorView, type ParamObjectEditorProps } from './ParamObjectEditor.js';
+import { JsonValidationError, parseJsonContent, type JsonContent, type JsonValue } from './core/index.js';
+import type { ParamObjectEditorProps } from './ParamObjectEditor.js';
+import { ParamEditor } from './internal/ParamEditor.js';
+import { checkFields } from './core/fields.js';
 import { useJsonEditorContext } from './ui/provider.js';
 
 export type JsonObjectEditorMode = 'params' | 'json';
@@ -8,7 +10,7 @@ export type JsonObjectEditorMode = 'params' | 'json';
 export interface JsonObjectEditorProps extends Omit<ParamObjectEditorProps, 'value' | 'onChange'> {
 	content: JsonContent;
 	onChange: (content: JsonContent) => void;
-	onValidObjectChange?: (value: JsonObject, content: JsonContent) => void;
+	onValidValueChange?: (value: JsonValue, content: JsonContent) => void;
 	mode?: JsonObjectEditorMode;
 	defaultMode?: JsonObjectEditorMode;
 	onModeChange?: (mode: JsonObjectEditorMode) => void;
@@ -17,7 +19,7 @@ export interface JsonObjectEditorProps extends Omit<ParamObjectEditorProps, 'val
 }
 
 function tryParse(content: JsonContent) {
-	if (content.kind === 'object') return { value: content.value };
+	if (content.kind === 'value') return { value: content.value };
 	try {
 		return { value: parseJsonContent(content) };
 	} catch (error) {
@@ -26,23 +28,27 @@ function tryParse(content: JsonContent) {
 	}
 }
 
-/** Edits a JSON object as a parameter tree or source text, retaining malformed source as text. */
+/** Edits any JSON value as a tree or source, retaining malformed text. Invalid field/slot configuration throws JsonConfigurationError. */
 export function JsonObjectEditor({
 	content,
 	onChange,
-	onValidObjectChange,
+	onValidValueChange,
 	mode,
 	defaultMode = 'params',
 	onModeChange,
 	jsonHeight = 220,
 	jsonPlaceholder = '{}',
 	className,
+	fields,
+	rootField,
 	...paramProps
 }: JsonObjectEditorProps) {
 	const {
-		slots: { SourceEditor, Button },
+		slots: { SourceEditor, Button, FileInput },
 		locale,
 	} = useJsonEditorContext();
+	const field = fields ? { ...rootField, fields } : rootField;
+	checkFields(field, FileInput !== undefined);
 	const issuesId = useId();
 	const [paramsValid, setParamsValid] = useState(true);
 	const parsed = useMemo(() => tryParse(content), [content]);
@@ -78,15 +84,16 @@ export function JsonObjectEditor({
 					onClick={() => changeMode('json')}
 				/>
 			</div>
-			{showing === 'params' && parsed.value ? (
-				<ParamObjectEditorView
+			{showing === 'params' && parsed.value !== undefined ? (
+				<ParamEditor
 					onDraftValidityChange={setParamsValid}
 					{...paramProps}
+					rootField={field}
 					value={parsed.value}
 					onChange={(value) => {
-						const next: JsonContent = { kind: 'object', value };
+						const next: JsonContent = { kind: 'value', value };
 						onChange(next);
-						onValidObjectChange?.(value, next);
+						onValidValueChange?.(value, next);
 					}}
 				/>
 			) : (
@@ -103,9 +110,9 @@ export function JsonObjectEditor({
 						onChange={(text) => {
 							const next: JsonContent = { kind: 'text', text };
 							onChange(next);
-							if (onValidObjectChange) {
+							if (onValidValueChange) {
 								const value = tryParse(next).value;
-								if (value) onValidObjectChange(value, next);
+								if (value !== undefined) onValidValueChange(value, next);
 							}
 						}}
 					/>

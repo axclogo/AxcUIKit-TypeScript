@@ -1,12 +1,5 @@
-import type { JsonContent, JsonIssue, JsonObject, JsonPath } from './types.js';
-
-/** Contains the machine-readable issues found while parsing a JSON object. */
-export class JsonValidationError extends Error {
-	constructor(readonly issues: readonly JsonIssue[]) {
-		super(issues[0]?.code);
-		this.name = 'JsonValidationError';
-	}
-}
+import { JsonValidationError } from './errors.js';
+import type { JsonContent, JsonIssue, JsonValue, JsonPath } from './types.js';
 
 function isPlainObject(value: unknown): value is object {
 	if (value === null || typeof value !== 'object') return false;
@@ -30,24 +23,24 @@ function inspect(value: unknown, path: JsonPath, ancestors: Set<object>, issues:
 	ancestors.delete(value);
 }
 
-/** Returns the input JSON object after checking all descendants. Throws JsonValidationError for invalid data. */
-export function parseJsonObject(value: unknown): JsonObject {
-	if (!isPlainObject(value)) throw new JsonValidationError([{ code: 'expected_object', path: [], params: {} }]);
+/** Returns the input JSON value after checking all descendants. Throws JsonValidationError for invalid data. */
+export function parseJsonValue(value: unknown): JsonValue {
 	const issues: JsonIssue[] = [];
 	inspect(value, [], new Set(), issues);
 	if (issues.length > 0) throw new JsonValidationError(issues);
-	return value as JsonObject;
+	return value as JsonValue;
 }
 
-/** Parses explicit object or text content. Throws JsonValidationError for malformed JSON, non-object roots, or values outside finite JSON data. */
-export function parseJsonContent(content: JsonContent): JsonObject {
-	if (content.kind === 'object') return parseJsonObject(content.value);
+/** Parses explicit value or text content. Throws JsonValidationError for malformed JSON or values outside finite JSON data. */
+export function parseJsonContent(content: JsonContent): JsonValue {
+	if (content.kind === 'value') return parseJsonValue(content.value);
 
 	let value: unknown;
 	try {
 		value = JSON.parse(content.text);
-	} catch {
+	} catch (error) {
+		if (!(error instanceof SyntaxError)) throw error;
 		throw new JsonValidationError([{ code: 'invalid_json', path: [], params: {} }]);
 	}
-	return parseJsonObject(value);
+	return parseJsonValue(value);
 }

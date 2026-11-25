@@ -1,7 +1,7 @@
 import { useId } from 'react';
-import type { JsonField, JsonValue, JsonValueType } from '../core/index.js';
+import type { JsonFieldDefinition, JsonFieldOption, JsonPath, JsonValue } from '../core/index.js';
 import { useJsonEditorContext } from '../ui/provider.js';
-import { initialValue, isValidNumber, toDraft, type Node } from './tree.js';
+import { equal, isValidNumber, readDraft, toDraft, validDraft, type Node } from './tree.js';
 
 export interface Editability {
 	readOnly?: boolean;
@@ -14,16 +14,11 @@ function isPrimitive(value: JsonValue | undefined): value is Primitive {
 	return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
 }
 
-function fieldPlaceholder(field: JsonField | undefined) {
+function fieldPlaceholder(field: JsonFieldDefinition | undefined) {
 	return isPrimitive(field?.default) ? String(field.default) : undefined;
 }
 
-function selectedValue(draft: Node['draft']) {
-	if (draft.type === 'string') return draft.text;
-	if (draft.type === 'boolean') return draft.value;
-	if (draft.type === 'number' && isValidNumber(draft.text)) return Number(draft.text);
-	return undefined;
-}
+type OptionsField = JsonFieldDefinition & { options: readonly JsonFieldOption[] };
 
 function OptionsEditor({
 	field,
@@ -33,14 +28,16 @@ function OptionsEditor({
 	describedBy,
 	access,
 	onChange,
+	removable,
 }: {
-	field: JsonField;
+	field: OptionsField;
 	draft: Node['draft'];
 	present: boolean;
 	label: string;
 	describedBy?: string;
 	access: Editability;
 	onChange: (value: JsonValue | undefined) => void;
+	removable: boolean;
 }) {
 	const {
 		slots: { Select },
@@ -48,21 +45,18 @@ function OptionsEditor({
 	} = useJsonEditorContext();
 	const selected = !present
 		? []
-		: draft.type === 'array'
-			? draft.children.map((child) => selectedValue(child.draft))
-			: [selectedValue(draft)];
-	const options = [...(field.options ?? [])];
+		: draft.type === 'array' && field.multiple
+			? draft.children.map((child) => readDraft(child.draft))
+			: [readDraft(draft)];
+	const options = [...field.options];
 	for (const value of selected) {
-		if (value !== undefined && !options.some((option) => Object.is(option.value, value))) options.push({ value });
+		if (!options.some((option) => equal(option.value, value))) options.push({ value });
 	}
 	const choices = options.map((option, index) => ({
-		label: option.label ?? String(option.value),
+		label: option.label ?? (typeof option.value === 'string' ? option.value : JSON.stringify(option.value)),
 		value: String(index),
 	}));
-	const values = selected.flatMap((value) => {
-		const index = options.findIndex((option) => Object.is(option.value, value));
-		return index < 0 ? [] : [String(index)];
-	});
+	const values = selected.map((value) => String(options.findIndex((option) => equal(option.value, value))));
 	if (field.multiple) {
 		return (
 			<Select
@@ -81,7 +75,7 @@ function OptionsEditor({
 			{...access}
 			label={label}
 			describedBy={describedBy}
-			placeholder={fieldPlaceholder(field) ?? locale.choose}
+			placeholder={removable ? (fieldPlaceholder(field) ?? locale.choose) : undefined}
 			options={choices}
 			value={values[0]}
 			onChange={(id) => onChange(id === undefined ? undefined : options[Number(id)].value)}
@@ -89,12 +83,15 @@ function OptionsEditor({
 	);
 }
 
-export function hasOptions(field: JsonField | undefined, draft: Node['draft'], present: boolean): boolean {
+export function hasOptions(
+	field: JsonFieldDefinition | undefined,
+	draft: Node['draft'],
+	present: boolean,
+): field is OptionsField {
 	if (!field?.options) return false;
 	if (!present) return true;
-	if (field.multiple)
-		return draft.type === 'array' && draft.children.every((child) => selectedValue(child.draft) !== undefined);
-	return selectedValue(draft) !== undefined;
+	if (field.multiple) return draft.type === 'array' && draft.children.every((child) => validDraft(child.draft));
+	return validDraft(draft);
 }
 
 export function ValueEditor({
@@ -106,22 +103,41 @@ export function ValueEditor({
 	access,
 	onDraft,
 	onRemove,
+	path,
 }: {
 	node: Node;
-	field?: JsonField;
+	field?: JsonFieldDefinition;
 	present: boolean;
 	label: string;
 	describedBy?: string;
 	access: Editability;
 	onDraft: (draft: Node['draft']) => void;
-	onRemove: () => void;
+	onRemove?: () => void;
+	path: JsonPath | undefined;
 }) {
 	const {
-		slots: { Input, Select },
+		slots: { Input, Select, FileInput },
 		locale,
 	} = useJsonEditorContext();
 	const { draft } = node;
 	const issueId = useId();
+	if (field?.type === 'file' && draft.type === 'string') {
+		// Public editor entries have already checked that every file field has this slot.
+		const FileControl = FileInput!;
+		return (
+			<div className="axc-json-value">
+				{access.readOnly && present && <output>{draft.text}</output>}
+				<FileControl
+					{...access}
+					label={label}
+					describedBy={describedBy}
+					path={path}
+					value={present ? draft.text : undefined}
+					onChange={(text) => onDraft({ type: 'string', text })}
+				/>
+			</div>
+		);
+	}
 	if (field && hasOptions(field, draft, present)) {
 		return (
 			<OptionsEditor
@@ -131,7 +147,8 @@ export function ValueEditor({
 				describedBy={describedBy}
 				access={access}
 				present={present}
-				onChange={(value) => (value === undefined ? onRemove() : onDraft(toDraft(value)))}
+				removable={onRemove !== undefined}
+				onChange={(value) => (value === undefined ? onRemove!() : onDraft(toDraft(value)))}
 			/>
 		);
 	}
@@ -146,8 +163,10 @@ export function ValueEditor({
 					{ value: 'true', label: locale.true },
 					{ value: 'false', label: locale.false },
 				]}
-				placeholder={field ? (fieldPlaceholder(field) ?? locale.choose) : undefined}
-				onChange={(value) => (value === undefined ? onRemove() : onDraft({ type: 'boolean', value: value === 'true' }))}
+				placeholder={field && onRemove ? (fieldPlaceholder(field) ?? locale.choose) : undefined}
+				onChange={(value) =>
+					value === undefined ? onRemove!() : onDraft({ type: 'boolean', value: value === 'true' })
+				}
 			/>
 		);
 	}
@@ -164,6 +183,7 @@ export function ValueEditor({
 					value={present ? draft.text : ''}
 					placeholder={fieldPlaceholder(field)}
 					onChange={(text) => onDraft({ type, text })}
+					format={type === 'string' ? field?.format : undefined}
 					multiline={type === 'string' && field?.multiline}
 					inputMode={type === 'number' ? 'decimal' : undefined}
 					invalid={invalid}
@@ -178,12 +198,4 @@ export function ValueEditor({
 	}
 	if (draft.type === 'null' && present) return <span>{locale.types.null}</span>;
 	return null;
-}
-
-export function declaredType(field: JsonField): JsonValueType {
-	return field.multiple ? 'array' : (field.type ?? 'string');
-}
-
-export function newFieldValue(field: JsonField) {
-	return field.default === undefined ? initialValue(declaredType(field)) : field.default;
 }

@@ -47,7 +47,7 @@ export const native: JsonEditorSlots = {
 					}
 				}}
 			>
-				{placeholder && !multiple && <option value="">{placeholder}</option>}
+				{placeholder !== undefined && !multiple && <option value="">{placeholder}</option>}
 				{options.map((option) => (
 					<option key={option.value} value={option.value}>
 						{option.label}

@@ -50,9 +50,9 @@ jobs:
           const json = await import('@axc/uikit/json-editor');
           const jsonCore = await import('@axc/uikit/json-editor/core');
           assert.equal(condition.parseCondition, conditionCore.parseCondition);
-          assert.equal(json.parseJsonObject, jsonCore.parseJsonObject);
+          assert.equal(json.parseJsonValue, jsonCore.parseJsonValue);
           assert.equal(typeof json.JsonObjectEditor, 'function');
-          assert.deepEqual(jsonCore.parseJsonObject({ active: false }), { active: false });
+          assert.deepEqual(jsonCore.parseJsonValue({ active: false }), { active: false });
           guard.deregister();
 
           const codeMirror = require('@axc/uikit/json-editor/codemirror');

@@ -1,4 +1,4 @@
-import type { JsonObject, JsonValue, JsonValueType } from '../core/index.js';
+import type { JsonFieldDefinition, JsonObject, JsonValue, JsonValueType } from '../core/index.js';
 
 type DraftValue =
 	| { type: 'array' | 'object'; children: Node[] }
@@ -63,7 +63,7 @@ function fromValue(key: string, value: JsonValue): Node {
 	return { ...newNode(key, value), origin: { key, value } };
 }
 
-function reconcileNode(old: Node | undefined, key: string, value: JsonValue): Node {
+export function reconcileNode(old: Node | undefined, key: string, value: JsonValue): Node {
 	if (!old) return fromValue(key, value);
 	const origin = { key, value };
 	if (old.origin && equal(old.origin.value, value)) return { ...old, origin };
@@ -107,7 +107,7 @@ function reconcileArray(previous: Node[], value: JsonValue[]) {
 	});
 }
 
-export function reconcileObject(previous: Node[], value: JsonObject): Node[] {
+function reconcileObject(previous: Node[], value: JsonObject): Node[] {
 	const byKey = new Map(previous.map((node) => [node.origin?.key, node]));
 	return [
 		...Object.entries(value).map(([key, item]) => reconcileNode(byKey.get(key), key, item)),
@@ -123,13 +123,12 @@ export function isValidNumber(text: string) {
 	return numericPattern.test(text) && Number.isFinite(Number(text));
 }
 
-function readNode(node: Node): JsonValue {
-	const { draft } = node;
+export function readDraft(draft: Node['draft']): JsonValue {
 	switch (draft.type) {
 		case 'object':
 			return readObject(draft.children);
 		case 'array':
-			return draft.children.map(readNode);
+			return draft.children.map((child) => readDraft(child.draft));
 		case 'number':
 			return Number(draft.text);
 		case 'string':
@@ -142,7 +141,9 @@ function readNode(node: Node): JsonValue {
 }
 
 function readObject(nodes: Node[]): JsonObject {
-	return Object.fromEntries(nodes.flatMap((node) => (node.key === undefined ? [] : [[node.key, readNode(node)]])));
+	return Object.fromEntries(
+		nodes.flatMap((node) => (node.key === undefined ? [] : [[node.key, readDraft(node.draft)]])),
+	);
 }
 
 export function duplicates(nodes: Node[]) {
@@ -156,15 +157,16 @@ export function duplicates(nodes: Node[]) {
 	return repeated;
 }
 
-function validNode(node: Node): boolean {
-	const { draft } = node;
+export function validDraft(draft: Node['draft']): boolean {
 	if (draft.type === 'object') return validObject(draft.children);
-	if (draft.type === 'array') return draft.children.every(validNode);
+	if (draft.type === 'array') return draft.children.every((child) => validDraft(child.draft));
 	return draft.type !== 'number' || isValidNumber(draft.text);
 }
 
-export function validObject(nodes: Node[]) {
-	return !duplicates(nodes).size && nodes.every((node) => (node.key === undefined ? !node.origin : validNode(node)));
+function validObject(nodes: Node[]) {
+	return (
+		!duplicates(nodes).size && nodes.every((node) => (node.key === undefined ? !node.origin : validDraft(node.draft)))
+	);
 }
 
 function markOrigin(node: Node, key: string, value: JsonValue): Node {
@@ -188,8 +190,20 @@ function markObject(nodes: Node[], value: JsonObject) {
 	return nodes.map((node) => (node.key === undefined ? node : markOrigin(node, node.key, value[node.key])));
 }
 
-export function commit(nodes: Node[]) {
-	if (!validObject(nodes)) return undefined;
-	const value = readObject(nodes);
-	return { value, nodes: markObject(nodes, value) };
+export function commit(node: Node) {
+	if (!validDraft(node.draft)) return undefined;
+	const value = readDraft(node.draft);
+	return { value, node: markOrigin(node, '', value) };
+}
+
+export function declaredType(field: JsonFieldDefinition): JsonValueType {
+	return field.multiple
+		? 'array'
+		: field.type === 'file'
+			? 'string'
+			: (field.type ?? (field.fields ? 'object' : field.items ? 'array' : 'string'));
+}
+
+export function newFieldValue(field: JsonFieldDefinition) {
+	return field.default === undefined ? initialValue(declaredType(field)) : field.default;
 }

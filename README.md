@@ -4,14 +4,14 @@ English | [简体中文](./README.zh-CN.md)
 
 [![CI](https://github.com/axclogo/AxcUIKit-TypeScript/actions/workflows/ci.yml/badge.svg)](https://github.com/axclogo/AxcUIKit-TypeScript/actions/workflows/ci.yml)
 
-Focused React and TypeScript editors for application data. Build query filters and condition trees, configure AI decision rules, or edit JSON objects through a tree, parameter form, and raw JSON source. AxcUIKit-TypeScript is a component collection, not a complete UI framework or design system. Applications supply their own design system, business logic, and persistence.
+Focused React and TypeScript editors for application data. Build query filters and condition trees, configure AI decision rules, or edit any JSON value through a tree, parameter form, and raw JSON source. AxcUIKit-TypeScript is a component collection, not a complete UI framework or design system. Applications supply their own design system, business logic, and persistence.
 
 ## Component catalog
 
 | Module                                          | Includes                                                                                                                                                     | Import                   |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------ |
 | [Condition](./packages/condition/README.md)     | Query builder, filter builder, nested condition and decision editors, strict rule validation, JSON Schema for LLM structured output, and AI-assisted drafts. | `@axc/uikit/condition`   |
-| [JSON Editor](./packages/json-editor/README.md) | JSON object and array tree editing, field-driven parameter forms, raw JSON drafts, and an optional CodeMirror source editor.                                 | `@axc/uikit/json-editor` |
+| [JSON Editor](./packages/json-editor/README.md) | Any JSON root, recursive field metadata, JSON Schema conversion, host file controls, property switches, and optional CodeMirror source editing.              | `@axc/uikit/json-editor` |
 
 ## Install
 
@@ -29,7 +29,7 @@ import { parseCondition } from '@axc/uikit/condition/core';
 import '@axc/uikit/condition/styles.css';
 
 import { JsonObjectEditor } from '@axc/uikit/json-editor';
-import { parseJsonObject } from '@axc/uikit/json-editor/core';
+import { parseJsonValue } from '@axc/uikit/json-editor/core';
 import '@axc/uikit/json-editor/styles.css';
 ```
 

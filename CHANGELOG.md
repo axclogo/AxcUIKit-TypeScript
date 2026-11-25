@@ -1,6 +1,14 @@
 # Changelog
 
-## Unreleased
+## 0.5.0
+
+- Separate public editor entry points, shared draft state, and core error types. Validate field configuration once per entry, use one Schema keyword dispatch, and remove unreachable option/file fallbacks. Preserve unexpected parser exceptions instead of relabeling them as JSON syntax errors. File slot paths are undefined for unnamed drafts, rather than guessed as empty property names; empty select placeholders remain explicit choices.
+
+- JSON Editor accepts every JSON root type in both tree and source modes. Replace `JsonContent.kind: 'object'` with `'value'`, `parseJsonObject` with `parseJsonValue`, and `onValidObjectChange` with `onValidValueChange`; no legacy aliases are retained. Editor component names stay unchanged.
+- Add recursive `JsonFieldDefinition` metadata (`fields`, `items`, `additionalProperties`, `format`), root metadata through `rootField`, and JSON-valued options, including null, objects and arrays. Hosts still own required/type/business validation; defaults are only applied by explicit actions.
+- Add the React-free `jsonSchemaToField` converter for an explicit draft 2020-12 subset. Unsupported keywords/forms and malformed schemas throw `JsonConfigurationError` (a `TypeError`) with structured issue paths. Replace the obsolete `expected_object` issue with configuration/schema issue codes documented in the JSON Editor README.
+- Add `file` fields and the host-owned `FileInput` slot. Only opaque string references enter JSON; missing slots fail explicitly, and read-only views show the reference plus the host-rendered display name.
+- Add controlled `disabledKeys` / `onDisabledKeysChange` for root object properties. Toggles never change JSON values or clean up absent names. Add English and Chinese messages for the new UI and issues.
 
 - Remove duplicate event guards, invalid selection recovery and exotic property-descriptor checks from JSON Editor. Trust typed object content without validating it again during rendering. Remove Condition list/range substitutions for non-array host values. Document the host and slot responsibility boundary.
 

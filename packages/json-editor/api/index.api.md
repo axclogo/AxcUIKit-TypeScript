@@ -25,12 +25,31 @@ export interface ButtonProps {
 // @public (undocumented)
 export const en: JsonEditorLocale;
 
+// @public
+export interface FileInputProps {
+    // (undocumented)
+    describedBy?: string;
+    // (undocumented)
+    disabled?: boolean;
+    // (undocumented)
+    label: string;
+    // (undocumented)
+    onChange: (reference: string) => void;
+    path?: JsonPath;
+    // (undocumented)
+    readOnly?: boolean;
+    // (undocumented)
+    value: string | undefined;
+}
+
 // @public (undocumented)
 export interface InputProps {
     // (undocumented)
     describedBy?: string;
     // (undocumented)
     disabled?: boolean;
+    // (undocumented)
+    format?: 'date' | 'date-time';
     // (undocumented)
     inputMode?: 'decimal';
     // (undocumented)
@@ -49,10 +68,17 @@ export interface InputProps {
     value: string;
 }
 
+// @public
+export class JsonConfigurationError extends TypeError {
+    constructor(issues: readonly JsonIssue[]);
+    // (undocumented)
+    readonly issues: readonly JsonIssue[];
+}
+
 // @public (undocumented)
 export type JsonContent = {
-    kind: 'object';
-    value: JsonObject;
+    kind: 'value';
+    value: JsonValue;
 } | {
     kind: 'text';
     text: string;
@@ -67,15 +93,21 @@ export interface JsonEditorLocale {
     // (undocumented)
     collapse: string;
     // (undocumented)
+    deactivate: string;
+    // (undocumented)
     duplicateKey: string;
     // (undocumented)
     empty: string;
+    // (undocumented)
+    enable: string;
     // (undocumented)
     expand: string;
     // (undocumented)
     extra: string;
     // (undocumented)
     false: string;
+    // (undocumented)
+    inactive: string;
     // (undocumented)
     invalidNumber: string;
     // (undocumented)
@@ -120,6 +152,8 @@ export interface JsonEditorSlots {
     // (undocumented)
     Button: ComponentType<ButtonProps>;
     // (undocumented)
+    FileInput?: ComponentType<FileInputProps>;
+    // (undocumented)
     Input: ComponentType<InputProps>;
     // (undocumented)
     Select: ComponentType<SelectProps>;
@@ -128,11 +162,24 @@ export interface JsonEditorSlots {
 }
 
 // @public (undocumented)
-export interface JsonField {
+export interface JsonField extends JsonFieldDefinition {
+    // (undocumented)
+    name: string;
+}
+
+// @public
+export interface JsonFieldDefinition {
+    additionalProperties?: boolean | JsonFieldDefinition;
     // (undocumented)
     default?: JsonValue;
     // (undocumented)
     description?: string;
+    // (undocumented)
+    fields?: readonly JsonField[];
+    // (undocumented)
+    format?: 'date' | 'date-time';
+    // (undocumented)
+    items?: JsonFieldDefinition;
     // (undocumented)
     label?: string;
     // (undocumented)
@@ -140,12 +187,10 @@ export interface JsonField {
     // (undocumented)
     multiple?: boolean;
     // (undocumented)
-    name: string;
-    // (undocumented)
     options?: readonly JsonFieldOption[];
     required?: boolean;
     // (undocumented)
-    type?: JsonValueType;
+    type?: JsonFieldType;
 }
 
 // @public (undocumented)
@@ -153,8 +198,11 @@ export interface JsonFieldOption {
     // (undocumented)
     label?: string;
     // (undocumented)
-    value: string | number | boolean;
+    value: JsonValue;
 }
+
+// @public (undocumented)
+export type JsonFieldType = JsonValueType | 'file';
 
 // @public (undocumented)
 export interface JsonIssue {
@@ -167,7 +215,7 @@ export interface JsonIssue {
 }
 
 // @public (undocumented)
-export type JsonIssueCode = 'expected_object' | 'invalid_json' | 'invalid_value';
+export type JsonIssueCode = 'invalid_json' | 'invalid_value' | 'invalid_schema' | 'unsupported_schema_keyword' | 'unsupported_schema_value' | 'duplicate_field' | 'missing_file_slot';
 
 // @public (undocumented)
 export type JsonObject = {
@@ -197,11 +245,14 @@ export interface JsonObjectEditorProps extends Omit<ParamObjectEditorProps, 'val
     // (undocumented)
     onModeChange?: (mode: JsonObjectEditorMode) => void;
     // (undocumented)
-    onValidObjectChange?: (value: JsonObject, content: JsonContent) => void;
+    onValidValueChange?: (value: JsonValue, content: JsonContent) => void;
 }
 
 // @public (undocumented)
 export type JsonPath = readonly (string | number)[];
+
+// @public
+export function jsonSchemaToField(schema: unknown): JsonFieldDefinition;
 
 // @public
 export class JsonValidationError extends Error {
@@ -217,7 +268,7 @@ export type JsonValue = null | boolean | number | string | JsonObject | JsonValu
 export type JsonValueType = 'string' | 'number' | 'boolean' | 'null' | 'object' | 'array';
 
 // @public
-export function ParamObjectEditor(props: ParamObjectEditorProps): JSX.Element;
+export function ParamObjectEditor(input: ParamObjectEditorProps): JSX.Element;
 
 // @public (undocumented)
 export interface ParamObjectEditorProps {
@@ -227,6 +278,7 @@ export interface ParamObjectEditorProps {
     className?: string;
     // (undocumented)
     disabled?: boolean;
+    disabledKeys?: readonly string[];
     // (undocumented)
     emptyLabel?: string;
     // (undocumented)
@@ -234,20 +286,23 @@ export interface ParamObjectEditorProps {
     // (undocumented)
     fields?: readonly JsonField[];
     // (undocumented)
-    onChange: (value: JsonObject) => void;
+    onChange: (value: JsonValue) => void;
+    // (undocumented)
+    onDisabledKeysChange?: (keys: string[]) => void;
     // (undocumented)
     readOnly?: boolean;
+    rootField?: JsonFieldDefinition;
     // (undocumented)
     schemaMode?: 'form' | 'rows';
     // (undocumented)
-    value: JsonObject;
+    value: JsonValue;
 }
 
 // @public
-export function parseJsonContent(content: JsonContent): JsonObject;
+export function parseJsonContent(content: JsonContent): JsonValue;
 
 // @public
-export function parseJsonObject(value: unknown): JsonObject;
+export function parseJsonValue(value: unknown): JsonValue;
 
 // @public (undocumented)
 export interface SelectOption {
@@ -257,7 +312,7 @@ export interface SelectOption {
     value: string;
 }
 
-// @public (undocumented)
+// @public
 export type SelectProps = {
     label: string;
     options: readonly SelectOption[];

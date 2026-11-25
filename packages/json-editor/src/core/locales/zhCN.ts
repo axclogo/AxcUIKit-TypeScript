@@ -1,6 +1,9 @@
 import type { JsonEditorLocale } from './en.js';
 
 export const zhCN: JsonEditorLocale = {
+	enable: '启用',
+	deactivate: '停用',
+	inactive: '已停用',
 	key: '键',
 	type: '类型',
 	value: '值',
@@ -21,7 +24,11 @@ export const zhCN: JsonEditorLocale = {
 	duplicateKey: '键名重复',
 	types: { string: '字符串', number: '数字', boolean: '布尔值', null: '空值', object: '对象', array: '数组' },
 	issues: {
-		expected_object: '请输入 JSON 对象',
+		invalid_schema: 'JSON Schema 结构无效',
+		unsupported_schema_keyword: '不支持的 JSON Schema 关键字',
+		unsupported_schema_value: '不支持的 JSON Schema 关键字值',
+		duplicate_field: '字段名称必须唯一',
+		missing_file_slot: '文件字段需要提供 FileInput 插槽',
 		invalid_json: '请输入有效的 JSON',
 		invalid_value: '该值不是有效的 JSON 数据',
 	},

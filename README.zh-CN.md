@@ -4,14 +4,14 @@
 
 [![CI](https://github.com/axclogo/AxcUIKit-TypeScript/actions/workflows/ci.yml/badge.svg)](https://github.com/axclogo/AxcUIKit-TypeScript/actions/workflows/ci.yml)
 
-面向应用数据的 React / TypeScript 编辑组件集合。用于搭建查询筛选和条件树、配置 AI 判断规则，以及通过树形界面、参数表单和源码编辑 JSON 对象。本仓库不是一套完整的 UI 框架或设计系统。应用继续使用自己的设计系统、业务逻辑与存储。
+面向应用数据的 React / TypeScript 编辑组件集合。用于搭建查询筛选和条件树、配置 AI 判断规则，以及通过树形界面、参数表单和源码编辑任意 JSON 值。本仓库不是一套完整的 UI 框架或设计系统。应用继续使用自己的设计系统、业务逻辑与存储。
 
 ## 组件目录
 
 | 模块                                              | 功能                                                                                                          | 导入                     |
 | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------ |
 | [Condition](./packages/condition/README.zh-CN.md) | 查询构建器、筛选条件编辑器、嵌套规则与判断流程、严格校验、用于大模型结构化输出的 JSON Schema 和 AI 辅助草稿。 | `@axc/uikit/condition`   |
-| [JSON Editor](./packages/json-editor/README.md)   | JSON 对象与数组的树形编辑、按字段配置生成参数表单、保留原始 JSON 草稿，以及可选的 CodeMirror 源码编辑器。     | `@axc/uikit/json-editor` |
+| [JSON Editor](./packages/json-editor/README.md)   | 任意 JSON 根值、嵌套字段元数据、JSON Schema 转换、宿主文件控件、属性开关，以及可选的 CodeMirror 源码编辑器。  | `@axc/uikit/json-editor` |
 
 ## 安装
 
@@ -29,7 +29,7 @@ import { parseCondition } from '@axc/uikit/condition/core';
 import '@axc/uikit/condition/styles.css';
 
 import { JsonObjectEditor } from '@axc/uikit/json-editor';
-import { parseJsonObject } from '@axc/uikit/json-editor/core';
+import { parseJsonValue } from '@axc/uikit/json-editor/core';
 import '@axc/uikit/json-editor/styles.css';
 ```
 

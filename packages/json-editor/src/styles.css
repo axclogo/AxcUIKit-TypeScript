@@ -13,7 +13,11 @@
 	min-width: 0;
 }
 
-.axc-json .axc-json-row > .axc-json-children {
+.axc-json .axc-json-row > :where(.axc-json-children, .axc-json-object) {
+	margin-block-start: 0.45rem;
+}
+
+.axc-json .axc-json-row:not([data-root]) > :where(.axc-json-children, .axc-json-object) {
 	margin-block-start: 0.45rem;
 	margin-inline-start: 0.65rem;
 	padding-inline-start: 0.75rem;
@@ -31,7 +35,7 @@
 	flex: 1 1 8rem;
 }
 
-.axc-json .axc-json-field .axc-json-field-name {
+.axc-json .axc-json-field > .axc-json-row-controls > .axc-json-field-name {
 	flex: 0 1 9rem;
 }
 

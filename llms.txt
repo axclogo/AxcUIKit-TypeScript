@@ -1,6 +1,6 @@
 # AxcUIKit-TypeScript
 
-> Focused React and TypeScript editors for query filters, condition and decision rules, and structured JSON objects and parameters.
+> Focused React and TypeScript editors for query filters, condition and decision rules, and JSON values and parameters.
 
 Install from Git with `npm install github:axclogo/AxcUIKit-TypeScript`. The package name is `@axc/uikit`, with explicit component subpaths.
 
@@ -14,8 +14,8 @@ Install from Git with `npm install github:axclogo/AxcUIKit-TypeScript`. The pack
 ## JSON Editor
 
 - `@axc/uikit/json-editor` exports `ParamObjectEditor`, `JsonObjectEditor` and `JsonEditorProvider`.
-- `JsonObjectEditor` uses explicit object and text variants. Invalid JSON stays as text. `ParamObjectEditor` edits JSON objects with optional field metadata.
-- Use `@axc/uikit/json-editor/core` for JSON object parsing. Import `@axc/uikit/json-editor/styles.css` for styles.
+- `JsonObjectEditor` uses explicit value and text variants. Invalid JSON stays as text. `ParamObjectEditor` edits any JSON value with recursive field metadata, host file controls and controlled root-property toggles.
+- Use `@axc/uikit/json-editor/core` for `parseJsonValue`, `parseJsonContent`, and `jsonSchemaToField` (expanded draft 2020-12 subset). Import `@axc/uikit/json-editor/styles.css` for styles.
 - Use `@axc/uikit/json-editor/codemirror` for the optional CodeMirror source-editor slot.
 
 ## Documentation

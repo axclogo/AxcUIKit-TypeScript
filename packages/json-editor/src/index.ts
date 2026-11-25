@@ -10,6 +10,7 @@ export { JsonEditorProvider } from './ui/provider.js';
 export type { JsonEditorProviderProps } from './ui/provider.js';
 export type {
 	ButtonProps,
+	FileInputProps,
 	InputProps,
 	JsonEditorSlots,
 	SelectOption,

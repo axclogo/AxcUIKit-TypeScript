@@ -10,6 +10,7 @@ import {
 	type JsonContent,
 	type JsonField,
 	type JsonObject,
+	type JsonValue,
 	type SourceEditorProps,
 } from '../src';
 import { CodeMirrorSourceEditor } from '../src/codemirror';
@@ -28,7 +29,8 @@ test('keeps nested input identity, focus and expansion during polling, edits and
 	let value: JsonObject = { auth: { cookie: 'initial' }, count: 1 };
 	const props = () => ({
 		value: structuredClone(value),
-		onChange: (next: JsonObject) => {
+		onChange: (next: JsonValue) => {
+			assert.ok(next !== null && typeof next === 'object' && !Array.isArray(next));
 			value = next;
 		},
 		fields: structuredClone(fields),
@@ -63,7 +65,8 @@ test('unfinished nested rows stay internal, duplicate keys are reported, and exp
 	let value: JsonObject = { data: { '': '', taken: 'original' }, other: [false, 0, null, [], {}] };
 	const props = () => ({
 		value: structuredClone(value),
-		onChange: (next: JsonObject) => {
+		onChange: (next: JsonValue) => {
+			assert.ok(next !== null && typeof next === 'object' && !Array.isArray(next));
 			value = next;
 		},
 		fields: [{ name: 'data', type: 'object' as const }],
@@ -100,7 +103,8 @@ test('numeric drafts survive unrelated external changes and use the original fie
 	let value: JsonObject = { other: true };
 	const props = () => ({
 		value: structuredClone(value),
-		onChange: (next: JsonObject) => {
+		onChange: (next: JsonValue) => {
+			assert.ok(next !== null && typeof next === 'object' && !Array.isArray(next));
 			value = next;
 		},
 		fields: [{ name: 'count', type: 'number' as const, required: true }],
@@ -134,7 +138,8 @@ test('array editing retains the focused child when an external refresh inserts o
 	let value: JsonObject = { list: ['first', 'second'] };
 	const props = () => ({
 		value: structuredClone(value),
-		onChange: (next: JsonObject) => {
+		onChange: (next: JsonValue) => {
+			assert.ok(next !== null && typeof next === 'object' && !Array.isArray(next));
 			value = next;
 		},
 		fields: [{ name: 'list', type: 'array' as const }],
@@ -171,7 +176,8 @@ test('typed select options distinguish empty strings, zero, false and missing va
 	];
 	const props = () => ({
 		value: structuredClone(value),
-		onChange: (next: JsonObject) => {
+		onChange: (next: JsonValue) => {
+			assert.ok(next !== null && typeof next === 'object' && !Array.isArray(next));
 			value = next;
 		},
 		fields,
@@ -193,7 +199,7 @@ test('typed select options distinguish empty strings, zero, false and missing va
 
 test('source mode formats once, tracks invalid edits and preserves external or unfixed text', () => {
 	const changes: JsonContent[] = [];
-	const valid: { value: JsonObject; content: JsonContent }[] = [];
+	const valid: { value: JsonValue; content: JsonContent }[] = [];
 	const host = (initial: JsonContent) => {
 		function Host() {
 			const [content, setContent] = useState(initial);
@@ -204,7 +210,7 @@ test('source mode formats once, tracks invalid edits and preserves external or u
 						changes.push(next);
 						setContent(next);
 					}}
-					onValidObjectChange={(value, content) => {
+					onValidValueChange={(value, content) => {
 						valid.push({ value, content });
 					}}
 				/>
@@ -212,7 +218,7 @@ test('source mode formats once, tracks invalid edits and preserves external or u
 		}
 		return Host;
 	};
-	const Host = host({ kind: 'object', value: { nested: {}, zero: 0 } });
+	const Host = host({ kind: 'value', value: { nested: {}, zero: 0 } });
 	render(<Host />);
 	const zero = input('zero');
 	change(zero, '-');
@@ -235,7 +241,7 @@ test('source mode formats once, tracks invalid edits and preserves external or u
 	assert.equal(input('s').value, '');
 	assert.equal(changes.length, 3);
 	change(input('s'), 'tree edit');
-	assert.deepEqual(valid.at(-1)?.content, { kind: 'object', value: { nested: {}, zero: 0, s: 'tree edit' } });
+	assert.deepEqual(valid.at(-1)?.content, { kind: 'value', value: { nested: {}, zero: 0, s: 'tree edit' } });
 });
 
 test('externally controlled mode and content override presentation and switches respect readOnly and disabled', () => {
@@ -246,9 +252,7 @@ test('externally controlled mode and content override presentation and switches 
 		onModeChange: (mode: string) => modes.push(mode),
 		readOnly: true,
 	};
-	const view = render(
-		<JsonObjectEditor {...props} content={{ kind: 'object', value: { x: 'first' } }} mode="params" />,
-	);
+	const view = render(<JsonObjectEditor {...props} content={{ kind: 'value', value: { x: 'first' } }} mode="params" />);
 	assert.equal(input('x').readOnly, true);
 	fireEvent.click(button('JSON'));
 	assert.deepEqual(modes, ['json']);

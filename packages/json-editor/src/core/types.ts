@@ -1,27 +1,44 @@
 export type JsonValue = null | boolean | number | string | JsonObject | JsonValue[];
 export type JsonObject = { [key: string]: JsonValue };
-export type JsonContent = { kind: 'object'; value: JsonObject } | { kind: 'text'; text: string };
+export type JsonContent = { kind: 'value'; value: JsonValue } | { kind: 'text'; text: string };
 export type JsonValueType = 'string' | 'number' | 'boolean' | 'null' | 'object' | 'array';
+export type JsonFieldType = JsonValueType | 'file';
 
 export interface JsonFieldOption {
-	value: string | number | boolean;
+	value: JsonValue;
 	label?: string;
 }
 
-export interface JsonField {
-	name: string;
+/** Rendering metadata for a root value, object property, or array element. */
+export interface JsonFieldDefinition {
 	label?: string;
 	description?: string;
-	type?: JsonValueType;
+	type?: JsonFieldType;
 	/** Displays a required marker. The application validates required values. */
 	required?: boolean;
 	default?: JsonValue;
 	options?: readonly JsonFieldOption[];
 	multiline?: boolean;
 	multiple?: boolean;
+	format?: 'date' | 'date-time';
+	fields?: readonly JsonField[];
+	items?: JsonFieldDefinition;
+	/** Controls extra-property editing, without deleting or validating existing values. */
+	additionalProperties?: boolean | JsonFieldDefinition;
 }
 
-export type JsonIssueCode = 'expected_object' | 'invalid_json' | 'invalid_value';
+export interface JsonField extends JsonFieldDefinition {
+	name: string;
+}
+
+export type JsonIssueCode =
+	| 'invalid_json'
+	| 'invalid_value'
+	| 'invalid_schema'
+	| 'unsupported_schema_keyword'
+	| 'unsupported_schema_value'
+	| 'duplicate_field'
+	| 'missing_file_slot';
 export type JsonPath = readonly (string | number)[];
 
 export interface JsonIssue {
