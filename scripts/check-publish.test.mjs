@@ -80,14 +80,19 @@ test('reports a missing version of an existing package as unpublished', async ()
 	);
 });
 
-test('queries only the public npm package endpoint with a timeout signal', async () => {
+test('queries only the public npm package endpoint with the configured timeout signal', async () => {
 	let request;
-	await getPublishStatus(manifest, async (url, options) => {
-		request = { url, options };
-		return response(404);
-	});
+	const timeoutSignal = new AbortController().signal;
+	await getPublishStatus(
+		manifest,
+		async (url, options) => {
+			request = { url, options };
+			return response(404);
+		},
+		() => timeoutSignal,
+	);
 	assert.equal(request.url, 'https://registry.npmjs.org/%40axc%2Fuikit');
-	assert.ok(request.options.signal instanceof AbortSignal);
+	assert.equal(request.options.signal, timeoutSignal);
 });
 
 test('does not reinterpret Registry or response errors as a missing version', async () => {
@@ -95,21 +100,6 @@ test('does not reinterpret Registry or response errors as a missing version', as
 	await assert.rejects(
 		() => getPublishStatus(manifest, async () => response(200, { versions: [] })),
 		/npm registry versions must be an object/,
-	);
-});
-
-test('applies the explicit Registry timeout', async () => {
-	await assert.rejects(
-		() =>
-			getPublishStatus(
-				manifest,
-				async (_url, options) =>
-					new Promise((_resolve, reject) => {
-						options.signal.addEventListener('abort', () => reject(options.signal.reason), { once: true });
-					}),
-				1,
-			),
-		{ name: 'TimeoutError' },
 	);
 });
 

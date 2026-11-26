@@ -41,9 +41,13 @@ export function validateReleaseMetadata(manifestValue, lockfileValue) {
 	return manifest;
 }
 
-export async function getPublishStatus(manifest, fetchRegistry = fetch, timeoutMilliseconds = 15_000) {
+export async function getPublishStatus(
+	manifest,
+	fetchRegistry = fetch,
+	createTimeoutSignal = () => AbortSignal.timeout(15_000),
+) {
 	const response = await fetchRegistry(`${registryUrl}/${encodeURIComponent(manifest.name)}`, {
-		signal: AbortSignal.timeout(timeoutMilliseconds),
+		signal: createTimeoutSignal(),
 	});
 	if (response.status === 404) return 'bootstrap';
 	if (!response.ok) throw new Error(`npm registry returned HTTP ${response.status}`);

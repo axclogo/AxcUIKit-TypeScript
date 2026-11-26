@@ -121,8 +121,8 @@ npm pack --dry-run
 ```
 
 `test:publish` covers valid and invalid metadata, missing packages, existing versions, unpublished versions, Registry
-errors, malformed responses, timeouts and the workflow's security invariants. Prettier parses the workflow YAML during
-`npm run verify`.
+errors, malformed responses, timeout-signal wiring and the workflow's security invariants. Prettier parses the workflow
+YAML during `npm run verify`.
 
 After an automatic publication, verify on npmjs.com:
 
