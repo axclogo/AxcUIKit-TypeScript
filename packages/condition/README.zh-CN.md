@@ -15,7 +15,7 @@
 | **用大模型“一句话生成筛选条件”不可靠。** 模型会编造字段、把数字写成字符串、用 Markdown 包裹 JSON，或用近似条件冒充原需求。           | 每次请求都附带按字段目录生成的 JSON Schema（用于结构化输出）。返回结果经过同一个解析器，连同模型的解释先预览，只有点“应用”才写回；取消或过期的请求会被丢弃。                       |
 | **错误只是一段没法处理的文字。** 只能拿到第一条、只有一种语言，也不知道属于哪一行。                                                  | 校验返回**全部**问题，每条都是 `{ code, path, params }`。编辑器把错误显示在对应的行上，并把控件标为无效（`aria-invalid`）。代码按 `code` 判断，文案由语言包提供。                  |
 | **构建器自带一套 UI。** 输入框和下拉与你的设计系统不一致，想替换只能 fork。                                                          | 8 个基础控件（输入框、单选、多选、复选框、标签、日期、多行文本、按钮）都经过一层很薄的适配层。可接入 Ant Design、MUI、shadcn/ui 或自研组件，并附带一份实测可用的 Ant Design 适配。 |
-| **依赖重、文案写死。**                                                                                                               | 唯一依赖是 React 18/19（约 19 KB gzip）。内置中英文，所有文案和模型提示词都可覆盖。                                                                                                |
+| **入口依赖重、文案写死。**                                                                                                           | Condition 入口只使用共享的 React peer（≤22 KB gzip）。内置中英文，所有文案和模型提示词都可覆盖。                                                                                   |
 | **AI 判断成本高，又难和规则配合。** 希望先用规则筛掉不需要送给模型的数据，再对模型的输出套规则。                                     | `AxcDecision` 编辑“前置条件 → AI 判断 → 后置条件”方案：前置条件决定哪些记录交给模型；后置条件可以读取 `ai.matched`、`ai.reason` 和你定义的带类型 AI 输出。                         |
 | **复杂条件保存前难以验证。** 用户需要选择一条真实数据，确认最终结果由哪个条件决定、哪些条件因短路没有执行。                          | `AxcConditionSimulator` 把所选数据交给 `@axc/eval`，展示决定性条件及完整短路轨迹。UIKit 不重复实现求值、不保存证据，也不隐藏执行器错误。                                           |
 
@@ -131,11 +131,11 @@ const assist: AxcAssistTransport = {
 
 ### AxcConditionSimulator
 
-从版本化 Release 产物安装 `@axc/eval`，将其真实 WebAssembly 导出函数直接传入。UIKit 本身不依赖执行器，
-未使用模拟组件的应用不会加载 WASM。
+从 npm 安装官方 `@axc/eval` 包，将其真实 WebAssembly 导出函数直接传入。UIKit 本身不依赖执行器，未使用
+模拟组件的应用不会加载 WASM。
 
 ```sh
-npm install https://github.com/axclogo/AxcEval/releases/download/v0.3.0/axc-eval-0.3.0.tgz
+npm install @axc/eval
 ```
 
 ```tsx

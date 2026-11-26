@@ -2,14 +2,14 @@
 
 > Focused React and TypeScript editors for query filters, condition and decision rules, and JSON values and parameters.
 
-Install from Git with `npm install github:axclogo/AxcUIKit-TypeScript`. The package name is `@axc/uikit`, with explicit component subpaths.
+Install the published package with `npm install @axc/uikit`. Use a pinned Git commit only to test an unpublished change. The package has explicit component subpaths and intentionally has no root entry.
 
 ## Condition
 
-- `@axc/uikit/condition` exports `AxcCondition`, `AxcConditionAssist`, `AxcDecision` and `AxcDecisionAssist`.
+- `@axc/uikit/condition` exports `AxcCondition`, `AxcConditionAssist`, `AxcConditionSimulator`, `AxcDecision` and `AxcDecisionAssist`.
 - Use `@axc/uikit/condition/core` for the React-free parser, schema, prompt and locale helpers. Call `parseCondition(value, { fields })` before saving, or use `validateCondition` for structured issues.
 - Import `@axc/uikit/condition/styles.css`. Use `AxcUIProvider` to supply native-equivalent controls and a locale.
-- The host evaluates rules, calls models, and persists data.
+- The host evaluates rules, calls models, and persists data. `AxcConditionSimulator` calls the compatible `@axc/eval` function supplied by the host; UIKit does not bundle an evaluator or WASM.
 
 ## JSON Editor
 

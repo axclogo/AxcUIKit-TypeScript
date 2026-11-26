@@ -102,7 +102,7 @@ Condition 模拟器也不内置执行逻辑，应用必须显式传入兼容的 
 - 默认提供原生控件和中英文语言包。宿主可通过 Provider 注入自己的设计系统控件。组件样式限定在各模块内部。
 - 各模块维护自己的公开 API、测试和文档。数据契约与适配示例见组件指南。
 
-[仓库架构](./docs/architecture.md) · [发包流程](./docs/releasing.md) · [贡献规则](./AGENTS.md) · [更新记录](./CHANGELOG.md)
+[仓库架构](./docs/architecture.md) · [发包流程](./docs/releasing.md) · [贡献规则](https://github.com/axclogo/AxcUIKit-TypeScript/blob/main/AGENTS.md) · [更新记录](./CHANGELOG.md)
 
 ## 开发
 

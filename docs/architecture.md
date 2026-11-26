@@ -1,14 +1,14 @@
 # Architecture
 
-AxcUIKit-TypeScript is one repository of focused React components, not a complete UI framework. The root [contributor rules](../AGENTS.md) apply to each component, and each component owns the details of its contract.
+AxcUIKit-TypeScript is one repository of focused React components, not a complete UI framework. The repository's [contributor rules](https://github.com/axclogo/AxcUIKit-TypeScript/blob/main/AGENTS.md) apply to each component, and each component owns the details of its contract.
 
 ## Source and distribution
 
 - `packages/condition/src`, `packages/condition/tests`, `packages/condition/protocol`: condition components and their existing protocol. Preserve their behavior and exported names.
-- `packages/json-editor/src`, `packages/json-editor/tests`: JSON object editing, tree/form controls and raw JSON drafts.
+- `packages/json-editor/src`, `packages/json-editor/tests`: JSON value editing, tree/form controls and raw JSON drafts.
 - One installable package, `@axc/uikit`, exposes explicit subpaths: `condition`, `condition/core`, `condition/styles.css`, `json-editor`, `json-editor/core`, `json-editor/styles.css`, and `json-editor/codemirror`. There is no catch-all component barrel. The package installs as a unit. Separate ESM entry graphs keep Condition and the native JSON Editor independent of CodeMirror loading.
 - Node.js 22.18 and later can load the JavaScript subpaths with either `import` or `require()`. Both resolve to the same synchronous ESM build. [Node.js ESM loading from CommonJS](https://nodejs.org/download/release/v22.18.0/docs/api/modules.html#loading-ecmascript-modules-using-require)
-- The root Git package builds all entry points in `prepare`, so Raven can consume this repository directly without npm publication or subdirectory Git installation.
+- The root Git package builds all entry points in `prepare`, so maintainers can test a pinned unpublished commit without subdirectory Git installation. Published consumers should install from npm.
 - Root scripts own checks, builds and packaging. Condition retains its existing strict coverage and bundle budgets. JSON Editor has 18,000-byte JavaScript and 1,500-byte CSS gzip budgets. Its JavaScript budget is smaller than Condition's because it covers data editing and a source-editor adapter, with CodeMirror packages kept external. Verification leaves no process reports, coverage data or screenshots. The maintained API references in each component document the typed subpaths.
 
 ## Shared API principles
@@ -24,7 +24,7 @@ AxcUIKit-TypeScript is one repository of focused React components, not a complet
 
 ## JSON editor contract
 
-The core is independent of React, DOM, Raven and UI frameworks. `JsonContent = { kind: 'value'; value: JsonValue } | { kind: 'text'; text: string }` accepts any JSON root. `parseJsonValue(unknown)` and `parseJsonContent(content)` return finite JSON data or throw `JsonValidationError` with `{ code, path, params }` issues. Typed host props are trusted; unknown data is checked at the explicit parser boundary. Parsing does not repair, coerce or delete data. Missing values and empty strings are distinct.
+The core is independent of React, DOM, host applications and UI frameworks. `JsonContent = { kind: 'value'; value: JsonValue } | { kind: 'text'; text: string }` accepts any JSON root. `parseJsonValue(unknown)` and `parseJsonContent(content)` return finite JSON data or throw `JsonValidationError` with `{ code, path, params }` issues. Typed host props are trusted; unknown data is checked at the explicit parser boundary. Parsing does not repair, coerce or delete data. Missing values and empty strings are distinct.
 
 `JsonFieldDefinition` describes a root, property or element: label, description, type (JSON types or file), required, default, JSON-valued options, multiline, multiple, format (date/date-time), recursive fields/items and additionalProperties. `JsonField` adds the property name. `fields` configures root object properties; `rootField` also describes primitive and array roots. Explicit fields override rootField.fields. Metadata shapes controls, without validating instances. Required is a marker; explicit Add actions apply defaults. Undeclared descendants remain schema-free. Extra-property editing can be hidden without deleting saved values.
 
@@ -38,8 +38,10 @@ The core is independent of React, DOM, Raven and UI frameworks. `JsonContent = {
 
 `JsonEditorProvider` supplies slots and locale; nested providers inherit. Public controls are Input, Select, Button, SourceEditor and optional FileInput. Controls emit typed values, not UI-library events. Stable adapters own readOnly/disabled interaction semantics. Native controls are the default except FileInput, which has no fallback. The host retains File objects and emits reference strings. In readOnly mode the editor renders the reference and FileInput renders the host's display name with no picker. Format annotations reach Input; native text inputs preserve date-time offsets and invalid drafts for host validation. Scoped styles and en/zhCN locales apply throughout. CodeMirrorSourceEditor is an optional explicit subpath using the React CodeMirror wrapper and official JSON language support.
 
-## Raven integration
+## Host integration boundary
 
-Raven retains only Semi slots, theme mapping, remote option loading and conversion of its input/config/ui schema into JsonField[]. No JSON tree/state implementation remains in Raven. Existing business drafts may stay object|string in Raven, with the host wrapper converting to explicit JsonContent. This is a host data representation adapter, not an old package compatibility implementation. Existing parser imports resolve to package parsing through a thin host localization adapter where needed.
-
-Raven imports condition from @axc/uikit/condition and JSON editing from @axc/uikit/json-editor. Network and authentication remain in Raven. No repository absolute path becomes a committed dependency; integration tests may install an officially packed local artifact before the Git distribution is published.
+Applications import only the documented package subpaths and adapt their design-system controls through the providers.
+Host-specific schemas may be converted to the public field metadata at the application boundary. Networking,
+authentication, remote option loading, evaluation and persistence remain outside UIKit; no application-specific state or
+compatibility path belongs in this package. Integration tests may install an officially packed local artifact before an
+npm release, but committed dependencies must never use a machine-local path.

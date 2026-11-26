@@ -15,7 +15,7 @@ define AND/OR rules that you store as JSON and run on your own backend.
 | **"Generate a filter from a sentence" with an LLM is unreliable.** Models invent fields, return strings for numbers, wrap JSON in Markdown, or quietly approximate what was asked.      | Every request carries a JSON Schema built from your catalog (for structured output). The answer goes through the same parser, is shown as a preview with the model's explanation, and only **Apply** writes it back. Cancelled or stale requests are dropped. |
 | **Errors are one string you cannot act on.** You get the first message, in one language, and cannot tell which row it belongs to.                                                       | Validation returns **every** issue as `{ code, path, params }`. The editor shows each one on its own row and marks the control invalid (`aria-invalid`). Your code branches on `code`; messages come from a locale.                                           |
 | **The builder brings its own UI.** Its inputs and dropdowns do not match your design system, and replacing them means forking.                                                          | All eight basic controls (input, select, multi-select, checkbox, tags, date, textarea, button) go through a small adapter layer. Plug in Ant Design, MUI, shadcn/ui or your own; a tested Ant Design adapter is included.                                     |
-| **Heavy dependencies and hard-coded language.**                                                                                                                                         | React 18/19 is the only dependency (≈19 KB gzip). English and Chinese are built in; every string and model prompt can be overridden.                                                                                                                          |
+| **Heavy entry graph and hard-coded language.**                                                                                                                                          | The Condition entry graph uses only the shared React peer (≤22 KB gzip). English and Chinese are built in; every string and model prompt can be overridden.                                                                                                   |
 | **AI-based decisions are expensive and hard to combine with rules.** You want rules to pre-filter what reaches the model, and rules on the model's output afterwards.                   | `AxcDecision` edits a precondition → AI decision → postcondition plan. The precondition decides which records reach the model; the postcondition can read `ai.matched`, `ai.reason` and your own typed AI outputs.                                            |
 | **A complex rule is hard to verify before saving.** A user needs to try one real record and see which condition determined the result or was skipped.                                   | `AxcConditionSimulator` sends the selected sample to `@axc/eval` and renders its decisive rules and exact short-circuit trace. UIKit never reimplements evaluation, stores evidence or hides evaluator errors.                                                |
 
@@ -132,11 +132,11 @@ The candidate is previewed (and can be edited) first. Only **Apply** calls `onCh
 
 ### AxcConditionSimulator
 
-Install `@axc/eval` from its versioned release asset, then pass its real WebAssembly export directly. UIKit has no
-evaluator dependency, so apps that do not render the simulator do not load WASM.
+Install the official `@axc/eval` npm package, then pass its real WebAssembly export directly. UIKit has no evaluator
+dependency, so apps that do not render the simulator do not load WASM.
 
 ```sh
-npm install https://github.com/axclogo/AxcEval/releases/download/v0.3.0/axc-eval-0.3.0.tgz
+npm install @axc/eval
 ```
 
 ```tsx
