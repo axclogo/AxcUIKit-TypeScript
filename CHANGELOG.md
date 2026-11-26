@@ -5,6 +5,7 @@
 - Add `AxcConditionSimulator`, a controlled sample picker and execution-trace view for the `@axc/eval` `simulateCondition` export. It shows the final result, decisive rules, negated groups, short-circuit positions and skipped nodes without implementing evaluation inside UIKit.
 - Add typed simulation, trace and optional evidence callback contracts. Evaluator failures remain visible and are forwarded unchanged; stale results disappear when their condition, catalog, executor or selected record changes. UIKit does not retain records, results or evidence.
 - Document the integration boundary and add English/Chinese simulator copy. Sample ids are explicit, non-empty and unique; invalid sample configuration throws instead of selecting a guessed record.
+- Publish public releases through npm Trusted Publisher with workflow-bound OIDC and automatic provenance. Release jobs contain no npm token or token fallback.
 
 ## 0.5.0
 

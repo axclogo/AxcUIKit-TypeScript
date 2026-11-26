@@ -109,7 +109,11 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@github.com/axclogo/AxcUIKit-TypeScript.git"
+		"url": "git+https://github.com/axclogo/AxcUIKit-TypeScript.git"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org"
 	},
 	"homepage": "https://github.com/axclogo/AxcUIKit-TypeScript",
 	"bugs": {

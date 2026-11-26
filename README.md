@@ -42,7 +42,7 @@ The CodeMirror adapter is available at `@axc/uikit/json-editor/codemirror`.
 - Native controls and English and Chinese locales are available by default. Providers let applications supply controls from their design system. Module styles are scoped.
 - Each module owns its public API, tests, and documentation. See the component guide for data contracts and adapter examples.
 
-[Repository architecture](./docs/architecture.md) · [Contributor rules](./AGENTS.md) · [Changelog](./CHANGELOG.md)
+[Repository architecture](./docs/architecture.md) · [Release process](./docs/releasing.md) · [Contributor rules](./AGENTS.md) · [Changelog](./CHANGELOG.md)
 
 ## Contributing
 

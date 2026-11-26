@@ -1,0 +1,43 @@
+name: Publish to npm
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish-main
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - id: package
+        run: node scripts/check-publish.mjs
+      - name: First publication required
+        if: steps.package.outputs.status == 'bootstrap'
+        run: echo '::notice::@axc/uikit must be created once before npm Trusted Publisher can be configured.'
+      - if: steps.package.outputs.publish == 'true'
+        run: npm ci
+      - if: steps.package.outputs.publish == 'true'
+        run: npm run verify
+      - if: steps.package.outputs.publish == 'true'
+        run: npm pack --dry-run
+      - if: steps.package.outputs.publish == 'true'
+        run: npm publish
