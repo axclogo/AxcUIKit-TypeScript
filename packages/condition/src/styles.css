@@ -1,5 +1,5 @@
 /* Scoped to Axc containers. Hosts override the variables; nothing touches body or global themes. */
-:where(.axc-condition, .axc-condition-assist, .axc-decision, .axc-decision-assist) {
+:where(.axc-condition, .axc-condition-assist, .axc-condition-simulator, .axc-decision, .axc-decision-assist) {
 	color: var(--axc-text, #243147);
 	font: inherit;
 	min-width: 0;
@@ -174,6 +174,41 @@ button.axc-native-control {
 .axc-candidate > p {
 	white-space: pre-wrap;
 	overflow-wrap: anywhere;
+}
+.axc-condition-simulator {
+	display: flex;
+	flex-direction: column;
+	gap: var(--axc-gap, 12px);
+	padding: var(--axc-panel-padding, 12px);
+	border: 1px solid var(--axc-border, #d4dce7);
+	border-radius: var(--axc-panel-radius, 7px);
+	background: var(--axc-panel, #f6f8fb);
+	min-width: 0;
+}
+.axc-condition-simulator > .axc-toolbar > .axc-select {
+	flex: 1 1 220px;
+}
+.axc-simulation-result,
+.axc-simulation-result ul {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+.axc-simulation-result ul {
+	margin: 0;
+	padding-left: 24px;
+}
+.axc-simulation-result code {
+	overflow-wrap: anywhere;
+}
+.axc-simulation-pass {
+	color: var(--axc-success, #18733c);
+}
+.axc-simulation-block {
+	color: var(--axc-danger, #b3261e);
+}
+.axc-simulation-skipped {
+	color: var(--axc-muted, #667085);
 }
 @media (max-width: 640px) {
 	.axc-subgroup {

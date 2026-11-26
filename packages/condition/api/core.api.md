@@ -50,10 +50,98 @@ export interface AxcConditionCatalog {
     maxLevels?: number;
 }
 
+// @public
+export interface AxcConditionEvidence {
+    // (undocumented)
+    input: Record<string, unknown>;
+    // (undocumented)
+    kind: 'condition';
+    // (undocumented)
+    outcome: {
+        status: 'succeeded';
+        result: AxcConditionSimulation;
+    } | {
+        status: 'failed';
+        error: unknown;
+    };
+    // (undocumented)
+    snapshotId: string;
+}
+
+// @public
+export interface AxcConditionGroupTrace {
+    // (undocumented)
+    children: AxcConditionTrace[];
+    // (undocumented)
+    combinator: 'and' | 'or';
+    // (undocumented)
+    kind: 'group';
+    // (undocumented)
+    matched: boolean;
+    // (undocumented)
+    negated: boolean;
+    // (undocumented)
+    path: AxcPath;
+    // (undocumented)
+    rawMatched: boolean;
+    // (undocumented)
+    shortCircuitAt?: number;
+}
+
 // @public (undocumented)
 export interface AxcConditionOptions {
     allowEmpty?: boolean;
 }
+
+// @public
+export interface AxcConditionRuleTrace {
+    // (undocumented)
+    field: string;
+    // (undocumented)
+    kind: 'rule';
+    // (undocumented)
+    matched: boolean;
+    // (undocumented)
+    operator: string;
+    // (undocumented)
+    path: AxcPath;
+}
+
+// @public
+export interface AxcConditionSample {
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    label: string;
+    // (undocumented)
+    record: Record<string, unknown>;
+}
+
+// @public
+export interface AxcConditionSimulation {
+    // (undocumented)
+    decisiveRules: AxcDecisiveRule[];
+    // (undocumented)
+    matched: boolean;
+    // (undocumented)
+    trace: AxcConditionTrace;
+}
+
+// @public
+export type AxcConditionSimulationExecutor = (condition: AxcConditionValue, catalog: AxcConditionCatalog, record: Record<string, unknown>, allowEmpty: boolean, evidenceCallback?: (evidence: AxcConditionEvidence) => void) => AxcConditionSimulation;
+
+// @public
+export interface AxcConditionSkippedTrace {
+    // (undocumented)
+    kind: 'skipped';
+    // (undocumented)
+    path: AxcPath;
+    // (undocumented)
+    reason: 'andShortCircuit' | 'orShortCircuit';
+}
+
+// @public
+export type AxcConditionTrace = AxcConditionGroupTrace | AxcConditionRuleTrace | AxcConditionSkippedTrace;
 
 // @public
 export interface AxcConditionValue {
@@ -102,6 +190,14 @@ export interface AxcDecisionPromptContext {
 export interface AxcDecisionValue extends AxcDecisionPlan {
     // (undocumented)
     model: string | null;
+}
+
+// @public
+export interface AxcDecisiveRule {
+    // (undocumented)
+    matched: boolean;
+    // (undocumented)
+    path: AxcPath;
 }
 
 // @public
@@ -240,6 +336,23 @@ export interface AxcLocale {
         aiMatched: string;
         aiReason: string;
         aiOutput: (label: string) => string;
+        simulationSample: string;
+        chooseSample: string;
+        unknownSample: (id: string) => string;
+        runSimulation: string;
+        simulationMatched: string;
+        simulationNotMatched: string;
+        simulationFailed: (message: string) => string;
+        simulationDecisiveRules: string;
+        simulationNoDecisiveRules: string;
+        simulationTrace: string;
+        simulationGroup: string;
+        simulationNegated: string;
+        simulationPassed: string;
+        simulationBlocked: string;
+        simulationSkippedAnd: string;
+        simulationSkippedOr: string;
+        simulationShortCircuit: (position: number) => string;
     };
 }
 

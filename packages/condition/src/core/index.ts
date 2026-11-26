@@ -23,6 +23,17 @@ export { zhCN } from './locales/zh-CN.js';
 export type { AxcConditionOptions } from './condition.js';
 export { emptyCondition, validateCondition, parseCondition } from './condition.js';
 export { conditionSchema } from './condition-schema.js';
+export type {
+	AxcConditionEvidence,
+	AxcConditionGroupTrace,
+	AxcConditionRuleTrace,
+	AxcConditionSample,
+	AxcConditionSimulation,
+	AxcConditionSimulationExecutor,
+	AxcConditionSkippedTrace,
+	AxcConditionTrace,
+	AxcDecisiveRule,
+} from './simulation.js';
 export { operatorsFor } from './operators.js';
 export { conditionAssistRequest, parseConditionResult } from './assist.js';
 export { decisionAssistRequest, parseDecisionResult } from './decision-assist.js';

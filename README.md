@@ -8,10 +8,10 @@ Focused React and TypeScript editors for application data. Build query filters a
 
 ## Component catalog
 
-| Module                                          | Includes                                                                                                                                                     | Import                   |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------ |
-| [Condition](./packages/condition/README.md)     | Query builder, filter builder, nested condition and decision editors, strict rule validation, JSON Schema for LLM structured output, and AI-assisted drafts. | `@axc/uikit/condition`   |
-| [JSON Editor](./packages/json-editor/README.md) | Any JSON root, recursive field metadata, JSON Schema conversion, host file controls, property switches, and optional CodeMirror source editing.              | `@axc/uikit/json-editor` |
+| Module                                          | Includes                                                                                                                                        | Import                   |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| [Condition](./packages/condition/README.md)     | Query builder, condition and decision editors, strict validation, AI-assisted drafts, and sample simulation through `@axc/eval`.                | `@axc/uikit/condition`   |
+| [JSON Editor](./packages/json-editor/README.md) | Any JSON root, recursive field metadata, JSON Schema conversion, host file controls, property switches, and optional CodeMirror source editing. | `@axc/uikit/json-editor` |
 
 ## Install
 
@@ -37,7 +37,7 @@ The CodeMirror adapter is available at `@axc/uikit/json-editor/codemirror`.
 
 ## Shared design principles
 
-- Editors take controlled data and emit changes as values. Applications own persistence, evaluation, network requests, and authorization.
+- Editors take controlled data and emit changes as values. Applications own persistence, execution, network requests, and authorization; the optional simulator delegates to the evaluator function supplied by the application.
 - Core modules parse and validate data independently of React. Validation errors have structured issues suitable for localization.
 - Native controls and English and Chinese locales are available by default. Providers let applications supply controls from their design system. Module styles are scoped.
 - Each module owns its public API, tests, and documentation. See the component guide for data contracts and adapter examples.

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0
+
+- Add `AxcConditionSimulator`, a controlled sample picker and execution-trace view for the `@axc/eval` `simulateCondition` export. It shows the final result, decisive rules, negated groups, short-circuit positions and skipped nodes without implementing evaluation inside UIKit.
+- Add typed simulation, trace and optional evidence callback contracts. Evaluator failures remain visible and are forwarded unchanged; stale results disappear when their condition, catalog, executor or selected record changes. UIKit does not retain records, results or evidence.
+- Document the integration boundary and add English/Chinese simulator copy. Sample ids are explicit, non-empty and unique; invalid sample configuration throws instead of selecting a guessed record.
+
 ## 0.5.0
 
 - Separate public editor entry points, shared draft state, and core error types. Validate field configuration once per entry, use one Schema keyword dispatch, and remove unreachable option/file fallbacks. Preserve unexpected parser exceptions instead of relabeling them as JSON syntax errors. File slot paths are undefined for unnamed drafts, rather than guessed as empty property names; empty select placeholders remain explicit choices.

@@ -17,9 +17,10 @@
 | **构建器自带一套 UI。** 输入框和下拉与你的设计系统不一致，想替换只能 fork。                                                          | 8 个基础控件（输入框、单选、多选、复选框、标签、日期、多行文本、按钮）都经过一层很薄的适配层。可接入 Ant Design、MUI、shadcn/ui 或自研组件，并附带一份实测可用的 Ant Design 适配。 |
 | **依赖重、文案写死。**                                                                                                               | 唯一依赖是 React 18/19（约 19 KB gzip）。内置中英文，所有文案和模型提示词都可覆盖。                                                                                                |
 | **AI 判断成本高，又难和规则配合。** 希望先用规则筛掉不需要送给模型的数据，再对模型的输出套规则。                                     | `AxcDecision` 编辑“前置条件 → AI 判断 → 后置条件”方案：前置条件决定哪些记录交给模型；后置条件可以读取 `ai.matched`、`ai.reason` 和你定义的带类型 AI 输出。                         |
+| **复杂条件保存前难以验证。** 用户需要选择一条真实数据，确认最终结果由哪个条件决定、哪些条件因短路没有执行。                          | `AxcConditionSimulator` 把所选数据交给 `@axc/eval`，展示决定性条件及完整短路轨迹。UIKit 不重复实现求值、不保存证据，也不隐藏执行器错误。                                           |
 
-Axc 只负责编辑和校验，不执行规则、不调用模型、不存数据；这些由你的应用通过零依赖的协议层
-`@axc/uikit/condition/core`（Node.js 中也可用）完成。
+Axc 负责编辑和校验，不自行实现规则执行、调用模型或存储数据。浏览器模拟由 `AxcConditionSimulator` 调用应用传入的
+`@axc/eval`；生产执行和持久化仍由宿主负责。零依赖协议层位于 `@axc/uikit/condition/core`，也可在 Node.js 中使用。
 
 | 浅色                                                                                                                                 | 深色                                                                                                                                              |
 | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -37,7 +38,8 @@ Axc 只负责编辑和校验，不执行规则、不调用模型、不存数据�
 
 ### 不适合的场景
 
-- 需要现成的 SQL、MongoDB、CEL、JsonLogic 导出或内置规则执行器。Axc 只负责编辑和校验；
+- 需要编辑器直接内置 SQL、MongoDB、CEL、JsonLogic 导出，或把执行器捆绑进 UIKit。模拟组件要求应用显式传入
+  `@axc/eval` 函数；
   [react-querybuilder](https://github.com/react-querybuilder/react-querybuilder) 和
   [react-awesome-query-builder](https://github.com/ukrbublik/react-awesome-query-builder) 提供格式化导出和更多控件。
 - 需要拖拽调整规则顺序。
@@ -46,7 +48,7 @@ Axc 只负责编辑和校验，不执行规则、不调用模型、不存数据�
 
 - [安装](#安装)
 - [快速上手](#快速上手)
-- [四个组件](#四个组件)
+- [五个组件](#五个组件)
 - [API 参考](#api-参考)
 - [错误](#错误)
 - [国际化](#国际化)
@@ -96,14 +98,15 @@ export function Filter() {
 `onChange` 可能给出未完成的草稿。编辑器会就地显示问题；值合法之前 `parseCondition` 会抛出
 `AxcValidationError`。保存前务必先解析。
 
-## 四个组件
+## 五个组件
 
-| 组件                 | 编辑内容                    | 何时调用模型               |
-| -------------------- | --------------------------- | -------------------------- |
-| `AxcCondition`       | 条件树                      | 从不                       |
-| `AxcConditionAssist` | 条件树 + AI 辅助            | 用户点击“生成”时           |
-| `AxcDecision`        | 前置条件、AI 判断、后置条件 | 从不（判断由你的应用执行） |
-| `AxcDecisionAssist`  | 整套判断方案 + AI 辅助      | 用户点击“生成”时           |
+| 组件                    | 用途                                    | 外部工作                              |
+| ----------------------- | --------------------------------------- | ------------------------------------- |
+| `AxcCondition`          | 编辑条件树                              | 无                                    |
+| `AxcConditionAssist`    | 通过 AI 辅助编辑条件树                  | 点击生成时调用宿主模型                |
+| `AxcConditionSimulator` | 选择一条数据并展示真实执行轨迹          | 点击模拟时调用传入的 `@axc/eval` 函数 |
+| `AxcDecision`           | 编辑“前置条件 → AI 判断 → 后置条件”方案 | 无（由应用执行判断）                  |
+| `AxcDecisionAssist`     | 通过 AI 辅助编辑整套判断方案            | 点击生成时调用宿主模型                |
 
 ### AxcCondition
 
@@ -124,6 +127,36 @@ const assist: AxcAssistTransport = {
 ```
 
 候选先预览（可继续编辑），只有点击“应用”才会调用 `onChange`。
+
+### AxcConditionSimulator
+
+从版本化 Release 产物安装 `@axc/eval`，将其真实 WebAssembly 导出函数直接传入。UIKit 本身不依赖执行器，
+未使用模拟组件的应用不会加载 WASM。
+
+```sh
+npm install https://github.com/axclogo/AxcEval/releases/download/v0.3.0/axc-eval-0.3.0.tgz
+```
+
+```tsx
+import { simulateCondition } from '@axc/eval';
+import { AxcConditionSimulator } from '@axc/uikit/condition';
+
+const [sampleId, setSampleId] = useState<string | null>('order-42');
+
+<AxcConditionSimulator
+	fields={fields}
+	value={value}
+	samples={[{ id: 'order-42', label: '订单 #42', record: order }]}
+	selectedSampleId={sampleId}
+	onSelectedSampleIdChange={setSampleId}
+	simulate={simulateCondition}
+	onEvidence={keepSnapshots ? saveSnapshot : undefined}
+/>;
+```
+
+结果包含最终是否通过、决定结果的条件、取反组、短路位置及未执行节点。条件、字段目录、执行器或所选数据
+发生变化后，旧结果立即隐藏，不会冒充当前结果。条件或数据不合法时保持为 Eval 错误：组件显示错误，并通过
+`onError` 原样传出。证据回调为可选项，UIKit 不保留快照。
 
 ### AxcDecision
 
@@ -151,7 +184,8 @@ const [decision, setDecision] = useState(emptyDecision);
 
 ### 组件属性
 
-四个组件都接受目录属性，以及 `value`、`onChange`、`disabled`、`readOnly`。
+四个编辑组件都接受目录属性，以及 `value`、`onChange`、`disabled`、`readOnly`。模拟组件使用独立的受控
+数据选择与执行契约。
 
 | 属性              | 类型                                     | 说明                                                                         |
 | ----------------- | ---------------------------------------- | ---------------------------------------------------------------------------- |
@@ -166,6 +200,10 @@ const [decision, setDecision] = useState(emptyDecision);
 | `assist`          | `AxcAssistTransport`（仅 `*Assist`）     | 辅助模型目录和 `generate` 回调。                                             |
 | `models`          | `AxcModelOption[]`（`AxcDecision*`）     | 运行模型，可为空数组。Axc 只检查 `value.model` 在列表中。                    |
 | `conditionAssist` | `AxcAssistTransport`（`AxcDecision*`）   | 可选：前置、后置条件编辑器的辅助。                                           |
+
+`AxcConditionSimulator` 另外接收 `samples`、受控的 `selectedSampleId` /
+`onSelectedSampleIdChange`，并通过 `simulate` 接收 `simulateCondition`。可选的 `onResult`、`onError`、
+`onEvidence` 会原样传出执行器结果。样本 id 必须非空且唯一；配置有歧义时抛 `TypeError`，不会猜选某条数据。
 
 ### `ConditionField`
 
@@ -208,7 +246,7 @@ type ConditionField = {
 | `formatIssue(issue, locale)` / `formatPath(path)`                       | 渲染问题文案 / `$.rules[0].value`。                         |
 | `en`、`zhCN`                                                            | 内置语言包。                                                |
 
-仅 React 入口导出：四个组件、`AxcUIProvider`、`useAxcLocale` 以及控件属性类型。
+仅 React 入口导出：五个组件、`AxcUIProvider`、`useAxcLocale` 以及控件属性类型。
 
 ## 错误
 
@@ -449,7 +487,7 @@ npm run demo:build # 构建一次，之后可直接双击打开 packages/conditi
 src/core/         协议：类型、操作符、校验、Schema、提示词、语言包（零依赖）
 src/ui/           控件契约、Provider、原生控件（原生控件只允许出现在这里）
 src/internal/     组件共用的编辑器辅助代码
-src/components/   四个公开组件
+src/components/   五个公开组件
 tests/            node:test + Testing Library + happy-dom；仓库根目录的 tests/react18 存放 React 18 运行时
 ```
 

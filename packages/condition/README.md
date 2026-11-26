@@ -17,9 +17,11 @@ define AND/OR rules that you store as JSON and run on your own backend.
 | **The builder brings its own UI.** Its inputs and dropdowns do not match your design system, and replacing them means forking.                                                          | All eight basic controls (input, select, multi-select, checkbox, tags, date, textarea, button) go through a small adapter layer. Plug in Ant Design, MUI, shadcn/ui or your own; a tested Ant Design adapter is included.                                     |
 | **Heavy dependencies and hard-coded language.**                                                                                                                                         | React 18/19 is the only dependency (≈19 KB gzip). English and Chinese are built in; every string and model prompt can be overridden.                                                                                                                          |
 | **AI-based decisions are expensive and hard to combine with rules.** You want rules to pre-filter what reaches the model, and rules on the model's output afterwards.                   | `AxcDecision` edits a precondition → AI decision → postcondition plan. The precondition decides which records reach the model; the postcondition can read `ai.matched`, `ai.reason` and your own typed AI outputs.                                            |
+| **A complex rule is hard to verify before saving.** A user needs to try one real record and see which condition determined the result or was skipped.                                   | `AxcConditionSimulator` sends the selected sample to `@axc/eval` and renders its decisive rules and exact short-circuit trace. UIKit never reimplements evaluation, stores evidence or hides evaluator errors.                                                |
 
-Axc edits and validates. It does not evaluate rules, call models or store data; your app does, with the
-framework-free protocol in `@axc/uikit/condition/core` (also usable in Node.js).
+Axc edits and validates. It does not implement rule evaluation, call models or store data. For browser simulation,
+`AxcConditionSimulator` delegates to the `@axc/eval` function supplied by your app; production execution and persistence
+remain host-owned. The framework-free protocol in `@axc/uikit/condition/core` is also usable in Node.js.
 
 | Light                                                                                                                                | Dark                                                                                                                                                  |
 | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -37,7 +39,8 @@ Errors are shown on the row they belong to ("Required." above). AI candidates ar
 
 ### When not to use it
 
-- You need ready-made export to SQL, MongoDB, CEL or JsonLogic, or a built-in rule evaluator. Axc only edits and validates;
+- You need SQL, MongoDB, CEL or JsonLogic export bundled into the editor, or an evaluator bundled into UIKit. The
+  simulator requires the explicit `@axc/eval` function supplied by your application;
   [react-querybuilder](https://github.com/react-querybuilder/react-querybuilder) and
   [react-awesome-query-builder](https://github.com/ukrbublik/react-awesome-query-builder) ship formatters and more widgets.
 - You want drag-and-drop rule reordering.
@@ -46,7 +49,7 @@ Errors are shown on the row they belong to ("Required." above). AI candidates ar
 
 - [Install](#install)
 - [Quick start](#quick-start)
-- [The four components](#the-four-components)
+- [The five components](#the-five-components)
 - [API reference](#api-reference)
 - [Errors](#errors)
 - [Internationalization](#internationalization)
@@ -97,14 +100,15 @@ export function Filter() {
 `onChange` may emit unfinished drafts. The editor shows problems inline, and `parseCondition` throws
 `AxcValidationError` until the value is valid. Always parse before saving.
 
-## The four components
+## The five components
 
-| Component            | Edits                                      | Calls a model                      |
-| -------------------- | ------------------------------------------ | ---------------------------------- |
-| `AxcCondition`       | A condition tree                           | Never                              |
-| `AxcConditionAssist` | A condition tree, with an AI assistant     | When the user clicks Generate      |
-| `AxcDecision`        | Precondition, AI decision, postcondition   | Never (your app runs the decision) |
-| `AxcDecisionAssist`  | The whole decision plan, with an assistant | When the user clicks Generate      |
+| Component               | Purpose                                                     | External work                                  |
+| ----------------------- | ----------------------------------------------------------- | ---------------------------------------------- |
+| `AxcCondition`          | Edit a condition tree                                       | None                                           |
+| `AxcConditionAssist`    | Edit a condition tree with an AI assistant                  | Calls the host model on Generate               |
+| `AxcConditionSimulator` | Run a selected sample and explain the exact execution trace | Calls the supplied `@axc/eval` function on Run |
+| `AxcDecision`           | Edit a precondition → AI decision → postcondition plan      | None (your app runs the decision)              |
+| `AxcDecisionAssist`     | Edit the whole decision plan with an assistant              | Calls the host model on Generate               |
 
 ### AxcCondition
 
@@ -125,6 +129,37 @@ const assist: AxcAssistTransport = {
 ```
 
 The candidate is previewed (and can be edited) first. Only **Apply** calls `onChange`.
+
+### AxcConditionSimulator
+
+Install `@axc/eval` from its versioned release asset, then pass its real WebAssembly export directly. UIKit has no
+evaluator dependency, so apps that do not render the simulator do not load WASM.
+
+```sh
+npm install https://github.com/axclogo/AxcEval/releases/download/v0.3.0/axc-eval-0.3.0.tgz
+```
+
+```tsx
+import { simulateCondition } from '@axc/eval';
+import { AxcConditionSimulator } from '@axc/uikit/condition';
+
+const [sampleId, setSampleId] = useState<string | null>('order-42');
+
+<AxcConditionSimulator
+	fields={fields}
+	value={value}
+	samples={[{ id: 'order-42', label: 'Order #42', record: order }]}
+	selectedSampleId={sampleId}
+	onSelectedSampleIdChange={setSampleId}
+	simulate={simulateCondition}
+	onEvidence={keepSnapshots ? saveSnapshot : undefined}
+/>;
+```
+
+The result shows the final match, every decisive rule, negated groups, the short-circuit position and nodes that were
+not evaluated. A result disappears as soon as its condition, catalog, executor or selected record changes, so stale
+output is never presented as current. Invalid conditions and records remain evaluator errors; the component displays
+the error and forwards its original value through `onError`. Evidence is opt-in and is never retained by UIKit.
 
 ### AxcDecision
 
@@ -152,7 +187,8 @@ See the maintained [React interface](./api/index.api.md) and [core interface](./
 
 ### Component props
 
-All four components take the catalog props plus `value`, `onChange`, `disabled` and `readOnly`.
+The four editors take the catalog props plus `value`, `onChange`, `disabled` and `readOnly`. The simulator has a
+separate controlled sample and execution contract.
 
 | Prop              | Type                                     | Notes                                                                                           |
 | ----------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------- |
@@ -167,6 +203,11 @@ All four components take the catalog props plus `value`, `onChange`, `disabled` 
 | `assist`          | `AxcAssistTransport` (`*Assist` only)    | Model list and `generate` callback for the assistant.                                           |
 | `models`          | `AxcModelOption[]` (`AxcDecision*`)      | Runtime models. May be empty. Axc only checks that `value.model` is in the list.                |
 | `conditionAssist` | `AxcAssistTransport` (`AxcDecision*`)    | Optional assistant for the pre- and postcondition editors.                                      |
+
+`AxcConditionSimulator` additionally takes `samples`, controlled `selectedSampleId` /
+`onSelectedSampleIdChange`, and the `simulateCondition` function as `simulate`. Optional `onResult`, `onError` and
+`onEvidence` callbacks expose the exact evaluator outputs. Sample ids must be non-empty and unique; ambiguous
+configuration throws `TypeError` instead of choosing a record.
 
 ### `ConditionField`
 
@@ -209,7 +250,7 @@ type ConditionField = {
 | `formatIssue(issue, locale)` / `formatPath(path)`                       | Render an issue message / `$.rules[0].value`.                            |
 | `en`, `zhCN`                                                            | Built-in locales.                                                        |
 
-React-only exports: the four components, `AxcUIProvider`, `useAxcLocale` and the control prop types.
+React-only exports: the five components, `AxcUIProvider`, `useAxcLocale` and the control prop types.
 
 ## Errors
 
@@ -452,7 +493,7 @@ npm run demo:build # build once; then open packages/condition/demo/index.html di
 src/core/         protocol: types, operators, validation, schemas, prompts, locales (no dependencies)
 src/ui/           control contracts, provider, native controls (the only place native controls live)
 src/internal/     editor helpers shared by the components
-src/components/   the four public components
+src/components/   the five public components
 tests/            node:test + Testing Library + happy-dom; the root tests/react18 holds the React 18 runtime
 ```
 

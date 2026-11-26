@@ -105,6 +105,23 @@ export interface AxcLocale {
 		aiMatched: string;
 		aiReason: string;
 		aiOutput: (label: string) => string;
+		simulationSample: string;
+		chooseSample: string;
+		unknownSample: (id: string) => string;
+		runSimulation: string;
+		simulationMatched: string;
+		simulationNotMatched: string;
+		simulationFailed: (message: string) => string;
+		simulationDecisiveRules: string;
+		simulationNoDecisiveRules: string;
+		simulationTrace: string;
+		simulationGroup: string;
+		simulationNegated: string;
+		simulationPassed: string;
+		simulationBlocked: string;
+		simulationSkippedAnd: string;
+		simulationSkippedOr: string;
+		simulationShortCircuit: (position: number) => string;
 	};
 	prompts: {
 		conditionAssist: (context: AxcAssistPromptContext) => string;
@@ -260,6 +277,23 @@ export const en: AxcLocale = {
 		aiMatched: 'AI · matched',
 		aiReason: 'AI · reason',
 		aiOutput: (label) => `AI · ${label}`,
+		simulationSample: 'Simulation sample',
+		chooseSample: 'Select a sample',
+		unknownSample: (id) => `Unknown sample: ${id}`,
+		runSimulation: 'Run simulation',
+		simulationMatched: 'Matched',
+		simulationNotMatched: 'Not matched',
+		simulationFailed: (message) => `Simulation failed: ${message}`,
+		simulationDecisiveRules: 'Decisive conditions',
+		simulationNoDecisiveRules: 'No rule was needed to determine the result.',
+		simulationTrace: 'Execution trace',
+		simulationGroup: 'group',
+		simulationNegated: 'negated group',
+		simulationPassed: 'passed',
+		simulationBlocked: 'blocked',
+		simulationSkippedAnd: 'skipped after an AND condition blocked',
+		simulationSkippedOr: 'skipped after an OR condition passed',
+		simulationShortCircuit: (position) => `stopped at child ${position}`,
 	},
 	prompts: {
 		conditionAssist: (c) =>

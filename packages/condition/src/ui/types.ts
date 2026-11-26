@@ -109,7 +109,7 @@ export interface AxcDateInputProps extends AxcControlProps {
 
 /**
  * The full set of basic controls. Axc renders every input, select, textarea and button through
- * these, so swapping them restyles all four components. Define adapters at module level: a
+ * these, so swapping them restyles all five components. Define adapters at module level: a
  * component created during render remounts on every render and loses focus and drafts.
  */
 export interface AxcUIComponents {

@@ -20,6 +20,7 @@ AxcUIKit-TypeScript is one repository of focused React components, not a complet
 - Control slots are stable React components whose callbacks receive strings, booleans, selections, or action signals. Slots forward the public accessibility and interaction props to their controls. Where exposed, `readOnly` preserves inspection and copying while preventing edits. `disabled` makes controls and actions inert.
 - Native controls are available through each provider. Scoped styles and CSS variables cover editor layout and default controls. Applications style the internals of their injected controls through their design system.
 - Hosts own networking, authorization, business validation, and persistence. Condition's AI assist invokes the model callback supplied by the host after the user's Generate action.
+- Condition simulation is an explicit adapter boundary. `AxcConditionSimulator` receives the structural type of `@axc/eval`'s `simulateCondition` export and calls it only after the user selects a host-owned sample and clicks Run. UIKit does not import WASM, implement operators, validate executor output, persist evidence or turn errors into non-matches. A result is current only while the condition, catalog, executor and selected record references that produced it remain current.
 
 ## JSON editor contract
 

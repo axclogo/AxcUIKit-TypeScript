@@ -1,6 +1,8 @@
-/** React entry: the four components, the UI provider and everything from `@axc/uikit/condition/core`. Import styles separately. */
+/** React entry: the five components, the UI provider and everything from `@axc/uikit/condition/core`. Import styles separately. */
 export { AxcCondition } from './components/AxcCondition.js';
 export type { AxcConditionProps } from './components/AxcCondition.js';
+export { AxcConditionSimulator } from './components/AxcConditionSimulator.js';
+export type { AxcConditionSimulatorProps } from './components/AxcConditionSimulator.js';
 export { AxcConditionAssist } from './components/AxcConditionAssist.js';
 export type { AxcConditionAssistProps } from './components/AxcConditionAssist.js';
 export { AxcDecision } from './components/AxcDecision.js';
