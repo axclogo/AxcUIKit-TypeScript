@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.2
+
+- Activate token-free npm publication through the verified GitHub Actions Trusted Publisher.
+
 ## 0.6.1
 
 - Publish the package as `@axclogo/uikit` and use `@axclogo/eval` for the optional WebAssembly executor.
