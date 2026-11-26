@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.0
+## 0.6.1
 
 - Publish the package as `@axclogo/uikit` and use `@axclogo/eval` for the optional WebAssembly executor.
 - Add `AxcConditionSimulator`, a controlled sample picker and execution-trace view for the `@axclogo/eval` `simulateCondition` export. It shows the final result, decisive rules, negated groups, short-circuit positions and skipped nodes without implementing evaluation inside UIKit.

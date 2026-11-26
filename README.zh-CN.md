@@ -26,7 +26,7 @@ npm install @axclogo/uikit
 npm install @axclogo/uikit react react-dom
 ```
 
-需要严格控制升级时请固定 npm 版本，例如 `npm install @axclogo/uikit@0.6.0`。包内自带 TypeScript 类型。
+需要严格控制升级时请固定 npm 版本，例如 `npm install @axclogo/uikit@0.6.1`。包内自带 TypeScript 类型。
 `@axclogo/uikit` 不提供根入口，必须使用下表中的显式子路径，避免未使用的编辑器或 CodeMirror 进入应用包。
 
 | 用途                       | 导入路径                                |

@@ -27,7 +27,7 @@ npm install @axclogo/uikit react react-dom
 ```
 
 Pin an exact npm version when the application needs controlled upgrades, for example
-`npm install @axclogo/uikit@0.6.0`. TypeScript declarations are included. There is intentionally no `@axclogo/uikit` root
+`npm install @axclogo/uikit@0.6.1`. TypeScript declarations are included. There is intentionally no `@axclogo/uikit` root
 entry: import only the explicit subpaths below so unused editors and the CodeMirror adapter stay out of the application.
 
 | Use                                      | Import                                  |
