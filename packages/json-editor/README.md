@@ -2,6 +2,16 @@
 
 A controlled React editor for any JSON value: object, array, string, number, boolean or null. `ParamObjectEditor` renders a tree; `JsonObjectEditor` adds JSON source mode. The component names remain unchanged. Import the stylesheet explicitly.
 
+## Install
+
+```sh
+npm install @axc/uikit
+```
+
+React and React DOM are peer dependencies. Import the editors from `@axc/uikit/json-editor`, React-free parsing from
+`@axc/uikit/json-editor/core`, styles from `@axc/uikit/json-editor/styles.css`, and the optional CodeMirror adapter from
+`@axc/uikit/json-editor/codemirror`. The standard editor does not load CodeMirror unless that adapter is imported.
+
 ```tsx
 import { useState } from 'react';
 import { JsonEditorProvider, JsonObjectEditor, zhCN, type JsonContent, type JsonField } from '@axc/uikit/json-editor';

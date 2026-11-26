@@ -65,6 +65,7 @@
 		"build": "node scripts/build.mjs && tsc -p tsconfig.build.json",
 		"check": "tsc --noEmit && node scripts/check-boundaries.mjs && eslint . --max-warnings 0 && knip",
 		"test": "npm run test:react19 && npm run test:react18",
+		"test:publish": "node --test scripts/check-publish.test.mjs",
 		"test:react19": "npm run test:condition && npm run test:json-editor",
 		"pretest:react18": "npm --prefix tests/react18 install --no-audit --no-fund --silent",
 		"test:react18": "node --import ./tests/setup/react18.mjs --import tsx --import ./tests/setup/dom.ts --test 'packages/*/tests/**/*.test.{ts,tsx}'",
@@ -75,7 +76,7 @@
 		"api": "node scripts/check-api.mjs --update",
 		"api:check": "node scripts/check-api.mjs",
 		"size": "node scripts/check-size.mjs",
-		"verify": "npm run format:check && npm run check && npm test && npm run build && npm run api:check && npm run size",
+		"verify": "npm run format:check && npm run check && npm run test:publish && npm test && npm run build && npm run api:check && npm run size",
 		"demo:build": "node scripts/dev.mjs --build",
 		"test:condition": "node --import tsx --import ./tests/setup/dom.ts --test --experimental-test-coverage --test-coverage-include='packages/condition/src/**' --test-coverage-lines=98 --test-coverage-branches=95 --test-coverage-functions=93 'packages/condition/tests/**/*.test.{ts,tsx}'",
 		"test:json-editor": "node --import tsx --import ./tests/setup/dom.ts --test 'packages/json-editor/tests/**/*.test.{ts,tsx}'"

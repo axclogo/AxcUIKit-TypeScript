@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: npm-publish-main
@@ -16,28 +15,50 @@ concurrency:
 
 jobs:
   publish:
-    if: github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
+    if: >-
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - uses: actions/checkout@v6
+      - name: Check out the tested commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
-      - uses: actions/setup-node@v6
+          persist-credentials: false
+      - name: Confirm the tested commit is still main
+        run: |
+          git fetch --no-tags origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+      - name: Set up the release runtime
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
-      - id: package
+      - name: Check package release state
+        id: package
         run: node scripts/check-publish.mjs
-      - name: First publication required
+      - name: Reject an uninitialized npm package
         if: steps.package.outputs.status == 'bootstrap'
-        run: echo '::notice::@axc/uikit must be created once before npm Trusted Publisher can be configured.'
-      - if: steps.package.outputs.publish == 'true'
+        run: |
+          echo '::error::@axc/uikit does not exist on npm. Complete the documented one-time bootstrap before automatic publishing.'
+          exit 1
+      - name: Install locked dependencies
+        if: steps.package.outputs.publish == 'true'
         run: npm ci
-      - if: steps.package.outputs.publish == 'true'
+      - name: Run the complete release gate
+        if: steps.package.outputs.publish == 'true'
         run: npm run verify
-      - if: steps.package.outputs.publish == 'true'
+      - name: Inspect the package archive
+        if: steps.package.outputs.publish == 'true'
         run: npm pack --dry-run
-      - if: steps.package.outputs.publish == 'true'
+      - name: Publish with npm Trusted Publisher
+        if: steps.package.outputs.publish == 'true'
         run: npm publish

@@ -62,13 +62,14 @@ Axc 负责编辑和校验，不自行实现规则执行、调用模型或存储�
 ## 安装
 
 ```sh
-npm install github:axclogo/AxcUIKit-TypeScript
+npm install @axc/uikit
 ```
 
-直接从 GitHub tag 安装；安装时 npm 会自动构建 `dist/`（`prepare`，约 20 秒）。请固定 tag 以保证可复现。
-导入方式与 npm 包相同：`@axc/uikit/condition`、`@axc/uikit/condition/core`、`@axc/uikit/condition/styles.css`。
+React 和 React DOM 是 peer dependency。React 组件从 `@axc/uikit/condition` 导入，无 React 的解析器从
+`@axc/uikit/condition/core` 导入，样式从 `@axc/uikit/condition/styles.css` 导入。包不提供根入口。
+需要控制升级时请固定精确 npm 版本。
 
-开发需要 Node.js 22.18+。运行时代码目标为 ES2022。
+安装和开发需要 Node.js 22.18+。浏览器运行时代码目标为 ES2022。
 
 ## 快速上手
 

@@ -63,14 +63,14 @@ Errors are shown on the row they belong to ("Required." above). AI candidates ar
 ## Install
 
 ```sh
-npm install github:axclogo/AxcUIKit-TypeScript
+npm install @axc/uikit
 ```
 
-Installs straight from the GitHub tag; npm builds `dist/` during install (`prepare`, about 20 s). Pin a tag for
-reproducible installs. Imports are the same as for a registry package: `@axc/uikit/condition`, `@axc/uikit/condition/core`,
-`@axc/uikit/condition/styles.css`.
+React and React DOM are peer dependencies. Import React components from `@axc/uikit/condition`, React-free parsers from
+`@axc/uikit/condition/core`, and the stylesheet from `@axc/uikit/condition/styles.css`. The package has no root entry.
+Pin an exact npm version when upgrades must be controlled.
 
-Node.js 22.18+ is required for development. The runtime code targets ES2022.
+Node.js 22.18+ is required for installation and development. The browser runtime code targets ES2022.
 
 ## Quick start
 

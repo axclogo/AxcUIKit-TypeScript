@@ -16,24 +16,84 @@
 ## 安装
 
 ```sh
-npm install github:axclogo/AxcUIKit-TypeScript
+npm install @axc/uikit
 ```
 
-从 Git 安装时会构建包。需要可复现安装时请固定发布标签或提交。支持 React 18.3 和 19。
+要求 Node.js 22.18 或更新版本，支持 React 18.3 和 React 19。React 与 React DOM 是 peer dependency；应用尚未
+安装时可以一次安装：
 
-按模块子路径导入组件与样式。校验和协议工具可脱离 React 使用。
+```sh
+npm install @axc/uikit react react-dom
+```
 
-```ts
-import { AxcCondition } from '@axc/uikit/condition';
-import { parseCondition } from '@axc/uikit/condition/core';
+需要严格控制升级时请固定 npm 版本，例如 `npm install @axc/uikit@0.6.0`。包内自带 TypeScript 类型。
+`@axc/uikit` 不提供根入口，必须使用下表中的显式子路径，避免未使用的编辑器或 CodeMirror 进入应用包。
+
+| 用途                       | 导入路径                            |
+| -------------------------- | ----------------------------------- |
+| Condition React 组件与契约 | `@axc/uikit/condition`              |
+| 无 React 的条件解析        | `@axc/uikit/condition/core`         |
+| Condition 样式             | `@axc/uikit/condition/styles.css`   |
+| JSON Editor React 组件     | `@axc/uikit/json-editor`            |
+| 无 React 的 JSON 解析      | `@axc/uikit/json-editor/core`       |
+| JSON Editor 样式           | `@axc/uikit/json-editor/styles.css` |
+| 可选 CodeMirror 源码控件   | `@axc/uikit/json-editor/codemirror` |
+
+只有测试尚未发布的提交时才从 Git 安装。必须固定 tag 或 commit，因为 Git 安装会执行仓库构建：
+
+```sh
+npm install github:axclogo/AxcUIKit-TypeScript#COMMIT_SHA
+```
+
+## 基本使用
+
+Condition 使用受控状态。在应用入口或组件包中导入一次样式，并在持久化草稿前显式解析：
+
+```tsx
+import { useState } from 'react';
+import {
+	AxcCondition,
+	emptyCondition,
+	parseCondition,
+	type AxcConditionValue,
+	type ConditionField,
+} from '@axc/uikit/condition';
 import '@axc/uikit/condition/styles.css';
 
-import { JsonObjectEditor } from '@axc/uikit/json-editor';
-import { parseJsonValue } from '@axc/uikit/json-editor/core';
-import '@axc/uikit/json-editor/styles.css';
+const fields: ConditionField[] = [
+	{ name: 'title', label: '标题' },
+	{ name: 'price', label: '价格', dataType: 'number' },
+];
+
+export function FilterEditor({ onSave }: { onSave: (value: AxcConditionValue) => void }) {
+	const [value, setValue] = useState(emptyCondition);
+	return (
+		<>
+			<AxcCondition fields={fields} value={value} onChange={setValue} />
+			<button type="button" onClick={() => onSave(parseCondition(value, { fields }))}>
+				保存
+			</button>
+		</>
+	);
+}
 ```
 
-CodeMirror 适配器位于 `@axc/uikit/json-editor/codemirror`。
+JSON Editor 同样使用受控状态，并支持任意 JSON 根值：
+
+```tsx
+import { useState } from 'react';
+import { JsonObjectEditor, type JsonContent } from '@axc/uikit/json-editor';
+import '@axc/uikit/json-editor/styles.css';
+
+export function SettingsEditor() {
+	const [content, setContent] = useState<JsonContent>({ kind: 'value', value: { enabled: true } });
+	return <JsonObjectEditor content={content} onChange={setContent} />;
+}
+```
+
+标准 JSON 编辑器不会加载 CodeMirror。需要 CodeMirror 源码模式时，从
+`@axc/uikit/json-editor/codemirror` 导入 `CodeMirrorSourceEditor` 并通过 `JsonEditorProvider` 注入。
+Condition 模拟器也不内置执行逻辑，应用必须显式传入兼容的 `@axc/eval` 函数。完整契约与适配示例见上方组件文档。
 
 ## 共同设计原则
 
