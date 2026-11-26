@@ -12,11 +12,11 @@ against antd 5 + React 19 and run through the checklist below. Use it as a templ
 
 ```tsx
 // condition-ui.tsx: define adapters at module level, never inside a component
-import type { AxcUIComponents } from '@axc/uikit/condition';
+import type { AxcUIComponents } from '@axclogo/uikit/condition';
 export const controls: Partial<AxcUIComponents> = { Select: MySelect, Button: MyButton };
 
 // app
-import { AxcUIProvider, zhCN } from '@axc/uikit/condition';
+import { AxcUIProvider, zhCN } from '@axclogo/uikit/condition';
 <AxcUIProvider components={controls} locale={zhCN}>
 	<AxcCondition fields={fields} value={value} onChange={setValue} />
 </AxcUIProvider>;
@@ -70,8 +70,8 @@ Run these against your adapters (the Ant Design example passes all of them):
 Paste this when asking an AI to write adapters for your UI library:
 
 ```text
-Write adapters for @axc/uikit/condition using <your UI library>. Read node_modules/@axc/uikit/packages/condition/docs/ui-adapters.md
-and use node_modules/@axc/uikit/packages/condition/docs/antd-adapter.tsx as the template.
+Write adapters for @axclogo/uikit/condition using <your UI library>. Read node_modules/@axclogo/uikit/packages/condition/docs/ui-adapters.md
+and use node_modules/@axclogo/uikit/packages/condition/docs/antd-adapter.tsx as the template.
 Export `controls` typed as Partial<AxcUIComponents> (or AxcUIComponents for all eight), defined at module level.
 For every control: label → aria-label; className on the root element; disabled blocks all callbacks;
 invalid → error state + aria-invalid; describedBy → aria-describedby; onChange receives values, not events.

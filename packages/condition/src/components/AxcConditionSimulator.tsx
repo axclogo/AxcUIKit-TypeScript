@@ -21,7 +21,7 @@ export interface AxcConditionSimulatorProps extends AxcConditionCatalog {
 	selectedSampleId: string | null;
 	/** Without it the sample picker is read-only. */
 	onSelectedSampleIdChange?: (id: string) => void;
-	/** Pass `simulateCondition` from `@axc/eval` directly. */
+	/** Pass `simulateCondition` from `@axclogo/eval` directly. */
 	simulate: AxcConditionSimulationExecutor;
 	allowEmpty?: boolean;
 	disabled?: boolean;
@@ -129,7 +129,7 @@ const errorText = (error: unknown) =>
 	error instanceof Error ? error.message : (JSON.stringify(error) ?? String(error));
 
 /**
- * Runs the selected sample through `@axc/eval` and renders its decisive rules and exact short-circuit trace.
+ * Runs the selected sample through `@axclogo/eval` and renders its decisive rules and exact short-circuit trace.
  * UIKit does not evaluate, repair or retain conditions, records, results or evidence itself.
  * Empty or duplicate sample ids throw `TypeError` during render. Evaluator failures are displayed and passed
  * unchanged to `onError`; exceptions from host callbacks are not intercepted.

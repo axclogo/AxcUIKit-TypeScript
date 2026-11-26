@@ -2,21 +2,21 @@
 
 > Focused React and TypeScript editors for query filters, condition and decision rules, and JSON values and parameters.
 
-Install the published package with `npm install @axc/uikit`. Use a pinned Git commit only to test an unpublished change. The package has explicit component subpaths and intentionally has no root entry.
+Install the published package with `npm install @axclogo/uikit`. Use a pinned Git commit only to test an unpublished change. The package has explicit component subpaths and intentionally has no root entry.
 
 ## Condition
 
-- `@axc/uikit/condition` exports `AxcCondition`, `AxcConditionAssist`, `AxcConditionSimulator`, `AxcDecision` and `AxcDecisionAssist`.
-- Use `@axc/uikit/condition/core` for the React-free parser, schema, prompt and locale helpers. Call `parseCondition(value, { fields })` before saving, or use `validateCondition` for structured issues.
-- Import `@axc/uikit/condition/styles.css`. Use `AxcUIProvider` to supply native-equivalent controls and a locale.
-- The host evaluates rules, calls models, and persists data. `AxcConditionSimulator` calls the compatible `@axc/eval` function supplied by the host; UIKit does not bundle an evaluator or WASM.
+- `@axclogo/uikit/condition` exports `AxcCondition`, `AxcConditionAssist`, `AxcConditionSimulator`, `AxcDecision` and `AxcDecisionAssist`.
+- Use `@axclogo/uikit/condition/core` for the React-free parser, schema, prompt and locale helpers. Call `parseCondition(value, { fields })` before saving, or use `validateCondition` for structured issues.
+- Import `@axclogo/uikit/condition/styles.css`. Use `AxcUIProvider` to supply native-equivalent controls and a locale.
+- The host evaluates rules, calls models, and persists data. `AxcConditionSimulator` calls the compatible `@axclogo/eval` function supplied by the host; UIKit does not bundle an evaluator or WASM.
 
 ## JSON Editor
 
-- `@axc/uikit/json-editor` exports `ParamObjectEditor`, `JsonObjectEditor` and `JsonEditorProvider`.
+- `@axclogo/uikit/json-editor` exports `ParamObjectEditor`, `JsonObjectEditor` and `JsonEditorProvider`.
 - `JsonObjectEditor` uses explicit value and text variants. Invalid JSON stays as text. `ParamObjectEditor` edits any JSON value with recursive field metadata, host file controls and controlled root-property toggles.
-- Use `@axc/uikit/json-editor/core` for `parseJsonValue`, `parseJsonContent`, and `jsonSchemaToField` (expanded draft 2020-12 subset). Import `@axc/uikit/json-editor/styles.css` for styles.
-- Use `@axc/uikit/json-editor/codemirror` for the optional CodeMirror source-editor slot.
+- Use `@axclogo/uikit/json-editor/core` for `parseJsonValue`, `parseJsonContent`, and `jsonSchemaToField` (expanded draft 2020-12 subset). Import `@axclogo/uikit/json-editor/styles.css` for styles.
+- Use `@axclogo/uikit/json-editor/codemirror` for the optional CodeMirror source-editor slot.
 
 ## Documentation
 

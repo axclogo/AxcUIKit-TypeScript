@@ -5,17 +5,23 @@ A controlled React editor for any JSON value: object, array, string, number, boo
 ## Install
 
 ```sh
-npm install @axc/uikit
+npm install @axclogo/uikit
 ```
 
-React and React DOM are peer dependencies. Import the editors from `@axc/uikit/json-editor`, React-free parsing from
-`@axc/uikit/json-editor/core`, styles from `@axc/uikit/json-editor/styles.css`, and the optional CodeMirror adapter from
-`@axc/uikit/json-editor/codemirror`. The standard editor does not load CodeMirror unless that adapter is imported.
+React and React DOM are peer dependencies. Import the editors from `@axclogo/uikit/json-editor`, React-free parsing from
+`@axclogo/uikit/json-editor/core`, styles from `@axclogo/uikit/json-editor/styles.css`, and the optional CodeMirror adapter from
+`@axclogo/uikit/json-editor/codemirror`. The standard editor does not load CodeMirror unless that adapter is imported.
 
 ```tsx
 import { useState } from 'react';
-import { JsonEditorProvider, JsonObjectEditor, zhCN, type JsonContent, type JsonField } from '@axc/uikit/json-editor';
-import '@axc/uikit/json-editor/styles.css';
+import {
+	JsonEditorProvider,
+	JsonObjectEditor,
+	zhCN,
+	type JsonContent,
+	type JsonField,
+} from '@axclogo/uikit/json-editor';
+import '@axclogo/uikit/json-editor/styles.css';
 
 const fields: JsonField[] = [
 	{ name: 'enabled', label: 'Enabled', type: 'boolean' },
@@ -76,7 +82,7 @@ Only the toggled name is added or removed. Missing names, order and unrelated du
 ## JSON Schema conversion
 
 ```tsx
-import { jsonSchemaToField } from '@axc/uikit/json-editor/core';
+import { jsonSchemaToField } from '@axclogo/uikit/json-editor/core';
 
 const rootField = jsonSchemaToField({
 	$schema: 'https://json-schema.org/draft/2020-12/schema',
@@ -155,7 +161,7 @@ This host example keeps files in memory. A persistent application should replace
 
 ```tsx
 import { useState } from 'react';
-import { JsonEditorProvider, ParamObjectEditor, type FileInputProps, type JsonValue } from '@axc/uikit/json-editor';
+import { JsonEditorProvider, ParamObjectEditor, type FileInputProps, type JsonValue } from '@axclogo/uikit/json-editor';
 
 const files = new Map<string, File>();
 
@@ -204,8 +210,8 @@ export function AttachmentEditor() {
 `JsonEditorProvider` accepts a subset of Input, Select, Button, SourceEditor and FileInput. Nested providers inherit remaining slots and locale. Define replacements at module scope to preserve identity. Callbacks receive typed values, not DOM/library events; select option IDs are opaque strings. Select adapters emit only supplied option IDs; a single select may emit undefined only when a placeholder is offered. Adapters forward label/describedBy and honor readOnly/disabled. Native buttons have `type="button"`. Both `en` and `zhCN` cover all UI and issue messages.
 
 ```tsx
-import { JsonEditorProvider } from '@axc/uikit/json-editor';
-import { CodeMirrorSourceEditor } from '@axc/uikit/json-editor/codemirror';
+import { JsonEditorProvider } from '@axclogo/uikit/json-editor';
+import { CodeMirrorSourceEditor } from '@axclogo/uikit/json-editor/codemirror';
 
 const slots = { SourceEditor: CodeMirrorSourceEditor };
 export function Editors({ children }: { children: React.ReactNode }) {
@@ -218,7 +224,7 @@ The optional CodeMirror slot supports `theme="light"`, `"dark"` or `"none"` thro
 ## Parsing outside React
 
 ```ts
-import { JsonValidationError, parseJsonContent, parseJsonValue } from '@axc/uikit/json-editor/core';
+import { JsonValidationError, parseJsonContent, parseJsonValue } from '@axclogo/uikit/json-editor/core';
 
 const value = parseJsonValue([false, null, 0, '']);
 try {

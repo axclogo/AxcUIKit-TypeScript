@@ -17,11 +17,11 @@ define AND/OR rules that you store as JSON and run on your own backend.
 | **The builder brings its own UI.** Its inputs and dropdowns do not match your design system, and replacing them means forking.                                                          | All eight basic controls (input, select, multi-select, checkbox, tags, date, textarea, button) go through a small adapter layer. Plug in Ant Design, MUI, shadcn/ui or your own; a tested Ant Design adapter is included.                                     |
 | **Heavy entry graph and hard-coded language.**                                                                                                                                          | The Condition entry graph uses only the shared React peer (≤22 KB gzip). English and Chinese are built in; every string and model prompt can be overridden.                                                                                                   |
 | **AI-based decisions are expensive and hard to combine with rules.** You want rules to pre-filter what reaches the model, and rules on the model's output afterwards.                   | `AxcDecision` edits a precondition → AI decision → postcondition plan. The precondition decides which records reach the model; the postcondition can read `ai.matched`, `ai.reason` and your own typed AI outputs.                                            |
-| **A complex rule is hard to verify before saving.** A user needs to try one real record and see which condition determined the result or was skipped.                                   | `AxcConditionSimulator` sends the selected sample to `@axc/eval` and renders its decisive rules and exact short-circuit trace. UIKit never reimplements evaluation, stores evidence or hides evaluator errors.                                                |
+| **A complex rule is hard to verify before saving.** A user needs to try one real record and see which condition determined the result or was skipped.                                   | `AxcConditionSimulator` sends the selected sample to `@axclogo/eval` and renders its decisive rules and exact short-circuit trace. UIKit never reimplements evaluation, stores evidence or hides evaluator errors.                                            |
 
 Axc edits and validates. It does not implement rule evaluation, call models or store data. For browser simulation,
-`AxcConditionSimulator` delegates to the `@axc/eval` function supplied by your app; production execution and persistence
-remain host-owned. The framework-free protocol in `@axc/uikit/condition/core` is also usable in Node.js.
+`AxcConditionSimulator` delegates to the `@axclogo/eval` function supplied by your app; production execution and persistence
+remain host-owned. The framework-free protocol in `@axclogo/uikit/condition/core` is also usable in Node.js.
 
 | Light                                                                                                                                | Dark                                                                                                                                                  |
 | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -40,7 +40,7 @@ Errors are shown on the row they belong to ("Required." above). AI candidates ar
 ### When not to use it
 
 - You need SQL, MongoDB, CEL or JsonLogic export bundled into the editor, or an evaluator bundled into UIKit. The
-  simulator requires the explicit `@axc/eval` function supplied by your application;
+  simulator requires the explicit `@axclogo/eval` function supplied by your application;
   [react-querybuilder](https://github.com/react-querybuilder/react-querybuilder) and
   [react-awesome-query-builder](https://github.com/ukrbublik/react-awesome-query-builder) ship formatters and more widgets.
 - You want drag-and-drop rule reordering.
@@ -63,11 +63,11 @@ Errors are shown on the row they belong to ("Required." above). AI candidates ar
 ## Install
 
 ```sh
-npm install @axc/uikit
+npm install @axclogo/uikit
 ```
 
-React and React DOM are peer dependencies. Import React components from `@axc/uikit/condition`, React-free parsers from
-`@axc/uikit/condition/core`, and the stylesheet from `@axc/uikit/condition/styles.css`. The package has no root entry.
+React and React DOM are peer dependencies. Import React components from `@axclogo/uikit/condition`, React-free parsers from
+`@axclogo/uikit/condition/core`, and the stylesheet from `@axclogo/uikit/condition/styles.css`. The package has no root entry.
 Pin an exact npm version when upgrades must be controlled.
 
 Node.js 22.18+ is required for installation and development. The browser runtime code targets ES2022.
@@ -76,8 +76,8 @@ Node.js 22.18+ is required for installation and development. The browser runtime
 
 ```tsx
 import { useState } from 'react';
-import { AxcCondition, emptyCondition, parseCondition, type ConditionField } from '@axc/uikit/condition';
-import '@axc/uikit/condition/styles.css';
+import { AxcCondition, emptyCondition, parseCondition, type ConditionField } from '@axclogo/uikit/condition';
+import '@axclogo/uikit/condition/styles.css';
 
 const fields: ConditionField[] = [
 	{ name: 'title', label: 'Title' },
@@ -102,13 +102,13 @@ export function Filter() {
 
 ## The five components
 
-| Component               | Purpose                                                     | External work                                  |
-| ----------------------- | ----------------------------------------------------------- | ---------------------------------------------- |
-| `AxcCondition`          | Edit a condition tree                                       | None                                           |
-| `AxcConditionAssist`    | Edit a condition tree with an AI assistant                  | Calls the host model on Generate               |
-| `AxcConditionSimulator` | Run a selected sample and explain the exact execution trace | Calls the supplied `@axc/eval` function on Run |
-| `AxcDecision`           | Edit a precondition → AI decision → postcondition plan      | None (your app runs the decision)              |
-| `AxcDecisionAssist`     | Edit the whole decision plan with an assistant              | Calls the host model on Generate               |
+| Component               | Purpose                                                     | External work                                      |
+| ----------------------- | ----------------------------------------------------------- | -------------------------------------------------- |
+| `AxcCondition`          | Edit a condition tree                                       | None                                               |
+| `AxcConditionAssist`    | Edit a condition tree with an AI assistant                  | Calls the host model on Generate                   |
+| `AxcConditionSimulator` | Run a selected sample and explain the exact execution trace | Calls the supplied `@axclogo/eval` function on Run |
+| `AxcDecision`           | Edit a precondition → AI decision → postcondition plan      | None (your app runs the decision)                  |
+| `AxcDecisionAssist`     | Edit the whole decision plan with an assistant              | Calls the host model on Generate                   |
 
 ### AxcCondition
 
@@ -132,16 +132,16 @@ The candidate is previewed (and can be edited) first. Only **Apply** calls `onCh
 
 ### AxcConditionSimulator
 
-Install the official `@axc/eval` npm package, then pass its real WebAssembly export directly. UIKit has no evaluator
+Install the official `@axclogo/eval` npm package, then pass its real WebAssembly export directly. UIKit has no evaluator
 dependency, so apps that do not render the simulator do not load WASM.
 
 ```sh
-npm install @axc/eval
+npm install @axclogo/eval
 ```
 
 ```tsx
-import { simulateCondition } from '@axc/eval';
-import { AxcConditionSimulator } from '@axc/uikit/condition';
+import { simulateCondition } from '@axclogo/eval';
+import { AxcConditionSimulator } from '@axclogo/uikit/condition';
 
 const [sampleId, setSampleId] = useState<string | null>('order-42');
 
@@ -227,7 +227,7 @@ type ConditionField = {
 `values` holds string options, so it is only allowed on string-valued types. Declaring it on
 `number`, `boolean`, `date`, `datetime` or `object` is a TypeScript error and a runtime `TypeError`.
 
-### Core functions (`@axc/uikit/condition` and `@axc/uikit/condition/core`)
+### Core functions (`@axclogo/uikit/condition` and `@axclogo/uikit/condition/core`)
 
 | Function                                                                | Purpose                                                                  |
 | ----------------------------------------------------------------------- | ------------------------------------------------------------------------ |
@@ -295,7 +295,7 @@ are programming errors and throw `TypeError`, also during render.
 English is the default. Switch or customize through the provider:
 
 ```tsx
-import { AxcUIProvider, zhCN, en, type AxcLocale } from '@axc/uikit/condition';
+import { AxcUIProvider, zhCN, en, type AxcLocale } from '@axclogo/uikit/condition';
 
 <AxcUIProvider locale={zhCN}>…</AxcUIProvider>;
 
@@ -322,7 +322,7 @@ replace; the rest stay native. Nested providers inherit from outer ones.
 
 ```tsx
 import { Select as LibSelect } from 'some-ui-lib';
-import type { AxcSelectProps, AxcUIComponents } from '@axc/uikit/condition';
+import type { AxcSelectProps, AxcUIComponents } from '@axclogo/uikit/condition';
 
 function Select(props: AxcSelectProps) {
 	return (
@@ -471,7 +471,7 @@ A failed model call or an invalid answer is a failure, not "no match". Turning a
 
 **Does it work with server rendering?** Yes. Components render without browser APIs; the assistant only runs in event handlers.
 
-**Can I use it without React?** Use `@axc/uikit/condition/core`: types, validation, schemas, prompts and locales with no dependencies.
+**Can I use it without React?** Use `@axclogo/uikit/condition/core`: types, validation, schemas, prompts and locales with no dependencies.
 
 **Which React versions are supported?** 18.3 and 19. CI runs the whole test suite on both.
 

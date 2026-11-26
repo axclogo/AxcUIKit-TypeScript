@@ -1,5 +1,5 @@
 {
-	"name": "@axc/uikit",
+	"name": "@axclogo/uikit",
 	"version": "0.6.0",
 	"type": "module",
 	"description": "Focused React & TypeScript components: condition/query builders and JSON editors, with replaceable controls, scoped styles and i18n. A component collection, not a complete UI framework.",

@@ -1,6 +1,6 @@
 # AxcUIKit-TypeScript contributor rules
 
-This repository distributes focused React and TypeScript components through the explicit subpaths of `@axc/uikit`. Each component owns its source, tests, examples, and public contract.
+This repository distributes focused React and TypeScript components through the explicit subpaths of `@axclogo/uikit`. Each component owns its source, tests, examples, and public contract.
 
 ## Before you finish
 

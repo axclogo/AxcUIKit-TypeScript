@@ -8,7 +8,7 @@ export interface AxcConditionSample {
 	record: Record<string, unknown>;
 }
 
-/** An evaluated condition group in an `@axc/eval` simulation trace. */
+/** An evaluated condition group in an `@axclogo/eval` simulation trace. */
 export interface AxcConditionGroupTrace {
 	kind: 'group';
 	path: AxcPath;
@@ -20,7 +20,7 @@ export interface AxcConditionGroupTrace {
 	children: AxcConditionTrace[];
 }
 
-/** An evaluated leaf rule in an `@axc/eval` simulation trace. */
+/** An evaluated leaf rule in an `@axclogo/eval` simulation trace. */
 export interface AxcConditionRuleTrace {
 	kind: 'rule';
 	path: AxcPath;
@@ -36,7 +36,7 @@ export interface AxcConditionSkippedTrace {
 	reason: 'andShortCircuit' | 'orShortCircuit';
 }
 
-/** One node in the exact execution trace returned by `@axc/eval`. */
+/** One node in the exact execution trace returned by `@axclogo/eval`. */
 export type AxcConditionTrace = AxcConditionGroupTrace | AxcConditionRuleTrace | AxcConditionSkippedTrace;
 
 /** An evaluated rule whose result contributed to the root result. */
@@ -45,14 +45,14 @@ export interface AxcDecisiveRule {
 	matched: boolean;
 }
 
-/** Result returned by `@axc/eval`'s `simulateCondition`. */
+/** Result returned by `@axclogo/eval`'s `simulateCondition`. */
 export interface AxcConditionSimulation {
 	matched: boolean;
 	trace: AxcConditionTrace;
 	decisiveRules: AxcDecisiveRule[];
 }
 
-/** Optional evidence snapshot emitted by `@axc/eval` for one simulation. */
+/** Optional evidence snapshot emitted by `@axclogo/eval` for one simulation. */
 export interface AxcConditionEvidence {
 	snapshotId: string;
 	kind: 'condition';
@@ -61,7 +61,7 @@ export interface AxcConditionEvidence {
 }
 
 /**
- * Structural type of `@axc/eval`'s `simulateCondition` export. It validates and evaluates one record,
+ * Structural type of `@axclogo/eval`'s `simulateCondition` export. It validates and evaluates one record,
  * returning the real execution trace. It throws the evaluator's structured error for invalid inputs.
  */
 export type AxcConditionSimulationExecutor = (

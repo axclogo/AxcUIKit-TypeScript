@@ -1,6 +1,6 @@
 # Releasing to npm
 
-`@axc/uikit` is released from `main` by `.github/workflows/publish.yml`. The workflow uses npm Trusted Publisher
+`@axclogo/uikit` is released from `main` by `.github/workflows/publish.yml`. The workflow uses npm Trusted Publisher
 (OIDC), contains no npm credential and never falls back to a token. Trusted publishing creates npm provenance for the
 public package automatically.
 

@@ -12,11 +12,11 @@ UI 库即可；条件树、校验和布局都不变。
 
 ```tsx
 // condition-ui.tsx：适配器在模块顶层定义，不要写在组件内部
-import type { AxcUIComponents } from '@axc/uikit/condition';
+import type { AxcUIComponents } from '@axclogo/uikit/condition';
 export const controls: Partial<AxcUIComponents> = { Select: MySelect, Button: MyButton };
 
 // 页面
-import { AxcUIProvider, zhCN } from '@axc/uikit/condition';
+import { AxcUIProvider, zhCN } from '@axclogo/uikit/condition';
 <AxcUIProvider components={controls} locale={zhCN}>
 	<AxcCondition fields={fields} value={value} onChange={setValue} />
 </AxcUIProvider>;
@@ -70,8 +70,8 @@ import { AxcUIProvider, zhCN } from '@axc/uikit/condition';
 让 AI 为你的 UI 库写适配器时，直接粘贴：
 
 ```text
-用 <你的 UI 库> 为 @axc/uikit/condition 编写控件适配器。先阅读 node_modules/@axc/uikit/packages/condition/docs/ui-adapters.zh-CN.md，
-以 node_modules/@axc/uikit/packages/condition/docs/antd-adapter.tsx 为模板。
+用 <你的 UI 库> 为 @axclogo/uikit/condition 编写控件适配器。先阅读 node_modules/@axclogo/uikit/packages/condition/docs/ui-adapters.zh-CN.md，
+以 node_modules/@axclogo/uikit/packages/condition/docs/antd-adapter.tsx 为模板。
 导出模块顶层定义的 `controls`，类型为 Partial<AxcUIComponents>（全部替换时为 AxcUIComponents）。
 每个控件：label → aria-label；className 放在根节点；disabled 时不触发任何回调；
 invalid → 错误样式 + aria-invalid；describedBy → aria-describedby；onChange 传值，不传事件。

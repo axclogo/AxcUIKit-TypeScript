@@ -1,7 +1,7 @@
 import { appendFileSync, readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
-const expectedName = '@axc/uikit';
+const expectedName = '@axclogo/uikit';
 const expectedRepository = 'git+https://github.com/axclogo/AxcUIKit-TypeScript.git';
 const registryUrl = 'https://registry.npmjs.org';
 const stableVersion = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;

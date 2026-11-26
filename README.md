@@ -8,37 +8,37 @@ Focused React and TypeScript editors for application data. Build query filters a
 
 ## Component catalog
 
-| Module                                          | Includes                                                                                                                                        | Import                   |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| [Condition](./packages/condition/README.md)     | Query builder, condition and decision editors, strict validation, AI-assisted drafts, and sample simulation through `@axc/eval`.                | `@axc/uikit/condition`   |
-| [JSON Editor](./packages/json-editor/README.md) | Any JSON root, recursive field metadata, JSON Schema conversion, host file controls, property switches, and optional CodeMirror source editing. | `@axc/uikit/json-editor` |
+| Module                                          | Includes                                                                                                                                        | Import                       |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| [Condition](./packages/condition/README.md)     | Query builder, condition and decision editors, strict validation, AI-assisted drafts, and sample simulation through `@axclogo/eval`.            | `@axclogo/uikit/condition`   |
+| [JSON Editor](./packages/json-editor/README.md) | Any JSON root, recursive field metadata, JSON Schema conversion, host file controls, property switches, and optional CodeMirror source editing. | `@axclogo/uikit/json-editor` |
 
 ## Installation
 
 ```sh
-npm install @axc/uikit
+npm install @axclogo/uikit
 ```
 
 The package requires Node.js 22.18 or later and supports React 18.3 and React 19. React and React DOM are peer
 dependencies; an application that does not already provide them can install all three together:
 
 ```sh
-npm install @axc/uikit react react-dom
+npm install @axclogo/uikit react react-dom
 ```
 
 Pin an exact npm version when the application needs controlled upgrades, for example
-`npm install @axc/uikit@0.6.0`. TypeScript declarations are included. There is intentionally no `@axc/uikit` root
+`npm install @axclogo/uikit@0.6.0`. TypeScript declarations are included. There is intentionally no `@axclogo/uikit` root
 entry: import only the explicit subpaths below so unused editors and the CodeMirror adapter stay out of the application.
 
-| Use                                      | Import                              |
-| ---------------------------------------- | ----------------------------------- |
-| Condition React components and contracts | `@axc/uikit/condition`              |
-| React-free condition parsing             | `@axc/uikit/condition/core`         |
-| Condition styles                         | `@axc/uikit/condition/styles.css`   |
-| JSON Editor React components             | `@axc/uikit/json-editor`            |
-| React-free JSON parsing                  | `@axc/uikit/json-editor/core`       |
-| JSON Editor styles                       | `@axc/uikit/json-editor/styles.css` |
-| Optional CodeMirror source control       | `@axc/uikit/json-editor/codemirror` |
+| Use                                      | Import                                  |
+| ---------------------------------------- | --------------------------------------- |
+| Condition React components and contracts | `@axclogo/uikit/condition`              |
+| React-free condition parsing             | `@axclogo/uikit/condition/core`         |
+| Condition styles                         | `@axclogo/uikit/condition/styles.css`   |
+| JSON Editor React components             | `@axclogo/uikit/json-editor`            |
+| React-free JSON parsing                  | `@axclogo/uikit/json-editor/core`       |
+| JSON Editor styles                       | `@axclogo/uikit/json-editor/styles.css` |
+| Optional CodeMirror source control       | `@axclogo/uikit/json-editor/codemirror` |
 
 Install from Git only when testing an unpublished commit. Pin the tag or commit because Git installation runs the
 repository build:
@@ -60,8 +60,8 @@ import {
 	parseCondition,
 	type AxcConditionValue,
 	type ConditionField,
-} from '@axc/uikit/condition';
-import '@axc/uikit/condition/styles.css';
+} from '@axclogo/uikit/condition';
+import '@axclogo/uikit/condition/styles.css';
 
 const fields: ConditionField[] = [
 	{ name: 'title', label: 'Title' },
@@ -85,8 +85,8 @@ JSON Editor also uses controlled state and accepts any JSON root value:
 
 ```tsx
 import { useState } from 'react';
-import { JsonObjectEditor, type JsonContent } from '@axc/uikit/json-editor';
-import '@axc/uikit/json-editor/styles.css';
+import { JsonObjectEditor, type JsonContent } from '@axclogo/uikit/json-editor';
+import '@axclogo/uikit/json-editor/styles.css';
 
 export function SettingsEditor() {
 	const [content, setContent] = useState<JsonContent>({ kind: 'value', value: { enabled: true } });
@@ -95,8 +95,8 @@ export function SettingsEditor() {
 ```
 
 The standard JSON editor loads without CodeMirror. To use CodeMirror for source mode, import
-`CodeMirrorSourceEditor` from `@axc/uikit/json-editor/codemirror` and supply it through `JsonEditorProvider`. The
-Condition simulator similarly does not bundle evaluation; applications explicitly supply the compatible `@axc/eval`
+`CodeMirrorSourceEditor` from `@axclogo/uikit/json-editor/codemirror` and supply it through `JsonEditorProvider`. The
+Condition simulator similarly does not bundle evaluation; applications explicitly supply the compatible `@axclogo/eval`
 function. Complete contracts and adapter examples live in the component guides above.
 
 ## Shared design principles

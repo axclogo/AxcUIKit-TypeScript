@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button, Checkbox, DatePicker, Input, InputNumber, Select, Space, Tag } from 'antd';
 import dayjs from 'dayjs';
-import type { AxcTagsProps, AxcUIComponents } from '@axc/uikit/condition';
+import type { AxcTagsProps, AxcUIComponents } from '@axclogo/uikit/condition';
 
 const DATE = 'YYYY-MM-DD';
 const DATETIME = 'YYYY-MM-DDTHH:mm:ss';

@@ -17,10 +17,10 @@
 | **构建器自带一套 UI。** 输入框和下拉与你的设计系统不一致，想替换只能 fork。                                                          | 8 个基础控件（输入框、单选、多选、复选框、标签、日期、多行文本、按钮）都经过一层很薄的适配层。可接入 Ant Design、MUI、shadcn/ui 或自研组件，并附带一份实测可用的 Ant Design 适配。 |
 | **入口依赖重、文案写死。**                                                                                                           | Condition 入口只使用共享的 React peer（≤22 KB gzip）。内置中英文，所有文案和模型提示词都可覆盖。                                                                                   |
 | **AI 判断成本高，又难和规则配合。** 希望先用规则筛掉不需要送给模型的数据，再对模型的输出套规则。                                     | `AxcDecision` 编辑“前置条件 → AI 判断 → 后置条件”方案：前置条件决定哪些记录交给模型；后置条件可以读取 `ai.matched`、`ai.reason` 和你定义的带类型 AI 输出。                         |
-| **复杂条件保存前难以验证。** 用户需要选择一条真实数据，确认最终结果由哪个条件决定、哪些条件因短路没有执行。                          | `AxcConditionSimulator` 把所选数据交给 `@axc/eval`，展示决定性条件及完整短路轨迹。UIKit 不重复实现求值、不保存证据，也不隐藏执行器错误。                                           |
+| **复杂条件保存前难以验证。** 用户需要选择一条真实数据，确认最终结果由哪个条件决定、哪些条件因短路没有执行。                          | `AxcConditionSimulator` 把所选数据交给 `@axclogo/eval`，展示决定性条件及完整短路轨迹。UIKit 不重复实现求值、不保存证据，也不隐藏执行器错误。                                       |
 
 Axc 负责编辑和校验，不自行实现规则执行、调用模型或存储数据。浏览器模拟由 `AxcConditionSimulator` 调用应用传入的
-`@axc/eval`；生产执行和持久化仍由宿主负责。零依赖协议层位于 `@axc/uikit/condition/core`，也可在 Node.js 中使用。
+`@axclogo/eval`；生产执行和持久化仍由宿主负责。零依赖协议层位于 `@axclogo/uikit/condition/core`，也可在 Node.js 中使用。
 
 | 浅色                                                                                                                                 | 深色                                                                                                                                              |
 | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -39,7 +39,7 @@ Axc 负责编辑和校验，不自行实现规则执行、调用模型或存储�
 ### 不适合的场景
 
 - 需要编辑器直接内置 SQL、MongoDB、CEL、JsonLogic 导出，或把执行器捆绑进 UIKit。模拟组件要求应用显式传入
-  `@axc/eval` 函数；
+  `@axclogo/eval` 函数；
   [react-querybuilder](https://github.com/react-querybuilder/react-querybuilder) 和
   [react-awesome-query-builder](https://github.com/ukrbublik/react-awesome-query-builder) 提供格式化导出和更多控件。
 - 需要拖拽调整规则顺序。
@@ -62,11 +62,11 @@ Axc 负责编辑和校验，不自行实现规则执行、调用模型或存储�
 ## 安装
 
 ```sh
-npm install @axc/uikit
+npm install @axclogo/uikit
 ```
 
-React 和 React DOM 是 peer dependency。React 组件从 `@axc/uikit/condition` 导入，无 React 的解析器从
-`@axc/uikit/condition/core` 导入，样式从 `@axc/uikit/condition/styles.css` 导入。包不提供根入口。
+React 和 React DOM 是 peer dependency。React 组件从 `@axclogo/uikit/condition` 导入，无 React 的解析器从
+`@axclogo/uikit/condition/core` 导入，样式从 `@axclogo/uikit/condition/styles.css` 导入。包不提供根入口。
 需要控制升级时请固定精确 npm 版本。
 
 安装和开发需要 Node.js 22.18+。浏览器运行时代码目标为 ES2022。
@@ -75,8 +75,8 @@ React 和 React DOM 是 peer dependency。React 组件从 `@axc/uikit/condition`
 
 ```tsx
 import { useState } from 'react';
-import { AxcCondition, emptyCondition, parseCondition, type ConditionField } from '@axc/uikit/condition';
-import '@axc/uikit/condition/styles.css';
+import { AxcCondition, emptyCondition, parseCondition, type ConditionField } from '@axclogo/uikit/condition';
+import '@axclogo/uikit/condition/styles.css';
 
 const fields: ConditionField[] = [
 	{ name: 'title', label: 'Title' },
@@ -101,13 +101,13 @@ export function Filter() {
 
 ## 五个组件
 
-| 组件                    | 用途                                    | 外部工作                              |
-| ----------------------- | --------------------------------------- | ------------------------------------- |
-| `AxcCondition`          | 编辑条件树                              | 无                                    |
-| `AxcConditionAssist`    | 通过 AI 辅助编辑条件树                  | 点击生成时调用宿主模型                |
-| `AxcConditionSimulator` | 选择一条数据并展示真实执行轨迹          | 点击模拟时调用传入的 `@axc/eval` 函数 |
-| `AxcDecision`           | 编辑“前置条件 → AI 判断 → 后置条件”方案 | 无（由应用执行判断）                  |
-| `AxcDecisionAssist`     | 通过 AI 辅助编辑整套判断方案            | 点击生成时调用宿主模型                |
+| 组件                    | 用途                                    | 外部工作                                  |
+| ----------------------- | --------------------------------------- | ----------------------------------------- |
+| `AxcCondition`          | 编辑条件树                              | 无                                        |
+| `AxcConditionAssist`    | 通过 AI 辅助编辑条件树                  | 点击生成时调用宿主模型                    |
+| `AxcConditionSimulator` | 选择一条数据并展示真实执行轨迹          | 点击模拟时调用传入的 `@axclogo/eval` 函数 |
+| `AxcDecision`           | 编辑“前置条件 → AI 判断 → 后置条件”方案 | 无（由应用执行判断）                      |
+| `AxcDecisionAssist`     | 通过 AI 辅助编辑整套判断方案            | 点击生成时调用宿主模型                    |
 
 ### AxcCondition
 
@@ -131,16 +131,16 @@ const assist: AxcAssistTransport = {
 
 ### AxcConditionSimulator
 
-从 npm 安装官方 `@axc/eval` 包，将其真实 WebAssembly 导出函数直接传入。UIKit 本身不依赖执行器，未使用
+从 npm 安装官方 `@axclogo/eval` 包，将其真实 WebAssembly 导出函数直接传入。UIKit 本身不依赖执行器，未使用
 模拟组件的应用不会加载 WASM。
 
 ```sh
-npm install @axc/eval
+npm install @axclogo/eval
 ```
 
 ```tsx
-import { simulateCondition } from '@axc/eval';
-import { AxcConditionSimulator } from '@axc/uikit/condition';
+import { simulateCondition } from '@axclogo/eval';
+import { AxcConditionSimulator } from '@axclogo/uikit/condition';
 
 const [sampleId, setSampleId] = useState<string | null>('order-42');
 
@@ -224,7 +224,7 @@ type ConditionField = {
 `values` 的选项值是字符串，所以只能用于字符串类型。在 `number`、`boolean`、`date`、`datetime`
 或 `object` 上声明会产生 TypeScript 类型错误，运行时抛 `TypeError`。
 
-### 核心函数（`@axc/uikit/condition` 与 `@axc/uikit/condition/core`）
+### 核心函数（`@axclogo/uikit/condition` 与 `@axclogo/uikit/condition/core`）
 
 | 函数                                                                    | 用途                                                        |
 | ----------------------------------------------------------------------- | ----------------------------------------------------------- |
@@ -292,7 +292,7 @@ type AxcIssue = { code: AxcIssueCode; path: Array<string | number>; params?: obj
 默认英文。通过 Provider 切换或定制：
 
 ```tsx
-import { AxcUIProvider, zhCN, en, type AxcLocale } from '@axc/uikit/condition';
+import { AxcUIProvider, zhCN, en, type AxcLocale } from '@axclogo/uikit/condition';
 
 <AxcUIProvider locale={zhCN}>…</AxcUIProvider>;
 
@@ -317,7 +317,7 @@ const custom: AxcLocale = {
 
 ```tsx
 import { Select as LibSelect } from 'some-ui-lib';
-import type { AxcSelectProps, AxcUIComponents } from '@axc/uikit/condition';
+import type { AxcSelectProps, AxcUIComponents } from '@axclogo/uikit/condition';
 
 function Select(props: AxcSelectProps) {
 	return (
@@ -466,7 +466,7 @@ const decision: AxcDecisionValue = {
 
 **支持服务端渲染吗？** 支持。组件渲染不依赖浏览器 API；AI 辅助只在事件处理中运行。
 
-**不用 React 能用吗？** 使用 `@axc/uikit/condition/core`：类型、校验、Schema、提示词和语言包，零依赖。
+**不用 React 能用吗？** 使用 `@axclogo/uikit/condition/core`：类型、校验、Schema、提示词和语言包，零依赖。
 
 **支持哪些 React 版本？** 18.3 和 19。CI 在两个版本上运行完整测试。
 

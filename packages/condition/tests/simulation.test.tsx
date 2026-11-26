@@ -102,7 +102,7 @@ function Controlled({
 	);
 }
 
-test('runs @axc/eval with the selected record and shows the decisive rule and exact short-circuit trace', () => {
+test('runs @axclogo/eval with the selected record and shows the decisive rule and exact short-circuit trace', () => {
 	const calls: unknown[][] = [];
 	const evidence: AxcConditionEvidence = {
 		snapshotId: 'snapshot',

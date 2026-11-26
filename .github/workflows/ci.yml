@@ -41,25 +41,25 @@ jobs:
             return next(specifier, context);
           } });
           for (const entry of ['condition', 'condition/core', 'json-editor', 'json-editor/core']) {
-            const subpath = '@axc/uikit/' + entry;
+            const subpath = '@axclogo/uikit/' + entry;
             const required = require(subpath);
             assert.equal(required, await import(subpath));
           }
-          const condition = await import('@axc/uikit/condition');
-          const conditionCore = await import('@axc/uikit/condition/core');
-          const json = await import('@axc/uikit/json-editor');
-          const jsonCore = await import('@axc/uikit/json-editor/core');
+          const condition = await import('@axclogo/uikit/condition');
+          const conditionCore = await import('@axclogo/uikit/condition/core');
+          const json = await import('@axclogo/uikit/json-editor');
+          const jsonCore = await import('@axclogo/uikit/json-editor/core');
           assert.equal(condition.parseCondition, conditionCore.parseCondition);
           assert.equal(json.parseJsonValue, jsonCore.parseJsonValue);
           assert.equal(typeof json.JsonObjectEditor, 'function');
           assert.deepEqual(jsonCore.parseJsonValue({ active: false }), { active: false });
           guard.deregister();
 
-          const codeMirror = require('@axc/uikit/json-editor/codemirror');
-          assert.equal(codeMirror, await import('@axc/uikit/json-editor/codemirror'));
+          const codeMirror = require('@axclogo/uikit/json-editor/codemirror');
+          assert.equal(codeMirror, await import('@axclogo/uikit/json-editor/codemirror'));
           assert.equal(typeof codeMirror.CodeMirrorSourceEditor, 'function');
-          assert.throws(() => import.meta.resolve('@axc/uikit'), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
+          assert.throws(() => import.meta.resolve('@axclogo/uikit'), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
           for (const component of ['condition', 'json-editor']) {
-            await access(new URL(import.meta.resolve(`@axc/uikit/${component}/styles.css`)));
+            await access(new URL(import.meta.resolve(`@axclogo/uikit/${component}/styles.css`)));
           }
           JS

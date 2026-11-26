@@ -2,12 +2,13 @@
 
 ## 0.6.0
 
-- Add `AxcConditionSimulator`, a controlled sample picker and execution-trace view for the `@axc/eval` `simulateCondition` export. It shows the final result, decisive rules, negated groups, short-circuit positions and skipped nodes without implementing evaluation inside UIKit.
+- Publish the package as `@axclogo/uikit` and use `@axclogo/eval` for the optional WebAssembly executor.
+- Add `AxcConditionSimulator`, a controlled sample picker and execution-trace view for the `@axclogo/eval` `simulateCondition` export. It shows the final result, decisive rules, negated groups, short-circuit positions and skipped nodes without implementing evaluation inside UIKit.
 - Add typed simulation, trace and optional evidence callback contracts. Evaluator failures remain visible and are forwarded unchanged; stale results disappear when their condition, catalog, executor or selected record changes. UIKit does not retain records, results or evidence.
 - Document the integration boundary and add English/Chinese simulator copy. Sample ids are explicit, non-empty and unique; invalid sample configuration throws instead of selecting a guessed record.
 - Publish public releases through npm Trusted Publisher with workflow-bound OIDC and automatic provenance. Release jobs contain no npm token or token fallback, reject an uninitialized package explicitly and test every Registry decision path.
 - Remove application-specific integration notes from public architecture documentation and align npm, LLM and component guidance with the published package contract.
-- Document `@axc/eval` as the optional npm-installed WebAssembly executor for condition simulation.
+- Document `@axclogo/eval` as the optional npm-installed WebAssembly executor for condition simulation.
 
 ## 0.5.0
 
@@ -23,8 +24,8 @@
 
 ## 0.4.0
 
-- Distribute Condition and JSON Editor together as `@axc/uikit` from the AxcUIKit-TypeScript repository.
-- Existing Condition exports are available at `@axc/uikit/condition`, `@axc/uikit/condition/core` and `@axc/uikit/condition/styles.css`. Condition names, data contracts and protocol fixtures stay the same.
+- Distribute Condition and JSON Editor together as `@axclogo/uikit` from the AxcUIKit-TypeScript repository.
+- Existing Condition exports are available at `@axclogo/uikit/condition`, `@axclogo/uikit/condition/core` and `@axclogo/uikit/condition/styles.css`. Condition names, data contracts and protocol fixtures stay the same.
 - Add a structured JSON object editor with tree and parameter form editing, raw JSON drafts, pluggable controls, and a CodeMirror source adapter.
 
 ## 0.3.0

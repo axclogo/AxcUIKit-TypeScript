@@ -48,7 +48,7 @@ jobs:
       - name: Reject an uninitialized npm package
         if: steps.package.outputs.status == 'bootstrap'
         run: |
-          echo '::error::@axc/uikit does not exist on npm. Complete the documented one-time bootstrap before automatic publishing.'
+          echo '::error::@axclogo/uikit does not exist on npm. Complete the documented one-time bootstrap before automatic publishing.'
           exit 1
       - name: Install locked dependencies
         if: steps.package.outputs.publish == 'true'

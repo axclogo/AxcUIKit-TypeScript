@@ -5,15 +5,15 @@ import test from 'node:test';
 import { getPublishStatus, validateReleaseMetadata } from './check-publish.mjs';
 
 const manifest = {
-	name: '@axc/uikit',
+	name: '@axclogo/uikit',
 	version: '0.6.0',
 	repository: { url: 'git+https://github.com/axclogo/AxcUIKit-TypeScript.git' },
 	publishConfig: { access: 'public', registry: 'https://registry.npmjs.org' },
 };
 const lockfile = {
-	name: '@axc/uikit',
+	name: '@axclogo/uikit',
 	version: '0.6.0',
-	packages: { '': { name: '@axc/uikit', version: '0.6.0' } },
+	packages: { '': { name: '@axclogo/uikit', version: '0.6.0' } },
 };
 
 function response(status, body) {
@@ -29,7 +29,7 @@ test('accepts the exact public release metadata', () => {
 });
 
 for (const [name, changedManifest, changedLockfile, message] of [
-	['package name', { ...manifest, name: '@example/wrong' }, lockfile, /name must be @axc\/uikit/],
+	['package name', { ...manifest, name: '@example/wrong' }, lockfile, /name must be @axclogo\/uikit/],
 	['empty version', { ...manifest, version: '' }, lockfile, /version must be a stable SemVer/],
 	['prerelease version', { ...manifest, version: '0.6.1-beta.1' }, lockfile, /version must be a stable SemVer/],
 	['output injection in version', { ...manifest, version: '0.6.1\npublish=true' }, lockfile, /stable SemVer/],
@@ -91,7 +91,7 @@ test('queries only the public npm package endpoint with the configured timeout s
 		},
 		() => timeoutSignal,
 	);
-	assert.equal(request.url, 'https://registry.npmjs.org/%40axc%2Fuikit');
+	assert.equal(request.url, 'https://registry.npmjs.org/%40axclogo%2Fuikit');
 	assert.equal(request.options.signal, timeoutSignal);
 });
 
