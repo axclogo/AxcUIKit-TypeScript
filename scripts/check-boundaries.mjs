@@ -12,9 +12,10 @@ const TEXT_ATTRIBUTES = ['label', 'placeholder', 'title', 'aria-label', 'alt'];
 const UI_ENTRIES = ['src/ui/controls.tsx', 'src/ui/types.ts', 'src/ui/provider.tsx'];
 const CJK = /[\u3000-\u303f\u3400-\u9fff\uff00-\uffef]/;
 const CODEMIRROR = ['@codemirror/lang-json', '@uiw/react-codemirror'];
+const GRAPH_PEERS = ['@antv/g6', '@xyflow/react', '@dagrejs/dagre'];
 const failures = [];
 
-for (const component of ['condition', 'json-editor']) {
+for (const component of ['condition', 'json-editor', 'table', 'graph', 'drawer', 'code-editor', 'decision-plugins']) {
 	const root = 'packages/' + component;
 
 	for (const sourcePath of walk(root + '/src').filter((name) => /\.[jt]sx?$/.test(name))) {
@@ -67,7 +68,24 @@ for (const component of ['condition', 'json-editor']) {
 			if (specifier) {
 				if (!specifier.startsWith('.')) {
 					const allowed = ['react', 'react/jsx-runtime'];
-					if (component === 'json-editor' && file === 'src/codemirror.tsx') allowed.push(...CODEMIRROR);
+					if (component === 'json-editor' && file === 'src/codemirror.tsx')
+						allowed.push('@codemirror/lang-json', '@axclogo/uikit/code-editor');
+					if (
+						component === 'json-editor' &&
+						file === 'src/ui/types.ts' &&
+						ts.isImportDeclaration(node) &&
+						node.importClause?.isTypeOnly
+					)
+						allowed.push('@axclogo/uikit/code-editor');
+					if (component === 'decision-plugins')
+						allowed.push(
+							'@axclogo/uikit/condition',
+							'@axclogo/uikit/code-editor',
+							'@axclogo/uikit/json-editor/codemirror',
+						);
+					if (component === 'code-editor') allowed.push('@uiw/react-codemirror');
+					if (component === 'table') allowed.push('@axclogo/uikit/condition', '@tanstack/virtual-core');
+					if (component === 'graph') allowed.push('@axclogo/uikit/condition', ...GRAPH_PEERS);
 					if (core || !allowed.includes(specifier)) fail(node, `dependency not allowed: ${specifier}`);
 				} else {
 					const target = path.normalize(path.join(path.dirname(file), specifier)).replace(/\.[jt]sx?$/, '');
@@ -89,12 +107,12 @@ for (const component of ['condition', 'json-editor']) {
 }
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
-if (Object.keys(pkg.dependencies ?? {}).some((name) => !CODEMIRROR.includes(name)))
-	failures.push('package.json: runtime dependencies are reserved for the CodeMirror adapter');
-if (Object.keys(pkg.peerDependencies ?? {}).some((name) => !['react', 'react-dom'].includes(name)))
-	failures.push('package.json: React and React DOM are the only allowed peer dependencies');
+if (Object.keys(pkg.dependencies ?? {}).some((name) => ![...CODEMIRROR, '@tanstack/virtual-core'].includes(name)))
+	failures.push('package.json: unexpected runtime dependency');
+if (Object.keys(pkg.peerDependencies ?? {}).some((name) => !['react', 'react-dom', ...GRAPH_PEERS].includes(name)))
+	failures.push('package.json: unexpected peer dependency');
 
 if (failures.length) {
 	console.error(failures.join('\n'));
 	process.exitCode = 1;
-} else console.log('Boundaries OK for Condition and JSON Editor.');
+} else console.log('Boundaries OK for all components.');

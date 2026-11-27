@@ -9,6 +9,30 @@ import { JSX } from 'react';
 import { ReactNode } from 'react';
 
 // @public
+export function AxcAssistAction<T>(input: AxcAssistActionProps<T>): JSX.Element;
+
+// @public (undocumented)
+export interface AxcAssistActionProps<T> {
+    // (undocumented)
+    build: (model: string, requirement: string) => AxcAssistRequest;
+    current: unknown;
+    // (undocumented)
+    disabled?: boolean;
+    // (undocumented)
+    label: string;
+    // (undocumented)
+    onApply: (value: T) => void;
+    // (undocumented)
+    parse: (value: unknown) => AxcAssistResult<T>;
+    // (undocumented)
+    preview: (value: T, onChange: (value: T) => void) => ReactNode;
+    // (undocumented)
+    transport: AxcAssistTransport;
+    // (undocumented)
+    validate: (value: T) => AxcIssue[];
+}
+
+// @public
 export interface AxcAssistPromptContext {
     // (undocumented)
     allowNot: boolean;

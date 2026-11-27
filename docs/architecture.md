@@ -41,7 +41,24 @@ The core is independent of React, DOM, host applications and UI frameworks. `Jso
 ## Host integration boundary
 
 Applications import only the documented package subpaths and adapt their design-system controls through the providers.
-Host-specific schemas may be converted to the public field metadata at the application boundary. Networking,
-authentication, remote option loading, evaluation and persistence remain outside UIKit; no application-specific state or
+Host-specific schemas may be converted to the public field metadata at the application boundary. Authentication, remote option loading, evaluation and persistence remain outside UIKit; no application-specific state or
 compatibility path belongs in this package. Integration tests may install an officially packed local artifact before an
 npm release, but committed dependencies must never use a machine-local path.
+
+## Table and graph modules
+
+The [table adapters](../packages/table/README.md) share BaseTable for row identity, selection, sizing, virtual scrolling and pointer interaction. The host owns data requests, saved views, action execution and persistence. Table and graph reuse the public Condition entry for editing conditions.
+
+The [graph module](../packages/graph/README.md) separates strict relation parsing from canvas lifecycles. RelationGraph loads its G6 peer when mounted. GraphWorkbench loads React Flow and Dagre and uses the same workspace primitives. Graph engine peers stay external to the build.
+
+Drawer exposes a native modal through `@axclogo/uikit/drawer` and its explicit stylesheet. CodeMirror view creation belongs to `@axclogo/uikit/code-editor`. Only the optional JSON source adapter loads that view and the JSON language.
+
+## Decision plugins
+
+`@axclogo/uikit/decision-plugins` is an independent entry. It composes the public Condition editor and lazily loads Code Editor and the JSON source adapter. Existing fixed condition and decision entry graphs do not load plugin runtimes. See the [plugin contract](../packages/decision-plugins/README.md).
+
+The version-one plugin plan has one optional precondition, one explicitly selected plugin and a mandatory nonempty postcondition. Eval owns all validation, JSONPath projection, comparisons, correlation and evidence. UIKit supplies configuration controls, invokes an enabled plugin only after the precondition passes, and returns JSON to Eval. Original fields and namespaced `plugin.*` outputs are available together to the postcondition. AI always exposes its original text; valid JSON additionally supplies mapped outputs. A JSON parse failure only omits those AI outputs; it does not invent a decision.
+
+The built-in HTTP adapter uses browser fetch and the inline JavaScript adapter uses a terminable Worker. Model loading, AI providers and stored scripts use explicit host services. Missing services are unavailable, never replaced with sample behavior. Custom plugins use the same renderEditor/validate/execute contract. Generic AI assistance is an independently supplied transport, does not run code or make decisions, and writes only explicitly adopted drafts.
+
+The existing decision protocol remains an independent public contract. The plugin API neither guesses old formats nor silently migrates their semantics. Existing matched gates must be expressed explicitly when applications migrate their stored AI rules.

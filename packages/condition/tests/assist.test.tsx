@@ -213,3 +213,16 @@ test('custom model control selects an opaque id for the assist request', async (
 	assert.equal(calls[0].request.model, 'provider/model-id');
 	await answer(calls[0].resolve, { explanation: 'Only alpha', value: group('alpha') });
 });
+
+test('replacing the assist transport aborts pending work and discards its result', async () => {
+	const first = deferred(),
+		second = deferred();
+	const view = render(
+		<AxcConditionAssist fields={fields} value={group()} onChange={() => {}} assist={first.transport} />,
+	);
+	await ask();
+	view.rerender(<AxcConditionAssist fields={fields} value={group()} onChange={() => {}} assist={second.transport} />);
+	assert.equal(first.calls[0].signal.aborted, true);
+	await answer(first.calls[0].resolve, { explanation: 'stale transport', value: group('stale') });
+	assert.equal(screen.queryByText('stale transport'), null);
+});

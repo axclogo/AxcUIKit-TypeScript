@@ -8,10 +8,15 @@
 
 ## 组件目录
 
-| 模块                                              | 功能                                                                                                         | 导入                         |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------- |
-| [Condition](./packages/condition/README.zh-CN.md) | 查询构建器、条件与判断流程编辑器、严格校验、AI 辅助草稿，以及通过 `@axclogo/eval` 执行的样本模拟。           | `@axclogo/uikit/condition`   |
-| [JSON Editor](./packages/json-editor/README.md)   | 任意 JSON 根值、嵌套字段元数据、JSON Schema 转换、宿主文件控件、属性开关，以及可选的 CodeMirror 源码编辑器。 | `@axclogo/uikit/json-editor` |
+| 模块                                                            | 功能                                                                                                         | 导入                              |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------- |
+| [Condition](./packages/condition/README.zh-CN.md)               | 查询构建器、条件与判断流程编辑器、严格校验、AI 辅助草稿，以及通过 `@axclogo/eval` 执行的样本模拟。           | `@axclogo/uikit/condition`        |
+| [JSON Editor](./packages/json-editor/README.md)                 | 任意 JSON 根值、嵌套字段元数据、JSON Schema 转换、宿主文件控件、属性开关，以及可选的 CodeMirror 源码编辑器。 | `@axclogo/uikit/json-editor`      |
+| [Decision Plugins](./packages/decision-plugins/README.zh-CN.md) | 前置条件、五种预置插件、必选后置条件、JSONPath 输出映射与模拟。                                              | `@axclogo/uikit/decision-plugins` |
+| [Table](./packages/table/README.md)                             | 平面、树形、分析与 CRUD 表格，支持排序、显隐和填色。                                                         | `@axclogo/uikit/table`            |
+| [Graph](./packages/graph/README.md)                             | 关系查看器与可编辑图工作台。                                                                                 | `@axclogo/uikit/graph`            |
+| [Drawer](./packages/drawer/README.md)                           | 带动画、固定标题、关闭按钮与可选底栏的抽屉。                                                                 | `@axclogo/uikit/drawer`           |
+| [Code Editor](./packages/code-editor/README.md)                 | 通用 CodeMirror 编辑器，语言扩展由开发者配置。                                                               | `@axclogo/uikit/code-editor`      |
 
 ## 安装
 
@@ -26,7 +31,7 @@ npm install @axclogo/uikit
 npm install @axclogo/uikit react react-dom
 ```
 
-需要严格控制升级时请固定 npm 版本，例如 `npm install @axclogo/uikit@0.6.2`。包内自带 TypeScript 类型。
+需要严格控制升级时请固定 npm 版本，例如 `npm install @axclogo/uikit@0.7.0`。包内自带 TypeScript 类型。
 `@axclogo/uikit` 不提供根入口，必须使用下表中的显式子路径，避免未使用的编辑器或 CodeMirror 进入应用包。
 
 | 用途                       | 导入路径                                |
@@ -106,6 +111,16 @@ Condition 模拟器也不内置执行逻辑，应用必须显式传入兼容的 
 
 ## 开发
 
-使用 Node.js 22.18 或更新版本。运行 `npm ci` 安装并构建，运行 `npm run verify` 检查格式、类型、架构边界、Lint、未使用代码、React 18/19 兼容性、公开 API 和打包体积。运行 `npm run dev` 可在 [localhost:5178](http://127.0.0.1:5178) 查看 Condition 示例。
+使用 Node.js 22.18 或更新版本。运行 `npm ci` 安装并构建，运行 `npm run verify` 检查格式、类型、架构边界、Lint、未使用代码、React 18/19 兼容性、公开 API 和打包体积。运行 `npm run dev` 可在 [localhost:5178](http://127.0.0.1:5178) 打开统一组件示例页。可直接进入 [Table 示例](http://127.0.0.1:5178/#table) 拖动列、切换显隐和设置行颜色，也可切换到 Condition、JSON Editor 和 Graph。
 
 [MIT 许可证](./LICENSE)
+
+## 表格与图
+
+0.7.0 新增平面表、树表、分析表和 CRUD 表。组件从 `@axclogo/uikit/table` 导入，同时引入 `@axclogo/uikit/table/styles.css`。每张表都要提供稳定的 `rowKey`。使用分析表高级筛选时，还需引入 `@axclogo/uikit/condition/styles.css`。[表格用法和示例](./packages/table/README.md)
+
+仅解析关系数据可使用 `@axclogo/uikit/graph/core`。画布组件从 `@axclogo/uikit/graph` 导入，同时引入 `@axclogo/uikit/graph/styles.css`。关系图需要安装 `@antv/g6@5.1.1`。工作台需要安装 `@xyflow/react@12.11.1` 和 `@dagrejs/dagre@3.1.4`，并引入 `@xyflow/react/dist/style.css`。[图组件用法和示例](./packages/graph/README.md)
+
+详情抽屉从 `@axclogo/uikit/drawer` 导入，并引入 `@axclogo/uikit/drawer/styles.css`。代码编辑器从 `@axclogo/uikit/code-editor` 导入，可按需加载 JSON、SQL 和 Markdown 语言扩展。[Drawer 示例](http://127.0.0.1:5178/#drawer) · [Code Editor 示例](http://127.0.0.1:5178/#code-editor)
+
+插件示例需要先在 AxcEval 0.4 仓库执行 `wasm-pack build crates/axc-eval-wasm --target web --out-dir ../../pkg-web`，再在 UIKit 执行 `npm run demo:eval -- /path/to/AxcEval/pkg-web`。运行 `npm run dev` 后打开 [Condition · Plugins](http://127.0.0.1:5178/#decision-plugins)，可操作五种预置插件及一个自定义插件。AI／小模型／已有脚本使用明确标注的本地演示回调；HTTP 和 JavaScript 使用真实浏览器执行。

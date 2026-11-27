@@ -1,5 +1,5 @@
 import { AxcCondition, type AxcConditionProps } from './AxcCondition.js';
-import { AssistPanel } from '../internal/AssistPanel.js';
+import { AxcAssistAction } from '../internal/AssistPanel.js';
 import { useAxcLocale } from '../ui/provider.js';
 import { conditionAssistRequest, parseConditionResult } from '../core/assist.js';
 import { validateCondition } from '../core/condition.js';
@@ -21,7 +21,7 @@ export function AxcConditionAssist({ assist, ...props }: AxcConditionAssistProps
 	return (
 		<div className="axc-condition-assist">
 			{!props.readOnly && (
-				<AssistPanel
+				<AxcAssistAction
 					transport={assist}
 					current={{ value: props.value, ...catalog }}
 					disabled={props.disabled || !props.onChange}

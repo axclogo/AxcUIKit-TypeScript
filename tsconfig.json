@@ -11,7 +11,12 @@
 		"verbatimModuleSyntax": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"types": ["node", "react", "react-dom"]
+		"types": ["node", "react", "react-dom"],
+		"paths": {
+			"@axclogo/uikit/condition": ["./packages/condition/src/index.ts"],
+			"@axclogo/uikit/code-editor": ["./packages/code-editor/src/index.ts"],
+			"@axclogo/uikit/json-editor/codemirror": ["./packages/json-editor/src/codemirror.tsx"]
+		}
 	},
-	"include": ["packages/*/src", "packages/*/tests", "packages/condition/demo", "tests/setup"]
+	"include": ["packages/*/src", "packages/*/tests", "packages/*/demo", "demo", "tests/setup"]
 }

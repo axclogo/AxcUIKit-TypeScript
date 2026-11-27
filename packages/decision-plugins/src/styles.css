@@ -1,0 +1,42 @@
+.axc-plugin-editor {
+	display: grid;
+	gap: 1rem;
+	min-width: 0;
+}
+.axc-plugin-editor > fieldset,
+.axc-plugin-editor fieldset > fieldset {
+	min-width: 0;
+	border: 1px solid var(--axc-plugin-border, #cbd5d0);
+	border-radius: 6px;
+	padding: 12px;
+	margin: 0;
+}
+.axc-plugin-editor fieldset > label,
+.axc-plugin-editor > label {
+	display: grid;
+	gap: 4px;
+	margin-bottom: 8px;
+}
+.axc-plugin-editor legend {
+	font-weight: 600;
+}
+.axc-plugin-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex-wrap: wrap;
+	margin: 6px 0;
+}
+.axc-plugin-editor :is(input, textarea, select, button) {
+	font: inherit;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+.axc-plugin-editor [role='alert'] {
+	color: var(--axc-plugin-error, #ac2834);
+	overflow-wrap: anywhere;
+}
+.axc-plugin-editor .cm-editor {
+	border: 1px solid var(--axc-plugin-border, #cbd5d0);
+	margin: 6px 0;
+}

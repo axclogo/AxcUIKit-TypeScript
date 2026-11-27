@@ -219,7 +219,7 @@ export function Editors({ children }: { children: React.ReactNode }) {
 }
 ```
 
-The optional CodeMirror slot supports `theme="light"`, `"dark"` or `"none"` through a wrapper. Theme native UI with `--axc-json-text`, `--axc-json-muted`, `--axc-json-border`, `--axc-json-error`, `--axc-json-highlight`, and `--axc-json-surface`. Styling remains scoped to the editor.
+The CodeMirror slot uses the shared Code Editor and the official JSON language. Its `SourceEditorProps` type uses the same text-control contract. The optional CodeMirror slot supports `theme="light"`, `"dark"` or `"none"` through a wrapper. Theme native UI with `--axc-json-text`, `--axc-json-muted`, `--axc-json-border`, `--axc-json-error`, `--axc-json-highlight`, and `--axc-json-surface`. Styling remains scoped to the editor.
 
 ## Parsing outside React
 

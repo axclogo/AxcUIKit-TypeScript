@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.7.0 (unreleased)
+
+- Add the explicit `decision-plugins` entry: optional precondition, five built-in plugins (AI, model, JavaScript, HTTP, script), mandatory postcondition, JSONPath output mapping and real/sample simulation through Eval 0.4.
+- Export generic `AxcAssistAction` for developer-enabled drafting in built-in and custom plugins. Drafts require explicit adoption; changing the transport cancels stale responses.
+- Keep plugin execution failures visible, preserve their original cause, and expose Eval evidence callbacks. HTTP configuration changes invalidate the required test; resource refresh preserves editor focus.
+
+- Use one row index and selection state for flat CRUD and analysis tables, preserve typed select values, and validate action configuration once per table. GraphWorkbench reports invalid topology before mounting the canvas, and RelationGraph applies data through a single update path.
+- Slide the drawer and fade its backdrop on entry and exit. The CRUD example keeps the form visible until dismissal completes.
+- Add Drawer and Code Editor with interactive examples. The JSON CodeMirror adapter now uses the shared Code Editor.
+
+- Add a local interactive gallery for Condition, JSON Editor, Table and Graph.
+- Add a visual palette for analysis row colors, with rule editing and direct application. Color rules support nested column paths and fields with empty option lists.
+- Arrange analysis columns in one list with visibility toggles, drag handles and keyboard reordering.
+- Add a CRUD gallery with editing, cross-page deletion and same-page reordering. Pending actions and refreshes disable repeat clicks, confirmation dialogs support keyboard dismissal, and CRUD search respects input composition.
+- Add flat, tree, analysis and CRUD table components with explicit row keys, variable-height virtualization, column resizing, cross-page selection, drag and drop, and replaceable controls.
+- Add validated relation records, the G6 relation viewer, shared graph workspace and a controlled React Flow editor with Dagre layout. Graph engines are optional peers.
+- Add explicit table and graph component, core and CSS subpaths with TypeScript API references.
+- In analysis views color rules match individual values in multi-value fields, and an empty visible-column list shows the catalog. Reset preserves pinned columns, and applying a negated empty query preserves its negation. CRUD reset emits cleared controlled inputs before notifying the host.
+- Readonly workbenches support inspection while locking node movement and connections. Node metrics and details display their configured colors.
+
 ## 0.6.2
 
 - Activate token-free npm publication through the verified GitHub Actions Trusted Publisher.

@@ -25,3 +25,17 @@ Install the published package with `npm install @axclogo/uikit`. Use a pinned Gi
 - [Condition UI adapters](https://github.com/axclogo/AxcUIKit-TypeScript/blob/main/packages/condition/docs/ui-adapters.md)
 - [JSON editor API and adapter guide](https://github.com/axclogo/AxcUIKit-TypeScript/blob/main/packages/json-editor/README.md)
 - [中文文档](https://github.com/axclogo/AxcUIKit-TypeScript/blob/main/README.zh-CN.md)
+
+## Tables and graphs
+
+- `@axclogo/uikit/table` provides BaseTable, DataTable, DataTreeTable, DataAnalysisTable, DataCrudTable and TableUIProvider. Supply rowKey and import `@axclogo/uikit/table/styles.css`. Analysis fields are independent of visible columns.
+- `@axclogo/uikit/graph/core` validates relation data. `@axclogo/uikit/graph` exports RelationGraph (G6), GraphWorkbench (React Flow with Dagre layout), workspace and editor components. Supply the corresponding peers and styles documented in the [graph guide](./packages/graph/README.md).
+
+Drawer exposes a native modal through `@axclogo/uikit/drawer` and its explicit stylesheet. CodeMirror view creation belongs to `@axclogo/uikit/code-editor`. Only the optional JSON source adapter loads that view and the JSON language.
+
+## Decision plugins
+
+- `@axclogo/uikit/decision-plugins` exports PluginDecisionEditor, builtinDecisionPlugins, runPluginDecision and PluginTextAssist. Import its stylesheet and Condition styles. Eval 0.4 supplies validation, JSONPath mapping, two-phase execution and evidence; UIKit does not bundle WASM.
+- A plugin plan contains an optional precondition, one plugin and a mandatory postcondition. Built-ins are AI, model, JavaScript, HTTP and script. Model loading, resource catalogs and stored scripts remain host-owned. Missing services remain unavailable.
+- `AxcAssistAction` in the Condition entry is a developer-enabled draft/preview/adopt primitive reusable by custom plugins. AI assistance is independent of runtime AI decisions.
+- [Plugin contract](./packages/decision-plugins/README.md)

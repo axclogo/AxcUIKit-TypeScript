@@ -480,7 +480,7 @@ npm run api       # 有意修改公共 API 后，更新 packages/condition/api/ 
 npm test          # 全部测试先在 React 19、再在 React 18 上运行
 npm run build     # dist/：ESM、CSS 与 .d.ts
 npm run format    # Prettier
-npm run dev       # 演示地址 http://127.0.0.1:5178
+npm run dev       # 演示地址 http://127.0.0.1:5178/#condition
 npm run demo:build # 构建一次，之后可直接双击打开 packages/condition/demo/index.html
 ```
 

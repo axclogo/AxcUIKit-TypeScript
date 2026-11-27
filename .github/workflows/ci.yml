@@ -40,7 +40,7 @@ jobs:
             assert.doesNotMatch(specifier, /codemirror|@lezer/);
             return next(specifier, context);
           } });
-          for (const entry of ['condition', 'condition/core', 'json-editor', 'json-editor/core']) {
+          for (const entry of ['condition', 'condition/core', 'json-editor', 'json-editor/core', 'table', 'table/core', 'graph', 'graph/core', 'drawer']) {
             const subpath = '@axclogo/uikit/' + entry;
             const required = require(subpath);
             assert.equal(required, await import(subpath));
@@ -55,11 +55,12 @@ jobs:
           assert.deepEqual(jsonCore.parseJsonValue({ active: false }), { active: false });
           guard.deregister();
 
+          assert.equal(typeof (await import('@axclogo/uikit/code-editor')).CodeEditor, 'function');
           const codeMirror = require('@axclogo/uikit/json-editor/codemirror');
           assert.equal(codeMirror, await import('@axclogo/uikit/json-editor/codemirror'));
           assert.equal(typeof codeMirror.CodeMirrorSourceEditor, 'function');
           assert.throws(() => import.meta.resolve('@axclogo/uikit'), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
-          for (const component of ['condition', 'json-editor']) {
+          for (const component of ['condition', 'json-editor', 'table', 'graph', 'drawer']) {
             await access(new URL(import.meta.resolve(`@axclogo/uikit/${component}/styles.css`)));
           }
           JS

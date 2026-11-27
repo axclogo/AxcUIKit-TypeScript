@@ -13,3 +13,5 @@ export * from './core/index.js';
 export { AxcUIProvider, useAxcLocale } from './ui/provider.js';
 export type { AxcUIProviderProps } from './ui/provider.js';
 export type * from './ui/types.js';
+
+export { AxcAssistAction, type AxcAssistActionProps } from './internal/AssistPanel.js';

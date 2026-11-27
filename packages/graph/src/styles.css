@@ -1,0 +1,194 @@
+.axc-graph {
+	height: var(--axc-graph-height, calc(100vh - 132px));
+	min-height: var(--axc-graph-min-height, 620px);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	border: 1px solid var(--axc-graph-border, #d4d8de);
+	border-radius: 8px;
+	color: var(--axc-graph-text, #253349);
+	background: var(--axc-graph-bg, white);
+	--axc-graph-left: 460px;
+	--axc-graph-right: 420px;
+}
+.axc-graph[data-sidebar-size='compact'] {
+	--axc-graph-right: 280px;
+}
+.axc-graph-main {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	flex: 1;
+	min-height: 0;
+}
+.axc-graph-main[data-left='true'] {
+	grid-template-columns: minmax(0, var(--axc-graph-left)) minmax(0, 1fr);
+}
+.axc-graph-main[data-right='true'] {
+	grid-template-columns: minmax(0, 1fr) minmax(0, var(--axc-graph-right));
+}
+.axc-graph-main[data-left='true'][data-right='true'] {
+	grid-template-columns: minmax(0, var(--axc-graph-left)) minmax(0, 1fr) minmax(0, var(--axc-graph-right));
+}
+.axc-graph-main > aside {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	overflow: auto;
+	border-inline: 1px solid var(--axc-graph-border, #d4d8de);
+}
+.axc-graph-canvas {
+	position: relative;
+	min-width: 0;
+	min-height: 0;
+	overflow: hidden;
+	background: var(--axc-graph-canvas, #f8fafc);
+}
+.axc-graph-toolbar {
+	min-height: 48px;
+	padding-inline: 12px;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	flex-wrap: wrap;
+	border-bottom: 1px solid var(--axc-graph-border, #d4d8de);
+}
+.axc-graph-panel,
+.axc-graph-side {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+.axc-graph-panel > button {
+	text-align: start;
+	min-height: 44px;
+	border: 0;
+	background: var(--axc-graph-panel, #eff2f6);
+	padding-inline: 12px;
+	font: inherit;
+}
+.axc-graph-panel > div,
+.axc-graph-side {
+	padding: 12px;
+	overflow: auto;
+}
+.axc-graph-panel[data-grow='true'] {
+	flex: 1;
+}
+.axc-graph-section,
+.axc-graph-inspector {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+.axc-graph-section {
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--axc-graph-border, #d4d8de);
+}
+@media (max-width: 1180px) {
+	.axc-graph {
+		--axc-graph-left: min(32%, 400px);
+		--axc-graph-right: min(32%, 360px);
+	}
+	.axc-graph[data-sidebar-size='compact'] {
+		--axc-graph-right: min(28%, 240px);
+	}
+}
+.axc-graph-mount {
+	position: absolute;
+	inset: 0;
+}
+.axc-graph-controls {
+	position: absolute;
+	inset: auto 12px 12px auto;
+	display: flex;
+	gap: 4px;
+}
+.axc-graph-canvas > [role='alert'],
+.axc-graph-canvas > [role='status'] {
+	position: relative;
+	width: fit-content;
+	margin: 12px;
+	background: var(--axc-graph-bg, white);
+	padding: 8px;
+}
+.axc-graph-node {
+	box-sizing: border-box;
+	width: 218px;
+	border: 1px solid var(--axc-graph-border, #d4d8de);
+	border-inline-start: 4px solid var(--axc-graph-node-tone, #2563eb);
+	background: var(--axc-graph-bg, white);
+	border-radius: 8px;
+	padding: 10px;
+	color: var(--axc-graph-text, #253349);
+	font-size: 13px;
+	text-align: start;
+}
+.axc-graph .react-flow__node-default:has(.axc-graph-node) {
+	width: auto;
+	border: 0;
+	padding: 0;
+	background: transparent;
+}
+.axc-graph-node[data-selected='true'] {
+	outline: 2px solid var(--axc-graph-node-tone, #2563eb);
+}
+.axc-graph-node [data-tone] dd {
+	color: var(--axc-graph-node-tone);
+}
+.axc-graph-node [data-tone='blue'] {
+	--axc-graph-node-tone: var(--axc-graph-blue, #2563eb);
+}
+.axc-graph-node[data-tone='green'],
+.axc-graph-node [data-tone='green'] {
+	--axc-graph-node-tone: var(--axc-graph-green, #228650);
+}
+.axc-graph-node[data-tone='red'],
+.axc-graph-node [data-tone='red'] {
+	--axc-graph-node-tone: var(--axc-graph-red, #dc2626);
+}
+.axc-graph-node[data-tone='grey'],
+.axc-graph-node [data-tone='grey'] {
+	--axc-graph-node-tone: var(--axc-graph-grey, #586578);
+}
+.axc-graph-node[data-tone='orange'],
+.axc-graph-node [data-tone='orange'] {
+	--axc-graph-node-tone: var(--axc-graph-orange, #b45309);
+}
+.axc-graph-node[data-size='wide'] {
+	width: 300px;
+}
+.axc-graph-node[data-size='compact'] {
+	width: 268px;
+}
+.axc-graph-node[data-size='hub'] {
+	width: 318px;
+}
+.axc-graph-node header,
+.axc-graph-node dl > div {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+.axc-graph-node header > div {
+	min-width: 0;
+}
+.axc-graph-node strong,
+.axc-graph-node small,
+.axc-graph-node dd {
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.axc-graph-node > span {
+	display: inline-block;
+	margin: 4px;
+	font-size: 12px;
+}
+.axc-graph-node dd {
+	margin: 0;
+}
+.axc-graph-sidebar-actions {
+	display: grid;
+	gap: 8px;
+}

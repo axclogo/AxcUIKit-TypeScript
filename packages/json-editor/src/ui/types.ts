@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import type { SourceTextProps as SourceEditorProps } from '@axclogo/uikit/code-editor';
 import type { JsonPath } from '../core/index.js';
 
 export interface InputProps {
@@ -41,17 +42,7 @@ export interface ButtonProps {
 	expanded?: boolean;
 }
 
-export interface SourceEditorProps {
-	label: string;
-	describedBy?: string;
-	value: string;
-	onChange: (value: string) => void;
-	height?: string | number;
-	placeholder?: string;
-	readOnly?: boolean;
-	disabled?: boolean;
-	invalid?: boolean;
-}
+export type { SourceEditorProps };
 
 /** Host-owned file picker. Emit only the serializable reference; retain files in the host.
  * In readOnly mode render the display name without a picker; the editor renders the reference.

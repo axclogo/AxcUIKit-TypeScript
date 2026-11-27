@@ -1,8 +1,8 @@
 {
 	"name": "@axclogo/uikit",
-	"version": "0.6.2",
+	"version": "0.7.0",
 	"type": "module",
-	"description": "Focused React & TypeScript components: condition/query builders and JSON editors, with replaceable controls, scoped styles and i18n. A component collection, not a complete UI framework.",
+	"description": "Focused React and TypeScript components for condition building, JSON editing, data tables and graph workspaces, with scoped styles and typed host controls.",
 	"keywords": [
 		"react",
 		"typescript",
@@ -59,14 +59,46 @@
 		"./json-editor/codemirror": {
 			"types": "./dist/types/json-editor/src/codemirror.d.ts",
 			"default": "./dist/json-editor/codemirror.js"
-		}
+		},
+		"./table": {
+			"types": "./dist/types/table/src/index.d.ts",
+			"default": "./dist/table/index.js"
+		},
+		"./table/core": {
+			"types": "./dist/types/table/src/core/index.d.ts",
+			"default": "./dist/table/core.js"
+		},
+		"./table/styles.css": "./dist/table/styles.css",
+		"./graph": {
+			"types": "./dist/types/graph/src/index.d.ts",
+			"default": "./dist/graph/index.js"
+		},
+		"./graph/core": {
+			"types": "./dist/types/graph/src/core/index.d.ts",
+			"default": "./dist/graph/core.js"
+		},
+		"./graph/styles.css": "./dist/graph/styles.css",
+		"./drawer": {
+			"types": "./dist/types/drawer/src/index.d.ts",
+			"default": "./dist/drawer/index.js"
+		},
+		"./code-editor": {
+			"types": "./dist/types/code-editor/src/index.d.ts",
+			"default": "./dist/code-editor/index.js"
+		},
+		"./drawer/styles.css": "./dist/drawer/styles.css",
+		"./decision-plugins": {
+			"types": "./dist/types/decision-plugins/src/index.d.ts",
+			"default": "./dist/decision-plugins/index.js"
+		},
+		"./decision-plugins/styles.css": "./dist/decision-plugins/styles.css"
 	},
 	"scripts": {
 		"build": "node scripts/build.mjs && tsc -p tsconfig.build.json",
 		"check": "tsc --noEmit && node scripts/check-boundaries.mjs && eslint . --max-warnings 0 && knip",
 		"test": "npm run test:react19 && npm run test:react18",
 		"test:publish": "node --test scripts/check-publish.test.mjs",
-		"test:react19": "npm run test:condition && npm run test:json-editor",
+		"test:react19": "npm run test:condition && npm run test:json-editor && npm run test:table && npm run test:graph && npm run test:drawer && npm run test:code-editor && npm run test:decision-plugins",
 		"pretest:react18": "npm --prefix tests/react18 install --no-audit --no-fund --silent",
 		"test:react18": "node --import ./tests/setup/react18.mjs --import tsx --import ./tests/setup/dom.ts --test 'packages/*/tests/**/*.test.{ts,tsx}'",
 		"format": "prettier --write .",
@@ -76,19 +108,32 @@
 		"api": "node scripts/check-api.mjs --update",
 		"api:check": "node scripts/check-api.mjs",
 		"size": "node scripts/check-size.mjs",
-		"verify": "npm run format:check && npm run check && npm run test:publish && npm test && npm run build && npm run api:check && npm run size",
+		"verify": "npm run format:check && npm run check && npm run test:publish && npm test && npm run build && npm run api:check && npm run size && tsc -p tests/entries && node scripts/check-table-graph-build.mjs",
 		"demo:build": "node scripts/dev.mjs --build",
 		"test:condition": "node --import tsx --import ./tests/setup/dom.ts --test --experimental-test-coverage --test-coverage-include='packages/condition/src/**' --test-coverage-lines=98 --test-coverage-branches=95 --test-coverage-functions=93 'packages/condition/tests/**/*.test.{ts,tsx}'",
-		"test:json-editor": "node --import tsx --import ./tests/setup/dom.ts --test 'packages/json-editor/tests/**/*.test.{ts,tsx}'"
+		"test:json-editor": "node --import tsx --import ./tests/setup/dom.ts --test 'packages/json-editor/tests/**/*.test.{ts,tsx}'",
+		"test:table": "node --import tsx --import ./tests/setup/dom.ts --test --experimental-test-coverage --test-coverage-include='packages/table/src/core/**' --test-coverage-lines=98 --test-coverage-branches=95 --test-coverage-functions=93 'packages/table/tests/**/*.test.{ts,tsx}'",
+		"test:graph": "node --import tsx --import ./tests/setup/dom.ts --test --experimental-test-coverage --test-coverage-include='packages/graph/src/core/**' --test-coverage-lines=98 --test-coverage-branches=95 --test-coverage-functions=93 'packages/graph/tests/**/*.test.{ts,tsx}'",
+		"test:drawer": "node --import tsx --import ./tests/setup/dom.ts --test 'packages/drawer/tests/**/*.test.{ts,tsx}'",
+		"test:code-editor": "node --import tsx --import ./tests/setup/dom.ts --test 'packages/code-editor/tests/**/*.test.{ts,tsx}'",
+		"test:decision-plugins": "node --import tsx --import ./tests/setup/dom.ts --test 'packages/decision-plugins/tests/**/*.test.{ts,tsx}'",
+		"demo:eval": "node scripts/prepare-demo-eval.mjs"
 	},
 	"engines": {
 		"node": ">=22.18"
 	},
 	"peerDependencies": {
+		"@antv/g6": "5.1.1",
+		"@dagrejs/dagre": "3.1.4",
+		"@xyflow/react": "12.11.1",
 		"react": "^18.3.0 || ^19.0.0",
 		"react-dom": "^18.3.0 || ^19.0.0"
 	},
 	"devDependencies": {
+		"@antv/g6": "5.1.1",
+		"@codemirror/lang-markdown": "6.5.0",
+		"@codemirror/lang-sql": "6.10.0",
+		"@dagrejs/dagre": "3.1.4",
 		"@happy-dom/global-registrator": "21.0.4",
 		"@microsoft/api-extractor": "7.60.1",
 		"@testing-library/dom": "10.4.2",
@@ -96,6 +141,7 @@
 		"@types/node": "26.1.0",
 		"@types/react": "19.3.0",
 		"@types/react-dom": "19.3.0",
+		"@xyflow/react": "12.11.1",
 		"ajv": "8.20.0",
 		"esbuild": "0.28.2",
 		"eslint": "10.15.0",
@@ -122,10 +168,20 @@
 	},
 	"dependencies": {
 		"@codemirror/lang-json": "6.0.2",
+		"@tanstack/virtual-core": "3.19.13",
 		"@uiw/react-codemirror": "4.25.10"
 	},
 	"peerDependenciesMeta": {
 		"react-dom": {
+			"optional": true
+		},
+		"@antv/g6": {
+			"optional": true
+		},
+		"@dagrejs/dagre": {
+			"optional": true
+		},
+		"@xyflow/react": {
 			"optional": true
 		}
 	}

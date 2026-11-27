@@ -30,7 +30,8 @@ function checkItem(item: unknown, field: ConditionField, operator: ConditionOper
 	if (REGEX_OPERATORS.includes(operator.name))
 		try {
 			new RegExp(item);
-		} catch {
+		} catch (error) {
+			if (!(error instanceof SyntaxError)) throw error;
 			return (report({ code: 'regex', path }), false);
 		}
 	return true;

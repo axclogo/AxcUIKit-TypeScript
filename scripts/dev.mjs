@@ -2,7 +2,7 @@ import { build, context } from 'esbuild';
 // Local demo only. `--build` writes the demo bundle once so demo/index.html also opens from disk (file://);
 // without it, esbuild serves the demo and rebuilds on changes.
 // IIFE + relative paths because browsers block module scripts and absolute paths under file://.
-const demo = 'packages/condition/demo';
+const demo = 'demo';
 const options = {
 	entryPoints: [`${demo}/main.tsx`],
 	outfile: `${demo}/dist/app.js`,

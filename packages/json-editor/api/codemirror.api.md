@@ -7,7 +7,7 @@
 import { JSX } from 'react';
 
 // @public
-export function CodeMirrorSourceEditor(input: CodeMirrorSourceEditorProps): JSX.Element;
+export function CodeMirrorSourceEditor(props: CodeMirrorSourceEditorProps): JSX.Element;
 
 // @public (undocumented)
 export interface CodeMirrorSourceEditorProps extends SourceEditorProps {
@@ -22,7 +22,7 @@ export interface SourceEditorProps {
     // (undocumented)
     disabled?: boolean;
     // (undocumented)
-    height?: string | number;
+    height?: number | string;
     // (undocumented)
     invalid?: boolean;
     // (undocumented)

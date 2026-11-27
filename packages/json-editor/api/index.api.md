@@ -337,7 +337,7 @@ export interface SourceEditorProps {
     // (undocumented)
     disabled?: boolean;
     // (undocumented)
-    height?: string | number;
+    height?: number | string;
     // (undocumented)
     invalid?: boolean;
     // (undocumented)

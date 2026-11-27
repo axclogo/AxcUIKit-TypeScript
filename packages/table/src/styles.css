@@ -1,0 +1,303 @@
+.axc-table {
+	overflow: auto;
+	min-height: 0;
+	position: relative;
+	color: var(--axc-table-text, inherit);
+	font: inherit;
+}
+.axc-table table {
+	border-spacing: 0;
+	table-layout: fixed;
+	isolation: isolate;
+}
+.axc-table td,
+.axc-table th {
+	background: var(--axc-table-bg, white);
+	box-sizing: border-box;
+	border-bottom: 1px solid var(--axc-table-border, #ddd);
+	padding: 4px 8px;
+	overflow-wrap: anywhere;
+}
+.axc-table thead {
+	position: sticky;
+	top: 0;
+	z-index: 3;
+}
+.axc-table th {
+	text-align: start;
+	position: relative;
+	background: var(--axc-table-heading, #f4f5f7);
+}
+.axc-table-resize {
+	position: absolute;
+	inset: 0 -1px 0 auto;
+	width: 8px;
+	cursor: col-resize;
+	touch-action: none;
+}
+.axc-table-handle {
+	cursor: grab;
+	touch-action: none;
+}
+.axc-table-actions {
+	display: inline-grid;
+	gap: 4px;
+	white-space: nowrap;
+}
+.axc-table [data-drop='before'] td {
+	border-top: 2px solid var(--axc-table-accent, #2563eb);
+}
+.axc-table [data-drop='after'] td {
+	border-bottom: 2px solid var(--axc-table-accent, #2563eb);
+}
+.axc-table [data-drop='inside'] td {
+	outline: 1px solid var(--axc-table-accent, #2563eb);
+}
+.axc-table-ellipsis {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: inherit;
+}
+.axc-table-tooltip {
+	position: relative;
+}
+.axc-table-tooltip:has(> .axc-table-ellipsis) {
+	display: block;
+}
+.axc-table-tooltip [role='tooltip'] {
+	position: absolute;
+	z-index: 4;
+	background: var(--axc-table-text, #222);
+	color: var(--axc-table-bg, white);
+	padding: 4px;
+	bottom: 100%;
+	left: 0;
+}
+.axc-table-backdrop {
+	border: 0;
+	padding: 0;
+	background: transparent;
+	text-align: start;
+	white-space: normal;
+}
+.axc-table-backdrop::backdrop {
+	background: #0004;
+}
+.axc-table-backdrop > section {
+	background: var(--axc-table-bg, white);
+	color: var(--axc-table-text, #222);
+	padding: 16px;
+	max-height: 80vh;
+	overflow: auto;
+	max-width: 90vw;
+}
+.axc-table-pages,
+.axc-table-tools,
+.axc-table-batch {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.axc-table-empty {
+	padding: 16px;
+	text-align: center;
+}
+.axc-table-tree,
+.axc-table-analysis,
+.axc-table-crud {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-height: 0;
+}
+.axc-table-tree > .axc-table,
+.axc-table-analysis > .axc-table,
+.axc-table-crud > .axc-table {
+	flex: 1 1 auto;
+}
+.axc-table tr[data-color='red'],
+.axc-table-swatch[data-color='red'] {
+	--axc-table-rule-fill: var(--axc-table-red, #ffe5e5);
+}
+.axc-table tr[data-color='green'],
+.axc-table-swatch[data-color='green'] {
+	--axc-table-rule-fill: var(--axc-table-green, #dcf6e8);
+}
+.axc-table tr[data-color='blue'],
+.axc-table-swatch[data-color='blue'] {
+	--axc-table-rule-fill: var(--axc-table-blue, #e0ecff);
+}
+.axc-table tr[data-color='orange'],
+.axc-table-swatch[data-color='orange'] {
+	--axc-table-rule-fill: var(--axc-table-orange, #ffeacc);
+}
+.axc-table tr[data-color='grey'],
+.axc-table-swatch[data-color='grey'] {
+	--axc-table-rule-fill: var(--axc-table-grey, #e9ebee);
+}
+
+.axc-table-actions {
+	width: max-content;
+}
+
+.axc-table-column-list {
+	box-sizing: border-box;
+	inline-size: min(28rem, 100%);
+	min-inline-size: min(22rem, 70vw);
+	max-block-size: 50vh;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	list-style: none;
+	margin: 0.75rem 0;
+	padding: 0;
+	border: 1px solid var(--axc-table-border, #ddd);
+	border-radius: 6px;
+}
+.axc-table-column-list > li {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto auto;
+	align-items: center;
+	gap: 6px;
+	padding: 5px 8px;
+	position: relative;
+}
+.axc-table-column-list > li + li {
+	border-top: 1px solid var(--axc-table-border, #ddd);
+}
+.axc-table-column-list > li[data-drop]::after {
+	content: '';
+	pointer-events: none;
+	position: absolute;
+	inset-inline: 0;
+	height: 2px;
+	background: var(--axc-table-accent, #2563eb);
+}
+.axc-table-column-list > li[data-drop='before']::after {
+	top: 0;
+}
+.axc-table-column-list > li[data-drop='after']::after {
+	bottom: 0;
+}
+.axc-table-column-list > li[data-dragging],
+.axc-table-column-list > li[data-shown='false'] .axc-table-column-name {
+	opacity: 0.65;
+}
+.axc-table-column-name {
+	overflow-wrap: anywhere;
+}
+.axc-table-column-grip,
+.axc-table-column-eye > button {
+	display: inline-grid;
+	place-items: center;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	background: transparent;
+	color: inherit;
+	border: 0;
+	border-radius: 4px;
+}
+.axc-table-column-grip {
+	cursor: grab;
+}
+.axc-table-column-grip:active {
+	cursor: grabbing;
+}
+.axc-table-column-eye > button:enabled {
+	cursor: pointer;
+}
+.axc-table-column-eye > button:disabled {
+	opacity: 0.4;
+}
+.axc-table-column-eye button:enabled:hover,
+.axc-table-column-grip:enabled:hover {
+	background: var(--axc-table-heading, #f4f5f7);
+}
+
+.axc-table tr[data-color] > td,
+.axc-table-swatch {
+	background-color: var(--axc-table-rule-fill);
+}
+.axc-table-color-editor {
+	display: grid;
+	gap: 1rem;
+	padding-top: 0.75rem;
+}
+.axc-table-color-rules {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.axc-table-color-rules li {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto auto;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.35rem 0;
+	overflow-wrap: anywhere;
+}
+.axc-table-color-rules .axc-table-swatch {
+	width: 1rem;
+	height: 1rem;
+}
+.axc-table-color-fields {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+.axc-table-color-fields label {
+	display: grid;
+	gap: 0.25rem;
+	min-width: 0;
+}
+.axc-table-palette {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	min-inline-size: 0;
+}
+.axc-table-palette legend {
+	padding: 0;
+	margin-bottom: 0.375rem;
+}
+.axc-table-palette label {
+	display: inline-grid;
+	position: relative;
+	margin-inline-end: 0.375rem;
+}
+.axc-table-palette input {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	opacity: 0;
+	cursor: pointer;
+}
+.axc-table-swatch {
+	display: inline-grid;
+	place-items: center;
+	box-sizing: border-box;
+	border: 1px solid #0003;
+	border-radius: 4px;
+}
+.axc-table-palette .axc-table-swatch {
+	width: 2rem;
+	height: 2rem;
+}
+.axc-table-palette input:checked + .axc-table-swatch::after {
+	content: '';
+	width: 0.36rem;
+	height: 0.65rem;
+	border: solid white;
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+	filter: drop-shadow(0 0 1.5px black) drop-shadow(0 0 1px black);
+}
+.axc-table-palette input:focus-visible + .axc-table-swatch {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}

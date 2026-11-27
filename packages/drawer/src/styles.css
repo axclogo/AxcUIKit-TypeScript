@@ -1,0 +1,122 @@
+:root:has(.axc-drawer:modal) {
+	overflow: hidden;
+}
+.axc-drawer {
+	box-sizing: border-box;
+	position: fixed;
+	inset: 0 0 0 auto;
+	margin: 0;
+	padding: 0;
+	max-width: 100%;
+	max-height: 100dvh;
+	height: 100dvh;
+	border: 0;
+	overflow: hidden;
+	background: var(--axc-drawer-bg, white);
+	color: var(--axc-drawer-text, #20332e);
+	box-shadow: -6px 0 30px #0002;
+}
+.axc-drawer[open] {
+	display: flex;
+	flex-direction: column;
+}
+.axc-drawer::backdrop {
+	background: var(--axc-drawer-mask, #15262366);
+}
+.axc-drawer[data-size='small'] {
+	width: min(100%, max(360px, 50%));
+}
+.axc-drawer[data-size='medium'] {
+	width: min(100%, max(480px, 66.6667%));
+}
+.axc-drawer[data-size='large'] {
+	width: min(100%, max(720px, calc(100% - var(--axc-drawer-large-inset, 12rem))));
+}
+.axc-drawer[data-size='full'] {
+	width: 100%;
+}
+.axc-drawer-header,
+.axc-drawer-footer {
+	flex: none;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px 20px;
+}
+.axc-drawer-header {
+	border-bottom: 1px solid var(--axc-drawer-border, #dce4df);
+}
+.axc-drawer-title {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 1.1rem;
+	font-weight: 650;
+}
+.axc-drawer-header-actions {
+	min-width: 0;
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+.axc-drawer-close {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 36px;
+	height: 36px;
+	border: 0;
+	border-radius: 5px;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+}
+.axc-drawer-close:hover {
+	background: var(--axc-drawer-control-bg, #edf1ef);
+}
+.axc-drawer-body {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+	overscroll-behavior: contain;
+	padding: 20px;
+}
+.axc-drawer-footer {
+	justify-content: flex-end;
+	flex-wrap: wrap;
+	border-top: 1px solid var(--axc-drawer-border, #dce4df);
+	padding-bottom: max(14px, env(safe-area-inset-bottom));
+}
+@media (max-width: 480px) {
+	.axc-drawer[data-size] {
+		width: 100%;
+	}
+}
+@media (prefers-reduced-motion: no-preference) {
+	.axc-drawer[open] {
+		transform: translateX(0);
+		transition: transform 220ms ease-out;
+	}
+	.axc-drawer[open]::backdrop {
+		opacity: 1;
+		transition: opacity 220ms ease-out;
+	}
+	.axc-drawer[data-closing] {
+		transform: translateX(100%);
+		transition-timing-function: ease-in;
+	}
+	.axc-drawer[data-closing]::backdrop {
+		opacity: 0;
+		transition-timing-function: ease-in;
+	}
+	@starting-style {
+		.axc-drawer[open] {
+			transform: translateX(100%);
+		}
+		.axc-drawer[open]::backdrop {
+			opacity: 0;
+		}
+	}
+}

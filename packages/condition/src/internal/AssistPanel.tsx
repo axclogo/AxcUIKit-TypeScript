@@ -5,7 +5,7 @@ import type { AxcAssistRequest, AxcAssistResult, AxcAssistTransport } from '../c
 import { AxcValidationError, type AxcIssue } from '../core/issues.js';
 import { Issues } from './Issues.js';
 
-interface AssistPanelProps<T> {
+export interface AxcAssistActionProps<T> {
 	transport: AxcAssistTransport;
 	/** Anything whose change makes an in-flight request or candidate stale. */
 	current: unknown;
@@ -24,7 +24,7 @@ type Failure = { message: string } | { issues: AxcIssue[] };
  * Runs at most one request and holds at most one unapplied candidate. A request is discarded when
  * cancelled, when `current` or `disabled` changes, or on unmount; late results are ignored.
  */
-export function AssistPanel<T>({
+export function AxcAssistAction<T>({
 	transport,
 	current,
 	disabled,
@@ -34,7 +34,7 @@ export function AssistPanel<T>({
 	validate,
 	preview,
 	onApply,
-}: AssistPanelProps<T>) {
+}: AxcAssistActionProps<T>) {
 	const locale = useAxcLocale();
 	const [open, setOpen] = useState(false);
 	const [model, setModel] = useState<string | null>(null);
@@ -54,7 +54,7 @@ export function AssistPanel<T>({
 		setCandidate(null);
 		setFailure(null);
 		return () => active.current?.abort();
-	}, [currentText, disabled]);
+	}, [currentText, disabled, transport]);
 	const ready = !disabled && !busy && Boolean(requirement.trim()) && transport.models.some((item) => item.id === model);
 	const generate = async () => {
 		const controller = new AbortController();

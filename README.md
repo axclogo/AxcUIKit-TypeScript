@@ -8,10 +8,15 @@ Focused React and TypeScript editors for application data. Build query filters a
 
 ## Component catalog
 
-| Module                                          | Includes                                                                                                                                        | Import                       |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| [Condition](./packages/condition/README.md)     | Query builder, condition and decision editors, strict validation, AI-assisted drafts, and sample simulation through `@axclogo/eval`.            | `@axclogo/uikit/condition`   |
-| [JSON Editor](./packages/json-editor/README.md) | Any JSON root, recursive field metadata, JSON Schema conversion, host file controls, property switches, and optional CodeMirror source editing. | `@axclogo/uikit/json-editor` |
+| Module                                                    | Includes                                                                                                                                        | Import                            |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| [Condition](./packages/condition/README.md)               | Query builder, condition and decision editors, strict validation, AI-assisted drafts, and sample simulation through `@axclogo/eval`.            | `@axclogo/uikit/condition`        |
+| [JSON Editor](./packages/json-editor/README.md)           | Any JSON root, recursive field metadata, JSON Schema conversion, host file controls, property switches, and optional CodeMirror source editing. | `@axclogo/uikit/json-editor`      |
+| [Decision Plugins](./packages/decision-plugins/README.md) | Precondition, five built-in plugins, required postcondition, JSONPath output mapping and simulation.                                            | `@axclogo/uikit/decision-plugins` |
+| [Table](./packages/table/README.md)                       | Flat, tree, analysis and CRUD tables with reorder, visibility and color controls.                                                               | `@axclogo/uikit/table`            |
+| [Graph](./packages/graph/README.md)                       | Relation viewer and editable graph workspace.                                                                                                   | `@axclogo/uikit/graph`            |
+| [Drawer](./packages/drawer/README.md)                     | Animated modal drawer with fixed title, close button and optional footer.                                                                       | `@axclogo/uikit/drawer`           |
+| [Code Editor](./packages/code-editor/README.md)           | Shared CodeMirror editor with host-selected language extensions.                                                                                | `@axclogo/uikit/code-editor`      |
 
 ## Installation
 
@@ -27,7 +32,7 @@ npm install @axclogo/uikit react react-dom
 ```
 
 Pin an exact npm version when the application needs controlled upgrades, for example
-`npm install @axclogo/uikit@0.6.2`. TypeScript declarations are included. There is intentionally no `@axclogo/uikit` root
+`npm install @axclogo/uikit@0.7.0`. TypeScript declarations are included. There is intentionally no `@axclogo/uikit` root
 entry: import only the explicit subpaths below so unused editors and the CodeMirror adapter stay out of the application.
 
 | Use                                      | Import                                  |
@@ -110,6 +115,16 @@ function. Complete contracts and adapter examples live in the component guides a
 
 ## Contributing
 
-Use Node.js 22.18 or later. Run `npm ci` to install and build, and `npm run verify` to run formatting, type, boundary, lint, unused-code, React 18/19, API, and bundle checks. Use `npm run dev` to open the Condition demo at [localhost:5178](http://127.0.0.1:5178).
+Use Node.js 22.18 or later. Run `npm ci` to install and build, and `npm run verify` to run formatting, type, boundary, lint, unused-code, React 18/19, API, and bundle checks. Use `npm run dev` to open the interactive Condition, JSON Editor, Table and Graph gallery at [localhost:5178](http://127.0.0.1:5178).
 
 [MIT license](./LICENSE)
+
+## Tables and graphs
+
+Version 0.7.0 adds flat, tree, analysis and CRUD tables with explicit row keys. Import components from `@axclogo/uikit/table` and load `@axclogo/uikit/table/styles.css`. The analysis condition dialog also uses `@axclogo/uikit/condition/styles.css`. See the [table guide and example](./packages/table/README.md).
+
+Use `@axclogo/uikit/graph/core` for relation parsing or `@axclogo/uikit/graph` with `@axclogo/uikit/graph/styles.css` for graph canvases. Install `@antv/g6@5.1.1` for RelationGraph. For GraphWorkbench install `@xyflow/react@12.11.1` and `@dagrejs/dagre@3.1.4`, then import `@xyflow/react/dist/style.css`. See the [graph guide and example](./packages/graph/README.md).
+
+Drawer and Code Editor are available from `@axclogo/uikit/drawer` and `@axclogo/uikit/code-editor`. Import `@axclogo/uikit/drawer/styles.css` for the drawer. [Drawer guide](./packages/drawer/README.md) · [Code Editor guide](./packages/code-editor/README.md)
+
+For the plugin gallery, build AxcEval 0.4 with `wasm-pack build crates/axc-eval-wasm --target web --out-dir ../../pkg-web`, then run `npm run demo:eval -- /path/to/AxcEval/pkg-web` in UIKit. Run `npm run dev` and open [Condition · Plugins](http://127.0.0.1:5178/#decision-plugins). The gallery exercises all five presets and a custom plugin; AI/model/script services use explicitly labeled local demonstration callbacks. HTTP and JavaScript run in the browser.

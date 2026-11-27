@@ -1,7 +1,7 @@
 import { AxcUIProvider } from '../src/index.js';
+import { useTheme } from '../../../demo/theme.js';
 import { hostControls } from './host-controls.js';
 import { useRef, useState } from 'react';
-import { createRoot } from 'react-dom/client';
 import {
 	AxcCondition,
 	AxcConditionAssist,
@@ -47,11 +47,11 @@ const initial: AxcConditionValue = {
 };
 const models = [{ id: 'host-model-a', provider: 'Demo', label: 'Manual round trip' }];
 
-function App() {
+export function ConditionExample() {
 	const [mode, setMode] = useState('condition');
-	const [dark, setDark] = useState(false);
+	const theme = useTheme();
 	const [hostUI, setHostUI] = useState(false);
-	const [chinese, setChinese] = useState(false);
+	const [chinese, setChinese] = useState(true);
 	const [condition, setCondition] = useState(initial);
 	const [decision, setDecision] = useState<AxcDecisionValue>({
 		...emptyDecision(),
@@ -109,17 +109,11 @@ function App() {
 			2,
 		);
 	return (
-		<main data-axc-theme={dark ? 'dark' : 'light'}>
+		<section className="condition-demo" data-axc-theme={theme}>
 			<header>
-				<h1>AxcCondition</h1>
-				<p>Standalone condition components · React is the only dependency · no backend</p>
-				<label>
-					<input type="checkbox" checked={dark} onChange={(e) => setDark(e.target.checked)} />
-					Dark theme
-				</label>
 				<label>
 					<input type="checkbox" checked={hostUI} onChange={(event) => setHostUI(event.target.checked)} />
-					Host button adapter example
+					替换按钮控件
 				</label>
 				<label>
 					<input type="checkbox" checked={chinese} onChange={(event) => setChinese(event.target.checked)} />
@@ -197,8 +191,6 @@ function App() {
 				<summary>Current value (in memory only)</summary>
 				<pre>{JSON.stringify(mode.startsWith('condition') ? condition : decision, null, 2)}</pre>
 			</details>
-		</main>
+		</section>
 	);
 }
-
-createRoot(document.getElementById('root')!).render(<App />);

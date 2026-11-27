@@ -1,0 +1,614 @@
+/* Gallery theme. Tokens live on :root so top-layer dialogs and portals inherit them; demo/theme.ts sets data-theme. */
+:root {
+	--g-bg: #f5f6fa;
+	--g-surface: #fff;
+	--g-raised: #f0f1f7;
+	--g-border: #e3e5ee;
+	--g-border-strong: #cdd1de;
+	--g-text: #171a24;
+	--g-muted: #697086;
+	--g-accent: #5b5bd6;
+	--g-accent-soft: #ececfc;
+	--g-accent-text: #fff;
+	--g-danger: #d1344a;
+	--g-success: #178a50;
+	--g-shadow: 0 1px 2px #1118270d, 0 8px 24px -8px #11182714;
+	--g-shadow-lg: 0 24px 64px -12px #11182740;
+	--g-ring: 0 0 0 3px #5b5bd62e;
+	--g-radius: 10px;
+	--g-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+	color-scheme: light;
+	font-family:
+		Inter,
+		-apple-system,
+		BlinkMacSystemFont,
+		'PingFang SC',
+		'Microsoft YaHei',
+		sans-serif;
+	color: var(--g-text);
+	background: var(--g-bg);
+	-webkit-font-smoothing: antialiased;
+}
+:root[data-theme='dark'] {
+	--g-bg: #0c0e13;
+	--g-surface: #14171f;
+	--g-raised: #1b1f2a;
+	--g-border: #262b38;
+	--g-border-strong: #384054;
+	--g-text: #e8eaf1;
+	--g-muted: #8d95aa;
+	--g-accent: #8f90f7;
+	--g-accent-soft: #23253f;
+	--g-accent-text: #0c0e13;
+	--g-danger: #ff7d8f;
+	--g-success: #4cd08a;
+	--g-shadow: 0 1px 2px #0006, 0 8px 24px -8px #0008;
+	--g-shadow-lg: 0 24px 64px -12px #000c;
+	--g-ring: 0 0 0 3px #8f90f740;
+	color-scheme: dark;
+}
+
+/* Component variables: every package reads its own --axc-* set, so the gallery maps one palette onto all of them. */
+:root {
+	--axc-bg: var(--g-surface);
+	--axc-panel: var(--g-raised);
+	--axc-text: var(--g-text);
+	--axc-border: var(--g-border-strong);
+	--axc-accent: var(--g-accent);
+	--axc-danger: var(--g-danger);
+	--axc-success: var(--g-success);
+	--axc-muted: var(--g-muted);
+	--axc-radius: 8px;
+	--axc-panel-radius: 12px;
+	--axc-table-bg: var(--g-surface);
+	--axc-table-text: var(--g-text);
+	--axc-table-heading: var(--g-raised);
+	--axc-table-border: var(--g-border);
+	--axc-table-accent: var(--g-accent);
+	--axc-table-red: #fde4e7;
+	--axc-table-green: #dcf5e7;
+	--axc-table-blue: #e1e8ff;
+	--axc-table-orange: #ffeed6;
+	--axc-table-grey: #eceef3;
+	--axc-graph-bg: var(--g-surface);
+	--axc-graph-canvas: var(--g-bg);
+	--axc-graph-panel: var(--g-raised);
+	--axc-graph-border: var(--g-border);
+	--axc-graph-text: var(--g-text);
+	--axc-graph-muted: var(--g-muted);
+	--axc-graph-blue: #4f6bed;
+	--axc-graph-blue-fill: #e3e9ff;
+	--axc-graph-green: #1f9d5c;
+	--axc-graph-green-fill: #daf5e6;
+	--axc-graph-red: #d93a50;
+	--axc-graph-red-fill: #fde3e7;
+	--axc-graph-orange: #c8700f;
+	--axc-graph-orange-fill: #ffecd2;
+	--axc-graph-purple: #8b4fe0;
+	--axc-graph-purple-fill: #efe4ff;
+	--axc-graph-cyan: #0f8a94;
+	--axc-graph-cyan-fill: #d4f4f6;
+	--axc-graph-grey: #5d6678;
+	--axc-graph-grey-fill: #eceef3;
+	--axc-json-text: var(--g-text);
+	--axc-json-muted: var(--g-muted);
+	--axc-json-border: var(--g-border-strong);
+	--axc-json-surface: var(--g-surface);
+	--axc-json-highlight: var(--g-accent-soft);
+	--axc-json-error: var(--g-danger);
+	--axc-drawer-bg: var(--g-surface);
+	--axc-drawer-text: var(--g-text);
+	--axc-drawer-border: var(--g-border);
+	--axc-drawer-control-bg: var(--g-raised);
+	--axc-drawer-mask: #0b0d1273;
+	--axc-plugin-border: var(--g-border-strong);
+	--axc-plugin-error: var(--g-danger);
+}
+:root[data-theme='dark'] {
+	--axc-table-red: #4a2029;
+	--axc-table-green: #17402b;
+	--axc-table-blue: #232c58;
+	--axc-table-orange: #4a3315;
+	--axc-table-grey: #2a2f3c;
+	--axc-graph-blue: #7e93ff;
+	--axc-graph-blue-fill: #222b55;
+	--axc-graph-green: #4cd08a;
+	--axc-graph-green-fill: #153b28;
+	--axc-graph-red: #ff7d8f;
+	--axc-graph-red-fill: #4a1f29;
+	--axc-graph-orange: #f0a04b;
+	--axc-graph-orange-fill: #45300f;
+	--axc-graph-purple: #b88cff;
+	--axc-graph-purple-fill: #33224f;
+	--axc-graph-cyan: #4cd1da;
+	--axc-graph-cyan-fill: #123c40;
+	--axc-graph-grey: #a2abbf;
+	--axc-graph-grey-fill: #2a2f3c;
+	--axc-drawer-mask: #000000a6;
+}
+/* React Flow ships a light palette and reads these variables. */
+.gallery .react-flow {
+	--xy-background-color: var(--g-bg);
+	--xy-background-pattern-color: var(--g-border-strong);
+	--xy-edge-stroke: var(--g-muted);
+	--xy-edge-stroke-selected: var(--g-accent);
+	--xy-connectionline-stroke: var(--g-accent);
+	--xy-handle-background-color: var(--g-accent);
+	--xy-handle-border-color: var(--g-surface);
+	--xy-attribution-background-color: transparent;
+	--xy-controls-button-background-color: var(--g-surface);
+	--xy-controls-button-background-color-hover: var(--g-raised);
+	--xy-controls-button-color: var(--g-text);
+	--xy-controls-button-color-hover: var(--g-text);
+	--xy-controls-button-border-color: var(--g-border);
+	--xy-minimap-background-color: var(--g-surface);
+	--xy-minimap-mask-background-color: #0000001a;
+	--xy-minimap-node-background-color: var(--g-border-strong);
+	--xy-selection-background-color: #5b5bd61a;
+	--xy-selection-border: 1px dotted var(--g-accent);
+}
+:root[data-theme='dark'] .gallery .react-flow {
+	--xy-minimap-mask-background-color: #0000008c;
+}
+.gallery .react-flow__controls {
+	box-shadow: var(--g-shadow);
+	border-radius: 8px;
+	overflow: hidden;
+}
+.gallery .react-flow__controls-button svg {
+	fill: currentColor;
+}
+
+body {
+	margin: 0;
+}
+.gallery {
+	min-height: 100vh;
+	display: grid;
+	grid-template-columns: 248px minmax(0, 1fr);
+	background:
+		radial-gradient(900px 420px at 85% -10%, color-mix(in srgb, var(--g-accent) 11%, transparent), transparent 70%),
+		var(--g-bg);
+}
+.gallery-sidebar {
+	position: sticky;
+	top: 0;
+	align-self: start;
+	height: 100vh;
+	box-sizing: border-box;
+	overflow-y: auto;
+	padding: 28px 16px;
+	background: var(--g-surface);
+	border-right: 1px solid var(--g-border);
+}
+.gallery-brand {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	font-size: 19px;
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	padding-inline: 8px;
+}
+.gallery-sidebar nav {
+	margin-top: 36px;
+}
+.gallery-sidebar nav h2 {
+	margin: 0 10px 10px;
+	font-size: 11px;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--g-muted);
+	font-weight: 600;
+}
+.gallery-sidebar nav a {
+	display: flex;
+	align-items: center;
+	gap: 11px;
+	color: var(--g-muted);
+	text-decoration: none;
+	padding: 9px 12px;
+	margin-block: 2px;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 500;
+	transition:
+		background 0.15s,
+		color 0.15s;
+}
+.gallery-sidebar nav a:hover {
+	background: var(--g-raised);
+	color: var(--g-text);
+}
+.gallery-sidebar nav a[aria-current] {
+	background: var(--g-accent-soft);
+	color: var(--g-accent);
+	font-weight: 600;
+}
+.gallery-sidebar nav a:focus-visible {
+	outline: none;
+	box-shadow: var(--g-ring);
+}
+.gallery-main {
+	padding: clamp(24px, 4.5vw, 64px);
+	width: 100%;
+	max-width: 1440px;
+	box-sizing: border-box;
+	margin-inline: auto;
+	min-width: 0;
+}
+.gallery-intro {
+	margin: 0 0 28px;
+}
+.gallery-intro-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+.gallery-intro code {
+	font: 500 12.5px/1 var(--g-mono);
+	color: var(--g-accent);
+	background: var(--g-accent-soft);
+	padding: 6px 10px;
+	border-radius: 999px;
+}
+.gallery-intro h1 {
+	font-size: clamp(30px, 3.6vw, 42px);
+	line-height: 1.15;
+	letter-spacing: -0.035em;
+	margin: 18px 0 10px;
+}
+.gallery-intro p {
+	font-size: 15px;
+	line-height: 1.7;
+	margin: 0;
+	max-width: 70ch;
+	color: var(--g-muted);
+}
+.theme-switch {
+	display: inline-flex;
+	padding: 3px;
+	gap: 2px;
+	border: 1px solid var(--g-border);
+	border-radius: 999px;
+	background: var(--g-surface);
+}
+.theme-switch button {
+	display: grid;
+	place-items: center;
+	width: 30px;
+	height: 28px;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--g-muted);
+	cursor: pointer;
+}
+.theme-switch button:hover {
+	color: var(--g-text);
+}
+.theme-switch button[aria-pressed='true'] {
+	background: var(--g-accent);
+	color: var(--g-accent-text);
+}
+.gallery-preview {
+	min-width: 0;
+	background: var(--g-surface);
+	border: 1px solid var(--g-border);
+	border-radius: 16px;
+	box-shadow: var(--g-shadow);
+	padding: clamp(14px, 2.4vw, 28px);
+	animation: gallery-in 0.25s ease-out;
+}
+@keyframes gallery-in {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.gallery-preview {
+		animation: none;
+	}
+}
+
+/* Base controls. :where keeps specificity at zero so component rules still win. */
+:where(.gallery-preview, dialog)
+	:where(button, select, input:not([type]), input[type='text'], input[type='number'], textarea) {
+	font: inherit;
+	font-size: 14px;
+	color: var(--g-text);
+	background: var(--g-surface);
+	border: 1px solid var(--g-border-strong);
+	border-radius: 8px;
+	padding: 6px 12px;
+	transition:
+		border-color 0.15s,
+		background 0.15s,
+		box-shadow 0.15s;
+}
+:where(.gallery-preview, dialog) :where(input:not([type]), input[type='text'], input[type='number'], textarea) {
+	padding: 7px 10px;
+}
+:where(.gallery-preview, dialog) :where(button) {
+	cursor: pointer;
+	font-weight: 500;
+}
+:where(.gallery-preview, dialog) :where(button:hover:enabled) {
+	background: var(--g-raised);
+	border-color: var(--g-muted);
+}
+:where(.gallery-preview, dialog) :where(button:disabled, select:disabled, input:disabled, textarea:disabled) {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+:where(.gallery-preview, dialog) :where(button, select, input, textarea):focus-visible {
+	outline: none;
+	border-color: var(--g-accent);
+	box-shadow: var(--g-ring);
+}
+:where(.gallery-preview, dialog) :where(input[type='checkbox'], input[type='radio']) {
+	accent-color: var(--g-accent);
+}
+:where(.gallery-preview, dialog) :where(label) {
+	font-size: 14px;
+}
+:where(.gallery-preview) :where(pre, code, output, textarea) {
+	font-family: var(--g-mono);
+}
+:where(.gallery-preview) :where(pre) {
+	background: var(--g-raised);
+	border: 1px solid var(--g-border);
+	border-radius: 10px;
+	padding: 12px 14px;
+	font-size: 12.5px;
+	line-height: 1.6;
+}
+:where(.gallery-preview) :where(output) {
+	color: var(--g-success);
+	font-size: 13px;
+}
+:where(.gallery-preview) :where(summary) {
+	cursor: pointer;
+	color: var(--g-muted);
+	font-size: 14px;
+}
+.gallery-preview > p,
+.gallery-preview > * > p {
+	color: var(--g-muted);
+	font-size: 13px;
+}
+
+/* Table */
+.sample-header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+.sample-header h2 {
+	margin: 0;
+	font-size: 18px;
+	letter-spacing: -0.01em;
+}
+.sample-header span {
+	color: var(--g-muted);
+	font-size: 13px;
+}
+.gallery-preview .axc-table {
+	border: 1px solid var(--g-border);
+	border-radius: 12px;
+}
+.gallery-preview .axc-table table {
+	min-width: 100%;
+	font-size: 14px;
+}
+.gallery-preview .axc-table th {
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	color: var(--g-muted);
+	padding-block: 10px;
+}
+.gallery-preview .axc-table th,
+.gallery-preview .axc-table td {
+	padding-inline: 14px;
+}
+.gallery-preview .axc-table td {
+	padding-block: 10px;
+}
+.gallery-preview .axc-table tbody tr:last-child td {
+	border-bottom: 0;
+}
+.gallery-preview .axc-table tbody tr:not([data-color]):hover > td {
+	background: var(--g-raised);
+}
+.gallery-preview .axc-table-tools {
+	margin-bottom: 4px;
+}
+.gallery-preview .axc-table-backdrop {
+	background: transparent;
+}
+.gallery-preview .axc-table-backdrop::backdrop {
+	background: var(--axc-drawer-mask);
+	backdrop-filter: blur(3px);
+}
+.gallery-preview .axc-table-backdrop > section {
+	border: 1px solid var(--g-border);
+	border-radius: 16px;
+	padding: 24px;
+	box-sizing: border-box;
+	box-shadow: var(--g-shadow-lg);
+}
+.gallery-preview .axc-table-backdrop header {
+	font-weight: 650;
+	font-size: 18px;
+	margin-bottom: 12px;
+}
+.gallery-preview .axc-table-swatch {
+	border-radius: 50%;
+	border: 1px solid var(--g-border-strong);
+}
+.sample-switch {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 16px;
+}
+.sample-switch button[aria-pressed='true'] {
+	background: var(--g-accent-soft);
+	border-color: var(--g-accent);
+	color: var(--g-accent);
+}
+
+/* Graph */
+.gallery-preview .axc-graph {
+	--axc-graph-height: clamp(420px, 58vh, 680px);
+	--axc-graph-min-height: 340px;
+	border-radius: 12px;
+	overflow: hidden;
+}
+.gallery-preview .axc-graph-node {
+	border-radius: 10px;
+	box-shadow: var(--g-shadow);
+}
+
+/* Condition */
+.condition-demo {
+	padding: 4px;
+	background: transparent;
+}
+.condition-demo > header,
+.condition-demo > nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 16px;
+	align-items: center;
+	margin-bottom: 16px;
+}
+.condition-demo > nav button[aria-pressed='true'] {
+	background: var(--g-accent-soft);
+	border-color: var(--g-accent);
+	color: var(--g-accent);
+}
+.condition-demo .protocol {
+	margin-top: 16px;
+}
+.condition-demo .protocol textarea {
+	width: 100%;
+	box-sizing: border-box;
+}
+.condition-demo .protocol pre {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	max-height: 380px;
+	overflow: auto;
+}
+.gallery-preview .axc-native-control:hover:enabled {
+	border-color: var(--g-muted);
+}
+.gallery-preview .axc-native-control:focus-visible {
+	outline: none;
+	border-color: var(--g-accent);
+	box-shadow: var(--g-ring);
+}
+/* The demo host button does not use axc-native-control, so default control styles must not reach it. */
+.gallery-preview .demo-host-button {
+	border: 2px solid #8d53db;
+	border-radius: 18px;
+	padding: 7px 14px;
+	background: #f3eaff;
+	color: #572691;
+	font: inherit;
+	cursor: pointer;
+}
+:root[data-theme='dark'] .gallery-preview .demo-host-button {
+	background: #2d1f47;
+	border-color: #a678ee;
+	color: #dcc7ff;
+}
+.gallery-preview .demo-host-button[data-tone='danger'] {
+	color: #aa2030;
+}
+:root[data-theme='dark'] .gallery-preview .demo-host-button[data-tone='danger'] {
+	color: #ff8f9d;
+}
+.gallery-preview .demo-host-button:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+/* Drawer, CRUD */
+.drawer-example .sample-switch {
+	align-items: center;
+	gap: 20px;
+}
+.drawer-example .axc-drawer-body li {
+	padding: 12px 4px;
+	border-bottom: 1px solid var(--axc-drawer-border);
+}
+.axc-drawer {
+	box-shadow: var(--g-shadow-lg);
+	border-left: 1px solid var(--g-border);
+}
+.crud-example-fields,
+.crud-example-fields label {
+	display: grid;
+	gap: 6px;
+}
+.crud-example-fields {
+	gap: 18px;
+}
+.crud-example-fields :is(input, select) {
+	padding: 8px 10px;
+}
+
+/* Code editor */
+.gallery-preview .cm-editor {
+	border: 1px solid var(--g-border-strong);
+	border-radius: 10px;
+	overflow: hidden;
+	font-size: 13.5px;
+}
+.gallery-preview .cm-editor.cm-focused {
+	outline: none;
+	border-color: var(--g-accent);
+	box-shadow: var(--g-ring);
+}
+
+@media (max-width: 800px) {
+	.gallery {
+		display: block;
+	}
+	.gallery-sidebar {
+		position: static;
+		height: auto;
+		padding: 14px 16px;
+		border-right: 0;
+		border-bottom: 1px solid var(--g-border);
+	}
+	.gallery-sidebar nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px;
+		margin-top: 12px;
+	}
+	.gallery-sidebar nav h2 {
+		display: none;
+	}
+	.gallery-sidebar nav a {
+		padding: 7px 10px;
+		gap: 6px;
+		font-size: 13px;
+		margin: 0;
+	}
+	.gallery-main {
+		padding: 24px 14px;
+	}
+	.gallery-intro {
+		margin-bottom: 20px;
+	}
+}

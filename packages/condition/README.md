@@ -485,7 +485,7 @@ npm run api       # update the Condition interface reference in packages/conditi
 npm test          # all tests on React 19, then React 18
 npm run build     # dist/: ESM, CSS and .d.ts
 npm run format    # Prettier
-npm run dev       # demo at http://127.0.0.1:5178
+npm run dev       # demo at http://127.0.0.1:5178/#condition
 npm run demo:build # build once; then open packages/condition/demo/index.html directly
 ```
 

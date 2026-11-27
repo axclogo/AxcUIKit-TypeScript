@@ -4,10 +4,18 @@
 		"packages/*/src/index.ts",
 		"packages/*/src/core/index.ts",
 		"packages/json-editor/src/codemirror.tsx",
-		"packages/condition/demo/main.tsx",
+		"demo/main.tsx",
 		"scripts/*.mjs",
+		"packages/*/tests/build-probe.ts",
 		"packages/*/tests/**/*.test.{ts,tsx}",
 		"tests/setup/*"
 	],
-	"project": ["packages/*/src/**", "packages/condition/demo/**", "scripts/**", "packages/*/tests/**", "tests/setup/**"]
+	"project": [
+		"packages/*/src/**",
+		"packages/*/demo/**",
+		"demo/**",
+		"scripts/**",
+		"packages/*/tests/**",
+		"tests/setup/**"
+	]
 }

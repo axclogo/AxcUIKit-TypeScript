@@ -1,5 +1,5 @@
 import { AxcDecision, type AxcDecisionProps } from './AxcDecision.js';
-import { AssistPanel } from '../internal/AssistPanel.js';
+import { AxcAssistAction } from '../internal/AssistPanel.js';
 import { useAxcLocale } from '../ui/provider.js';
 import { decisionPlan, validateDecisionPlan } from '../core/decision.js';
 import { decisionAssistRequest, parseDecisionResult } from '../core/decision-assist.js';
@@ -20,7 +20,7 @@ export function AxcDecisionAssist({ assist, ...props }: AxcDecisionAssistProps) 
 	return (
 		<div className="axc-decision-assist">
 			{!props.readOnly && (
-				<AssistPanel
+				<AxcAssistAction
 					transport={assist}
 					current={{ value: props.value, ...catalog }}
 					disabled={props.disabled || !props.onChange}
